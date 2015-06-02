@@ -1,0 +1,113 @@
+https://query.yahooapis.com/v1/public/yql?q=select * from google.search where q = "John Adams"&format=json&diagnostics=true&env=store://datatables.org/alltableswithkeys&callback=
+select * from google.search where q = "pizza"
+{
+ "query": {
+  "count": 8,
+  "created": "2015-05-07T17:58:39Z",
+  "lang": "en-US",
+  "diagnostics": {
+   "url": [
+    {
+     "execution-start-time": "1",
+     "execution-stop-time": "34",
+     "execution-time": "33",
+     "content": "http://www.datatables.org/google/google.search.xml"
+    },
+    {
+     "execution-start-time": "36",
+     "execution-stop-time": "453",
+     "execution-time": "417",
+     "content": "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&hl=en&gl=en&userip=&q=pizza&start=0&rsz=8"
+    }
+   ],
+   "publiclyCallable": "true",
+   "user-time": "454",
+   "service-time": "450",
+   "build-version": "0.2.100"
+  },
+  "results": {
+   "results": [
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "https://www.pizzahut.com/",
+     "url": "https://www.pizzahut.com/",
+     "visibleUrl": "www.pizzahut.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:oiTvlHsuOeEJ:www.pizzahut.com",
+     "title": "<b>Pizza</b> Hut - <b>Pizza</b> Coupons, <b>Pizza</b> Deals, <b>Pizza</b> Delivery, Order <b>Pizza</b> <b>...</b>",
+     "titleNoFormatting": "Pizza Hut - Pizza Coupons, Pizza Deals, Pizza Delivery, Order Pizza ...",
+     "content": "Order <b>pizza</b> online for fast <b>pizza</b> delivery or drop by for carryout. You may also \ncontact <b>Pizza</b> Hut and find out about our catering services for your next big event."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://www.dominos.com/",
+     "url": "http://www.dominos.com/",
+     "visibleUrl": "www.dominos.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:591afdDgklwJ:www.dominos.com",
+     "title": "Dominos.com: Domino&#39;s Home Page - Domino&#39;s <b>Pizza</b>, Order <b>Pizza</b> <b>...</b>",
+     "titleNoFormatting": "Dominos.com: Domino&#39;s Home Page - Domino&#39;s Pizza, Order Pizza ...",
+     "content": "Domino&#39;s <b>Pizza</b>. Browse coupons &amp; order Domino&#39;s online for delivery or pick up. \nMenu has specialty <b>pizza</b>, pasta, chicken wings, cheesy bread, sandwiches, ..."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://en.wikipedia.org/wiki/Pizza",
+     "url": "http://en.wikipedia.org/wiki/Pizza",
+     "visibleUrl": "en.wikipedia.org",
+     "cacheUrl": "http://www.google.com/search?q=cache:tcv8bt2LrKoJ:en.wikipedia.org",
+     "title": "<b>Pizza</b> - Wikipedia, the free encyclopedia",
+     "titleNoFormatting": "Pizza - Wikipedia, the free encyclopedia",
+     "content": "<b>Pizza</b> is an oven-baked flat bread generally topped with tomato sauce and \ncheese. It is commonly supplemented with a selection of meats, vegetables and ..."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://www.papajohns.com/",
+     "url": "http://www.papajohns.com/",
+     "visibleUrl": "www.papajohns.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:kb86RN4VigoJ:www.papajohns.com",
+     "title": "Papa John&#39;s <b>Pizza</b> Delivery and Specials ‐ Order <b>Pizza</b> Online for <b>...</b>",
+     "titleNoFormatting": "Papa John&#39;s Pizza Delivery and Specials ‐ Order Pizza Online for ...",
+     "content": "Order Papa John&#39;s <b>Pizza</b> online for fast <b>pizza</b> delivery or pickup. Get Papa John&#39;s \nSpecial Offers or use Papa John&#39;s promo codes for online <b>pizza</b> orders."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://jetspizza.com/menu/pizza",
+     "url": "http://jetspizza.com/menu/pizza",
+     "visibleUrl": "jetspizza.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:t6IdGtxcQbQJ:jetspizza.com",
+     "title": "Jet&#39;s <b>Pizza</b>",
+     "titleNoFormatting": "Jet&#39;s Pizza",
+     "content": "Build Your Own <b>Pizza</b>. Your choice of toppings: Pepperoni, Bold Pepperoni, Ham\n, Italian Sausage, Bacon, Hamburger, Meatballs, Anchovies, Mushrooms, ..."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://pizza.com/",
+     "url": "http://pizza.com/",
+     "visibleUrl": "pizza.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:S5AMWULkkUUJ:pizza.com",
+     "title": "<b>Pizza</b>.com",
+     "titleNoFormatting": "Pizza.com",
+     "content": "Find the <b>Pizza</b> You&#39;re Looking for: Delivery, Local Pizzerias, and Recipes all in \nOne Place. by <b>Pizza</b>.com. Recent Articles. <b>Pizza</b> Crust Made from CauliflowerThe\n ..."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://giordanos.com/",
+     "url": "http://giordanos.com/",
+     "visibleUrl": "giordanos.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:4izBkmXzleQJ:giordanos.com",
+     "title": "Giordano&#39;s | Best Chicago Style Deep Dish <b>Pizza</b> &amp; Italian Restaurant",
+     "titleNoFormatting": "Giordano&#39;s | Best Chicago Style Deep Dish Pizza &amp; Italian Restaurant",
+     "content": "Buy a <b>Pizza</b> Gift Card for Someone Special Today! Giordano&#39;s, since 1974. Voted \nBest Chicago Deep Dish <b>Pizza</b> &amp; Italian Restaurant; Dine in, Takeout ..."
+    },
+    {
+     "GsearchResultClass": "GwebSearch",
+     "unescapedUrl": "http://wethepizza.com/",
+     "url": "http://wethepizza.com/",
+     "visibleUrl": "wethepizza.com",
+     "cacheUrl": "http://www.google.com/search?q=cache:euyd_-lWB8kJ:wethepizza.com",
+     "title": "WE, THE <b>PIZZA</b> - GREAT <b>PIZZA</b> IN DC",
+     "titleNoFormatting": "WE, THE PIZZA - GREAT PIZZA IN DC",
+     "content": "Online Now · We, The <b>Pizza</b>. Home · Menu · Washington D.C. · Arlington, VA ... \nBearnaise; We, The <b>Pizza</b>; Good Stuff. *RESTAURANTS BY THE MENDELSOHN\n ..."
+    }
+   ]
+  }
+ }
+}

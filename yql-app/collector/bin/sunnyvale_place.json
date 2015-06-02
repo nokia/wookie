@@ -1,0 +1,518 @@
+{
+ "query": {
+  "count": 8,
+  "created": "2015-05-07T18:05:51Z",
+  "lang": "en-US",
+  "diagnostics": {
+   "publiclyCallable": "true",
+   "url": {
+    "execution-start-time": "1",
+    "execution-stop-time": "24",
+    "execution-time": "23",
+    "content": "http://wws.geotech.yahooapis.com/v1/places.q(Sunnyvale%2C%20CA%20US);start=0;count=10"
+   },
+   "user-time": "25",
+   "service-time": "23",
+   "build-version": "0.2.100"
+  },
+  "results": {
+   "place": [
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/2502265",
+     "woeid": "2502265",
+     "placeTypeName": {
+      "code": "7",
+      "content": "Town"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "US",
+      "type": "Country",
+      "woeid": "23424977",
+      "content": "United States"
+     },
+     "admin1": {
+      "code": "US-CA",
+      "type": "State",
+      "woeid": "2347563",
+      "content": "California"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "12587712",
+      "content": "Santa Clara"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2502265",
+      "content": "Sunnyvale"
+     },
+     "locality2": null,
+     "postal": null,
+     "centroid": {
+      "latitude": "37.371609",
+      "longitude": "-122.038254"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "37.332298",
+       "longitude": "-122.065659"
+      },
+      "northEast": {
+       "latitude": "37.448990",
+       "longitude": "-121.982407"
+      }
+     },
+     "areaRank": "4",
+     "popRank": "10",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "56043663",
+      "content": "America/Los_Angeles"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/2502264",
+     "woeid": "2502264",
+     "placeTypeName": {
+      "code": "7",
+      "content": "Town"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "US",
+      "type": "Country",
+      "woeid": "23424977",
+      "content": "United States"
+     },
+     "admin1": {
+      "code": "US-TX",
+      "type": "State",
+      "woeid": "2347602",
+      "content": "Texas"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "12590063",
+      "content": "Dallas"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2502264",
+      "content": "Sunnyvale"
+     },
+     "locality2": null,
+     "postal": {
+      "type": "Zip Code",
+      "woeid": "12790433",
+      "content": "75182"
+     },
+     "centroid": {
+      "latitude": "32.780331",
+      "longitude": "-96.547401"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "32.754501",
+       "longitude": "-96.605331"
+      },
+      "northEast": {
+       "latitude": "32.833801",
+       "longitude": "-96.519203"
+      }
+     },
+     "areaRank": "4",
+     "popRank": "1",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "56043661",
+      "content": "America/Chicago"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/22726540",
+     "woeid": "22726540",
+     "placeTypeName": {
+      "code": "22",
+      "content": "Suburb"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "NZ",
+      "type": "Country",
+      "woeid": "23424916",
+      "content": "New Zealand"
+     },
+     "admin1": {
+      "code": "",
+      "type": "Region",
+      "woeid": "15021756",
+      "content": "Auckland Region"
+     },
+     "admin2": null,
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2348079",
+      "content": "Auckland"
+     },
+     "locality2": {
+      "type": "Suburb",
+      "woeid": "22726540",
+      "content": "Sunnyvale"
+     },
+     "postal": {
+      "type": "Postal Code",
+      "woeid": "29344200",
+      "content": "0612"
+     },
+     "centroid": {
+      "latitude": "-36.896400",
+      "longitude": "174.636032"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "-36.909370",
+       "longitude": "174.621033"
+      },
+      "northEast": {
+       "latitude": "-36.888760",
+       "longitude": "174.655334"
+      }
+     },
+     "areaRank": "2",
+     "popRank": "0",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "28350937",
+      "content": "Pacific/Auckland"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/28587423",
+     "woeid": "28587423",
+     "placeTypeName": {
+      "code": "7",
+      "content": "Town"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "AU",
+      "type": "Country",
+      "woeid": "23424748",
+      "content": "Australia"
+     },
+     "admin1": {
+      "code": "AU-SA",
+      "type": "State",
+      "woeid": "2344703",
+      "content": "South Australia"
+     },
+     "admin2": {
+      "code": "",
+      "type": "Local Government Area",
+      "woeid": "55864211",
+      "content": "Yorke Peninsula"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "28587423",
+      "content": "Sunnyvale"
+     },
+     "locality2": null,
+     "postal": {
+      "type": "Postal Code",
+      "woeid": "12708774",
+      "content": "5552"
+     },
+     "centroid": {
+      "latitude": "-34.145119",
+      "longitude": "137.829285"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "-34.200520",
+       "longitude": "137.779404"
+      },
+      "northEast": {
+       "latitude": "-34.092751",
+       "longitude": "137.873108"
+      }
+     },
+     "areaRank": "4",
+     "popRank": "1",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "28350877",
+      "content": "Australia/Adelaide"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/2502269",
+     "woeid": "2502269",
+     "placeTypeName": {
+      "code": "22",
+      "content": "Suburb"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "US",
+      "type": "Country",
+      "woeid": "23424977",
+      "content": "United States"
+     },
+     "admin1": {
+      "code": "US-MO",
+      "type": "State",
+      "woeid": "2347584",
+      "content": "Missouri"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "12589014",
+      "content": "Jasper"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2517244",
+      "content": "West Joplin"
+     },
+     "locality2": {
+      "type": "Suburb",
+      "woeid": "2502269",
+      "content": "Sunnyvale"
+     },
+     "postal": {
+      "type": "Zip Code",
+      "woeid": "12786276",
+      "content": "64804"
+     },
+     "centroid": {
+      "latitude": "37.054798",
+      "longitude": "-94.490997"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "37.045700",
+       "longitude": "-94.502388"
+      },
+      "northEast": {
+       "latitude": "37.063889",
+       "longitude": "-94.479599"
+      }
+     },
+     "areaRank": "2",
+     "popRank": "0",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "56043661",
+      "content": "America/Chicago"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/2502263",
+     "woeid": "2502263",
+     "placeTypeName": {
+      "code": "7",
+      "content": "Town"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "US",
+      "type": "Country",
+      "woeid": "23424977",
+      "content": "United States"
+     },
+     "admin1": {
+      "code": "US-NC",
+      "type": "State",
+      "woeid": "2347592",
+      "content": "North Carolina"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "12589432",
+      "content": "Mcdowell"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2502263",
+      "content": "Sunnyvale"
+     },
+     "locality2": null,
+     "postal": {
+      "type": "Zip Code",
+      "woeid": "12769900",
+      "content": "28752"
+     },
+     "centroid": {
+      "latitude": "35.738731",
+      "longitude": "-82.142670"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "35.729630",
+       "longitude": "-82.153862"
+      },
+      "northEast": {
+       "latitude": "35.747822",
+       "longitude": "-82.131470"
+      }
+     },
+     "areaRank": "2",
+     "popRank": "1",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "56043648",
+      "content": "America/New_York"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/28644077",
+     "woeid": "28644077",
+     "placeTypeName": {
+      "code": "22",
+      "content": "Suburb"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "NZ",
+      "type": "Country",
+      "woeid": "23424916",
+      "content": "New Zealand"
+     },
+     "admin1": {
+      "code": "NZ-OTA",
+      "type": "Region",
+      "woeid": "15021754",
+      "content": "Otago"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "55875912",
+      "content": "Dunedin City"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2348444",
+      "content": "Dunedin"
+     },
+     "locality2": {
+      "type": "Suburb",
+      "woeid": "28644077",
+      "content": "Sunnyvale"
+     },
+     "postal": {
+      "type": "Postal Code",
+      "woeid": "29345030",
+      "content": "9018"
+     },
+     "centroid": {
+      "latitude": "-45.901020",
+      "longitude": "170.416443"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "-45.912708",
+       "longitude": "170.410675"
+      },
+      "northEast": {
+       "latitude": "-45.896900",
+       "longitude": "170.429749"
+      }
+     },
+     "areaRank": "1",
+     "popRank": "0",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "28350937",
+      "content": "Pacific/Auckland"
+     }
+    },
+    {
+     "lang": "en-US",
+     "uri": "http://where.yahooapis.com/v1/place/55860274",
+     "woeid": "55860274",
+     "placeTypeName": {
+      "code": "22",
+      "content": "Suburb"
+     },
+     "name": "Sunnyvale",
+     "country": {
+      "code": "US",
+      "type": "Country",
+      "woeid": "23424977",
+      "content": "United States"
+     },
+     "admin1": {
+      "code": "US-AL",
+      "type": "State",
+      "woeid": "2347559",
+      "content": "Alabama"
+     },
+     "admin2": {
+      "code": "",
+      "type": "County",
+      "woeid": "12587535",
+      "content": "Mobile"
+     },
+     "admin3": null,
+     "locality1": {
+      "type": "Town",
+      "woeid": "2490779",
+      "content": "Semmes"
+     },
+     "locality2": {
+      "type": "Suburb",
+      "woeid": "55860274",
+      "content": "Sunnyvale"
+     },
+     "postal": {
+      "type": "Zip Code",
+      "woeid": "12773589",
+      "content": "36575"
+     },
+     "centroid": {
+      "latitude": "30.768049",
+      "longitude": "-88.251923"
+     },
+     "boundingBox": {
+      "southWest": {
+       "latitude": "30.757601",
+       "longitude": "-88.261200"
+      },
+      "northEast": {
+       "latitude": "30.778509",
+       "longitude": "-88.242630"
+      }
+     },
+     "areaRank": "1",
+     "popRank": "0",
+     "timezone": {
+      "type": "Time Zone",
+      "woeid": "56043661",
+      "content": "America/Chicago"
+     }
+    }
+   ]
+  }
+ }
+}

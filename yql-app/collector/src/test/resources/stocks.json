@@ -1,0 +1,117 @@
+{
+ "query": {
+  "count": 4,
+  "created": "2015-05-15T23:09:14Z",
+  "lang": "en-US",
+  "diagnostics": {
+   "url": [
+    {
+     "execution-start-time": "0",
+     "execution-stop-time": "1",
+     "execution-time": "1",
+     "content": "http://www.datatables.org/yahoo/finance/quote/yahoo.finance.quote.xml"
+    },
+    {
+     "execution-start-time": "7",
+     "execution-stop-time": "20",
+     "execution-time": "13",
+     "content": "http://download.finance.yahoo.com/d/quotes.csv?f=aa2bb2b3b4cc1c3c4c6c8dd1d2ee1e7e8e9ghjkg1g3g4g5g6ii5j1j3j4j5j6k1k2k4k5ll1l2l3mm2m3m4m5m6m7m8nn4opp1p2p5p6qrr1r2r5r6r7ss1s7t1t7t8vv1v7ww1w4xy&s=YHOO,AAPL,GOOG,MSFT"
+    }
+   ],
+   "publiclyCallable": "true",
+   "cache": {
+    "execution-start-time": "6",
+    "execution-stop-time": "6",
+    "execution-time": "0",
+    "method": "GET",
+    "type": "MEMCACHED",
+    "content": "5d1e1de680846a307c9874dc3d6878dc"
+   },
+   "query": {
+    "execution-start-time": "6",
+    "execution-stop-time": "20",
+    "execution-time": "14",
+    "params": "{url=[http://download.finance.yahoo.com/d/quotes.csv?f=aa2bb2b3b4cc1c3c4c6c8dd1d2ee1e7e8e9ghjkg1g3g4g5g6ii5j1j3j4j5j6k1k2k4k5ll1l2l3mm2m3m4m5m6m7m8nn4opp1p2p5p6qrr1r2r5r6r7ss1s7t1t7t8vv1v7ww1w4xy&s=YHOO,AAPL,GOOG,MSFT]}",
+    "content": "select * from csv where url=@url and columns='Ask,AverageDailyVolume,Bid,AskRealtime,BidRealtime,BookValue,Change&PercentChange,Change,Commission,Currency,ChangeRealtime,AfterHoursChangeRealtime,DividendShare,LastTradeDate,TradeDate,EarningsShare,ErrorIndicationreturnedforsymbolchangedinvalid,EPSEstimateCurrentYear,EPSEstimateNextYear,EPSEstimateNextQuarter,DaysLow,DaysHigh,YearLow,YearHigh,HoldingsGainPercent,AnnualizedGain,HoldingsGain,HoldingsGainPercentRealtime,HoldingsGainRealtime,MoreInfo,OrderBookRealtime,MarketCapitalization,MarketCapRealtime,EBITDA,ChangeFromYearLow,PercentChangeFromYearLow,LastTradeRealtimeWithTime,ChangePercentRealtime,ChangeFromYearHigh,PercebtChangeFromYearHigh,LastTradeWithTime,LastTradePriceOnly,HighLimit,LowLimit,DaysRange,DaysRangeRealtime,FiftydayMovingAverage,TwoHundreddayMovingAverage,ChangeFromTwoHundreddayMovingAverage,PercentChangeFromTwoHundreddayMovingAverage,ChangeFromFiftydayMovingAverage,PercentChangeFromFiftydayMovingAverage,Name,Notes,Open,PreviousClose,PricePaid,ChangeinPercent,PriceSales,PriceBook,ExDividendDate,PERatio,DividendPayDate,PERatioRealtime,PEGRatio,PriceEPSEstimateCurrentYear,PriceEPSEstimateNextYear,Symbol,SharesOwned,ShortRatio,LastTradeTime,TickerTrend,OneyrTargetPrice,Volume,HoldingsValue,HoldingsValueRealtime,YearRange,DaysValueChange,DaysValueChangeRealtime,StockExchange,DividendYield'"
+   },
+   "javascript": {
+    "execution-start-time": "4",
+    "execution-stop-time": "41",
+    "execution-time": "36",
+    "instructions-used": "193598",
+    "table-name": "yahoo.finance.quote"
+   },
+   "user-time": "42",
+   "service-time": "14",
+   "build-version": "0.2.130"
+  },
+  "results": {
+   "quote": [
+    {
+     "symbol": "YHOO",
+     "AverageDailyVolume": "13409400",
+     "Change": "-0.20",
+     "DaysLow": "44.69",
+     "DaysHigh": "45.07",
+     "YearLow": "32.93",
+     "YearHigh": "52.62",
+     "MarketCapitalization": "42.00B",
+     "LastTradePriceOnly": "44.75",
+     "DaysRange": "44.69 - 45.07",
+     "Name": "Yahoo! Inc.",
+     "Symbol": "YHOO",
+     "Volume": "7768294",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "AAPL",
+     "AverageDailyVolume": "51566600",
+     "Change": "-0.18",
+     "DaysLow": "128.21",
+     "DaysHigh": "129.49",
+     "YearLow": "83.63",
+     "YearHigh": "134.54",
+     "MarketCapitalization": "741.85B",
+     "LastTradePriceOnly": "128.77",
+     "DaysRange": "128.21 - 129.49",
+     "Name": "Apple Inc.",
+     "Symbol": "AAPL",
+     "Volume": "38190350",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "GOOG",
+     "AverageDailyVolume": "1771350",
+     "Change": "-4.55",
+     "DaysLow": "530.38",
+     "DaysHigh": "539.27",
+     "YearLow": "486.23",
+     "YearHigh": "598.01",
+     "MarketCapitalization": "364.30B",
+     "LastTradePriceOnly": "533.85",
+     "DaysRange": "530.38 - 539.27",
+     "Name": "Google Inc.",
+     "Symbol": "GOOG",
+     "Volume": "1970842",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "MSFT",
+     "AverageDailyVolume": "37621600",
+     "Change": "-0.425",
+     "DaysLow": "48.050",
+     "DaysHigh": "48.905",
+     "YearLow": "39.270",
+     "YearHigh": "50.050",
+     "MarketCapitalization": "390.69B",
+     "LastTradePriceOnly": "48.295",
+     "DaysRange": "48.050 - 48.905",
+     "Name": "Microsoft Corporation",
+     "Symbol": "MSFT",
+     "Volume": "28641644",
+     "StockExchange": "NMS"
+    }
+   ]
+  }
+ }
+}

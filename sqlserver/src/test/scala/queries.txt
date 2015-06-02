@@ -1,0 +1,6 @@
+name__org.elasticsearch.spark.sql__es.resource.read==spark/txt&&es.query==?q=Smith
+name__parquet
+name__json
+name__com.databricks.spark.csv__header==true
+name__jdbc__url==jdbc:postgresql://127.0.0.1:5432/postgres?user=lukaszjastrzebski&password=&&dbtable==sample&&driver==org.postgresql.Driver
+name__org.apache.spark.sql.cassandra__c_table==voltecallsbyhour&&keyspace==ratinalte

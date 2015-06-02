@@ -1,0 +1,268 @@
+{
+ "query": {
+  "count": 4,
+  "created": "2015-05-07T17:53:45Z",
+  "lang": "en-US",
+  "diagnostics": {
+   "url": [
+    {
+     "execution-start-time": "1",
+     "execution-stop-time": "124",
+     "execution-time": "123",
+     "content": "http://www.datatables.org/google/google.news.xml"
+    },
+    {
+     "execution-start-time": "127",
+     "execution-stop-time": "404",
+     "execution-time": "277",
+     "content": "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&ned=us&q=new%20york&start=0&size=4"
+    }
+   ],
+   "publiclyCallable": "true",
+   "user-time": "405",
+   "service-time": "400",
+   "build-version": "0.2.100"
+  },
+  "results": {
+   "results": [
+    {
+     "GsearchResultClass": "GnewsSearch",
+     "clusterUrl": "http://news.google.com/news/story?ncl=d4RpUjN6qaw0AMMgYGLU3Ry7BySvM&hl=en&ned=us",
+     "content": "The exchange, itBit, said on Thursday morning that it was beginning to take on customers in the United States immediately after receiving a banking trust charter from <b>New York</b> State&#39;s Department of Financial Services and its superintendent, Benjamin M.",
+     "unescapedUrl": "http://www.nytimes.com/2015/05/08/business/dealbook/bitcoin-exchange-receives-first-license-in-new-york-state.html",
+     "url": "http%3A%2F%2Fwww.nytimes.com%2F2015%2F05%2F08%2Fbusiness%2Fdealbook%2Fbitcoin-exchange-receives-first-license-in-new-york-state.html",
+     "title": "Bitcoin Exchange Receives First License in <b>New York</b> State",
+     "titleNoFormatting": "Bitcoin Exchange Receives First License in New York State",
+     "location": "",
+     "publisher": "New York Times",
+     "publishedDate": "Thu, 07 May 2015 08:02:09 -0700",
+     "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.nytimes.com/2015/05/08/business/dealbook/bitcoin-exchange-receives-first-license-in-new-york-state.html&cid=52778832188167&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNH2bMKjPxUOZl8A5wUmtYfVD7M_kg",
+     "language": "en",
+     "image": {
+      "url": "http://static01.nyt.com/images/2015/01/28/business/dealbook/dbpix-lawsky-coinbase/dbpix-lawsky-coinbase-master675-v4.jpg",
+      "tbUrl": "http://t3.gstatic.com/images?q=tbn:ANd9GcTlATh8NkHM01NbgFxFtvGOjXKfjJBYm6Olxaw5d52Ckv9afTeWflb7Zb1U",
+      "originalContextUrl": "http://www.nytimes.com/2015/05/08/business/dealbook/bitcoin-exchange-receives-first-license-in-new-york-state.html",
+      "publisher": "New York Times",
+      "tbWidth": "80",
+      "tbHeight": "53"
+     },
+     "relatedStories": [
+      {
+       "unescapedUrl": "http://www.cnbc.com/id/102658751",
+       "url": "http%3A%2F%2Fwww.cnbc.com%2Fid%2F102658751",
+       "title": "<b>NY</b> grants first banking license to bitcoin exchange",
+       "titleNoFormatting": "NY grants first banking license to bitcoin exchange",
+       "location": "",
+       "publisher": "CNBC",
+       "publishedDate": "Thu, 07 May 2015 08:00:00 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.cnbc.com/id/102658751&cid=52778832188167&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNGJN8snIYzGvK4UIhPvOXID8k-Nyg",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://techcrunch.com/2015/05/07/bitcoin-exchange-itbit-gets-a-new-york-state-trust-company-charter-after-raising-25-million/",
+       "url": "http%3A%2F%2Ftechcrunch.com%2F2015%2F05%2F07%2Fbitcoin-exchange-itbit-gets-a-new-york-state-trust-company-charter-after-raising-25-million%2F",
+       "title": "Bitcoin Exchange ItBit Gets A <b>New York</b> State Trust Company Charter After <b>...</b>",
+       "titleNoFormatting": "Bitcoin Exchange ItBit Gets A New York State Trust Company Charter After ...",
+       "location": "",
+       "publisher": "TechCrunch",
+       "publishedDate": "Thu, 07 May 2015 08:11:15 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://techcrunch.com/2015/05/07/bitcoin-exchange-itbit-gets-a-new-york-state-trust-company-charter-after-raising-25-million/&cid=52778832188167&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNGGyFMLzAyz01ktI_hqXVa9Qc-pjw",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://www.reuters.com/article/2015/05/07/us-bitcoin-charter-new-york-idUSKBN0NS1RJ20150507",
+       "url": "http%3A%2F%2Fwww.reuters.com%2Farticle%2F2015%2F05%2F07%2Fus-bitcoin-charter-new-york-idUSKBN0NS1RJ20150507",
+       "title": "<b>New York</b> banking regulator grants first charter to bitcoin company",
+       "titleNoFormatting": "New York banking regulator grants first charter to bitcoin company",
+       "location": "",
+       "publisher": "Reuters",
+       "publishedDate": "Thu, 07 May 2015 08:30:32 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.reuters.com/article/2015/05/07/us-bitcoin-charter-new-york-idUSKBN0NS1RJ20150507&cid=52778832188167&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNGUrKdX6WCIAetgYPc9Yh2lmrvcVA",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://thehill.com/policy/cybersecurity/241323-new-york-oks-first-banking-charter-for-bitcoin-exchange",
+       "url": "http%3A%2F%2Fthehill.com%2Fpolicy%2Fcybersecurity%2F241323-new-york-oks-first-banking-charter-for-bitcoin-exchange",
+       "title": "<b>New York</b> OKs first banking charter for...",
+       "titleNoFormatting": "New York OKs first banking charter for...",
+       "location": "",
+       "publisher": "The Hill",
+       "publishedDate": "Thu, 07 May 2015 08:00:00 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://thehill.com/policy/cybersecurity/241323-new-york-oks-first-banking-charter-for-bitcoin-exchange&cid=52778832188167&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNEFkT0SbiF8k2m3__wW3FGi02qKtQ",
+       "language": "en"
+      }
+     ]
+    },
+    {
+     "GsearchResultClass": "GnewsSearch",
+     "clusterUrl": "http://news.google.com/news/story?ncl=dOtJBCnMbXhZW1M78P6Ud-0KGTiQM&hl=en&ned=us",
+     "content": "Manicurists often work for no wages and subsist on meager tips until their employers decide they are good enough for a wage, according to an explosive new investigation by the <b>New York</b> Times. After interviewing more than 150 nail salon workers and ...",
+     "unescapedUrl": "http://www.businessinsider.com/the-new-york-times-just-blew-the-lid-off-of-the-manicure-2015-5",
+     "url": "http%3A%2F%2Fwww.businessinsider.com%2Fthe-new-york-times-just-blew-the-lid-off-of-the-manicure-2015-5",
+     "title": "The <b>New York</b> Times just exposed the shady underbelly of the manicure industry",
+     "titleNoFormatting": "The New York Times just exposed the shady underbelly of the manicure industry",
+     "location": "",
+     "publisher": "Business Insider",
+     "publishedDate": "Thu, 07 May 2015 07:57:55 -0700",
+     "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.businessinsider.com/the-new-york-times-just-blew-the-lid-off-of-the-manicure-2015-5&cid=52778832054916&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNEFGmMvFPfc5-TctF1TvTQQzw9l9A",
+     "language": "en",
+     "image": {
+      "url": "http://static6.businessinsider.com/image/554b7707ecad04f646ae6b4d-1200-924/fashions-night-out-manicure-saks-fifth-avenue-1.jpg",
+      "tbUrl": "http://t2.gstatic.com/images?q=tbn:ANd9GcQEH7ETVpp4mI-73N9e_V9zBR6GxRGxt7qX4PXo2r02T-n6iLyKHayol6Lr",
+      "originalContextUrl": "http://www.businessinsider.com/the-new-york-times-just-blew-the-lid-off-of-the-manicure-2015-5",
+      "publisher": "Business Insider",
+      "tbWidth": "80",
+      "tbHeight": "60"
+     },
+     "relatedStories": [
+      {
+       "unescapedUrl": "http://www.nytimes.com/times-insider/2015/05/07/something-rotten-in-the-state-of-nail-salons/",
+       "url": "http%3A%2F%2Fwww.nytimes.com%2Ftimes-insider%2F2015%2F05%2F07%2Fsomething-rotten-in-the-state-of-nail-salons%2F",
+       "title": "Times Insider | Something Rotten in <b>New York</b> City Nail Salons",
+       "titleNoFormatting": "Times Insider | Something Rotten in New York City Nail Salons",
+       "location": "",
+       "publisher": "New York Times",
+       "publishedDate": "Thu, 07 May 2015 05:22:30 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.nytimes.com/times-insider/2015/05/07/something-rotten-in-the-state-of-nail-salons/&cid=52778832054916&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNEJ8O2vyThlF4MIh6QkZKDbWOFz-w",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://jezebel.com/heres-the-shocking-human-rights-cost-of-a-manicure-in-n-1702797974",
+       "url": "http%3A%2F%2Fjezebel.com%2Fheres-the-shocking-human-rights-cost-of-a-manicure-in-n-1702797974",
+       "title": "Here&#39;s the Shocking Human Rights Cost of a Manicure in <b>New York</b> City",
+       "titleNoFormatting": "Here&#39;s the Shocking Human Rights Cost of a Manicure in New York City",
+       "location": "",
+       "publisher": "Jezebel",
+       "publishedDate": "Thu, 07 May 2015 07:03:45 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://jezebel.com/heres-the-shocking-human-rights-cost-of-a-manicure-in-n-1702797974&cid=52778832054916&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNGR7gxPeoIiQEEUvj_O_0ZIA6xKlg",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://theweek.com/speedreads/553840/75-percent-new-york-manicurists-earn-less-than-minimum-wage",
+       "url": "http%3A%2F%2Ftheweek.com%2Fspeedreads%2F553840%2F75-percent-new-york-manicurists-earn-less-than-minimum-wage",
+       "title": "75 percent of <b>New York</b> manicurists earn less than minimum wage",
+       "titleNoFormatting": "75 percent of New York manicurists earn less than minimum wage",
+       "location": "",
+       "publisher": "The Week Magazine",
+       "publishedDate": "Thu, 07 May 2015 08:25:13 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://theweek.com/speedreads/553840/75-percent-new-york-manicurists-earn-less-than-minimum-wage&cid=52778832054916&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNECxHxjRahB7qfjyrXhwlfJo6vrag",
+       "language": "en"
+      }
+     ]
+    },
+    {
+     "GsearchResultClass": "GnewsSearch",
+     "clusterUrl": "",
+     "content": "Democrats walked out of the <b>New York</b> State Senate after Republicans blocked their efforts to oust Dean G. Skelos, the Senate leader recently arrested on corruption charges. [<b>New York</b> Times]. • Mayor de Blasio has a new plan to encourage affordable ...",
+     "unescapedUrl": "http://cityroom.blogs.nytimes.com/2015/05/07/new-york-today-name-that-specimen/",
+     "url": "http%3A%2F%2Fcityroom.blogs.nytimes.com%2F2015%2F05%2F07%2Fnew-york-today-name-that-specimen%2F",
+     "title": "City Room <b>New York</b> Today: Name That Specimen",
+     "titleNoFormatting": "City Room New York Today: Name That Specimen",
+     "location": "",
+     "publisher": "New York Times (blog)",
+     "publishedDate": "Thu, 07 May 2015 03:06:37 -0700",
+     "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://cityroom.blogs.nytimes.com/2015/05/07/new-york-today-name-that-specimen/&cid=52778831970859&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNHA13CKZgc38Ujio0gmeEtODS4CPw",
+     "language": "en",
+     "image": {
+      "url": "http://graphics8.nytimes.com/images/2015/05/07/nyregion/07NYTODAY/07NYTODAY-tmagArticle.jpg",
+      "tbUrl": "http://t3.gstatic.com/images?q=tbn:ANd9GcREg_6kRh8iu1RevcW-CWLB-rGs3K-aughl2mIp_ow43hjI_hbIJpTcG9o",
+      "originalContextUrl": "http://cityroom.blogs.nytimes.com/2015/05/07/new-york-today-name-that-specimen/",
+      "publisher": "New York Times (blog)",
+      "tbWidth": "80",
+      "tbHeight": "53"
+     }
+    },
+    {
+     "GsearchResultClass": "GnewsSearch",
+     "clusterUrl": "http://news.google.com/news/story?ncl=dEPiAw96TQLoOEMPn16qqHds3pWcM&hl=en&ned=us",
+     "content": "It&#39;s an inescapable fact that the number of people forced to live on the streets of <b>New York</b> City rises and falls based on political calculations made far up the Hudson River, in Albany, and in the nation&#39;s capital. And, of course, on the willingness <b>...</b>",
+     "unescapedUrl": "http://www.nytimes.com/2015/05/07/opinion/homeless-in-new-york-city-an-unending-crisis.html",
+     "url": "http%3A%2F%2Fwww.nytimes.com%2F2015%2F05%2F07%2Fopinion%2Fhomeless-in-new-york-city-an-unending-crisis.html",
+     "title": "Homeless in <b>New York</b> City, an Unending Crisis",
+     "titleNoFormatting": "Homeless in New York City, an Unending Crisis",
+     "location": "",
+     "publisher": "New York Times",
+     "publishedDate": "Thu, 07 May 2015 00:18:45 -0700",
+     "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.nytimes.com/2015/05/07/opinion/homeless-in-new-york-city-an-unending-crisis.html&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNEWED_lfdzq6lRJfhoRWN20FSWrUg",
+     "language": "en",
+     "image": {
+      "url": "http://static01.nyt.com/images/2015/05/07/opinion/07thu2Web/07thu2Web-master675.jpg",
+      "tbUrl": "http://t3.gstatic.com/images?q=tbn:ANd9GcQD-ba9rQ8wGQEIHKtAlRpJVwuTDW1SrZmDYydpqV3YsiT_y9NCjejfLdM",
+      "originalContextUrl": "http://www.nytimes.com/2015/05/07/opinion/homeless-in-new-york-city-an-unending-crisis.html",
+      "publisher": "New York Times",
+      "tbWidth": "80",
+      "tbHeight": "48"
+     },
+     "relatedStories": [
+      {
+       "unescapedUrl": "http://www.wsj.com/articles/almost-half-in-poll-say-new-york-city-headed-in-wrong-direction-1430862970",
+       "url": "http%3A%2F%2Fwww.wsj.com%2Farticles%2Falmost-half-in-poll-say-new-york-city-headed-in-wrong-direction-1430862970",
+       "title": "Almost Half in Poll Say <b>New York</b> City Headed in Wrong Direction",
+       "titleNoFormatting": "Almost Half in Poll Say New York City Headed in Wrong Direction",
+       "location": "",
+       "publisher": "Wall Street Journal",
+       "publishedDate": "Tue, 05 May 2015 14:56:55 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.wsj.com/articles/almost-half-in-poll-say-new-york-city-headed-in-wrong-direction-1430862970&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNGnoSpjF2MDi0aoD6HHHHjjcCZG1Q",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://nypost.com/2015/05/06/de-blasio-howm-i-doing-ask-people-outside-new-york-city/",
+       "url": "http%3A%2F%2Fnypost.com%2F2015%2F05%2F06%2Fde-blasio-howm-i-doing-ask-people-outside-new-york-city%2F",
+       "title": "De Blasio: How&#39;m I doing? Ask people outside <b>NYC</b>",
+       "titleNoFormatting": "De Blasio: How&#39;m I doing? Ask people outside NYC",
+       "location": "",
+       "publisher": "New York Post",
+       "publishedDate": "Wed, 06 May 2015 09:32:09 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://nypost.com/2015/05/06/de-blasio-howm-i-doing-ask-people-outside-new-york-city/&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNG5pKj6lISp4GMfpct34ag3shIyKA",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://ny.curbed.com/archives/2015/05/07/de_blasio_says_new_york_cant_be_a_city_of_just_penthouses.php",
+       "url": "http%3A%2F%2Fny.curbed.com%2Farchives%2F2015%2F05%2F07%2Fde_blasio_says_new_york_cant_be_a_city_of_just_penthouses.php",
+       "title": "De Blasio Says <b>New York</b> &#39;Can&#39;t Be a City of Just Penthouses&#39;",
+       "titleNoFormatting": "De Blasio Says New York &#39;Can&#39;t Be a City of Just Penthouses&#39;",
+       "location": "",
+       "publisher": "Curbed NY",
+       "publishedDate": "Thu, 07 May 2015 07:17:35 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://ny.curbed.com/archives/2015/05/07/de_blasio_says_new_york_cant_be_a_city_of_just_penthouses.php&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNH-DPlVgK6x-FpU-RZLeHsDX5-P-w",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://www.businessinsider.com/bill-de-blasio-accidentally-emailed-the-new-york-times-2015-5",
+       "url": "http%3A%2F%2Fwww.businessinsider.com%2Fbill-de-blasio-accidentally-emailed-the-new-york-times-2015-5",
+       "title": "The <b>New York</b> City mayor accidentally emailed subway complaints to The New <b>...</b>",
+       "titleNoFormatting": "The New York City mayor accidentally emailed subway complaints to The New ...",
+       "location": "",
+       "publisher": "Business Insider",
+       "publishedDate": "Tue, 05 May 2015 07:23:25 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.businessinsider.com/bill-de-blasio-accidentally-emailed-the-new-york-times-2015-5&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNElmO3gH58VCOSNgTjJ2Mr7iL3FsQ",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://www.nbcnewyork.com/news/local/Bill-de-Blasio-Mayor-Subway-Email-TechCrunch-Delays-NYC-302596961.html",
+       "url": "http%3A%2F%2Fwww.nbcnewyork.com%2Fnews%2Flocal%2FBill-de-Blasio-Mayor-Subway-Email-TechCrunch-Delays-NYC-302596961.html",
+       "title": "Mayor de Blasio Accidentally Sends Email About Delayed Train to <b>NY</b> Times <b>...</b>",
+       "titleNoFormatting": "Mayor de Blasio Accidentally Sends Email About Delayed Train to NY Times ...",
+       "location": "",
+       "publisher": "NBC New York",
+       "publishedDate": "Tue, 05 May 2015 10:47:10 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.nbcnewyork.com/news/local/Bill-de-Blasio-Mayor-Subway-Email-TechCrunch-Delays-NYC-302596961.html&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNE2h4N9_5hRTezqullsg4YNswPmuw",
+       "language": "en"
+      },
+      {
+       "unescapedUrl": "http://www.politico.com/blogs/media/2015/05/bill-de-blasio-the-new-york-times-and-a-bad-subway-206614.html",
+       "url": "http%3A%2F%2Fwww.politico.com%2Fblogs%2Fmedia%2F2015%2F05%2Fbill-de-blasio-the-new-york-times-and-a-bad-subway-206614.html",
+       "title": "Bill de Blasio, the <b>New York</b> Times and a bad subway ride",
+       "titleNoFormatting": "Bill de Blasio, the New York Times and a bad subway ride",
+       "location": "",
+       "publisher": "Politico (blog)",
+       "publishedDate": "Tue, 05 May 2015 08:45:00 -0700",
+       "signedRedirectUrl": "http://news.google.com/news/url?sa=T&ct2=us&fd=S&url=http://www.politico.com/blogs/media/2015/05/bill-de-blasio-the-new-york-times-and-a-bad-subway-206614.html&cid=52778829107586&ei=nKZLVciRHKr_wgGF-oGwCQ&usg=AFQjCNEVx97ozs2SUyvWF9Cu-VNwucTLDg",
+       "language": "en"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
