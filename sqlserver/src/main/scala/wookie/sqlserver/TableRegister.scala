@@ -8,8 +8,13 @@ import jodd.util.URLDecoder
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.hive.HiveContext
 import scalaz.concurrent.Strategy
+import scalaz.concurrent.Task
+import java.util.Calendar
+import java.text.SimpleDateFormat
 
-case class ConnectionSpec(name: String, source: String, parameters: String, localStorage: Boolean) {
+
+
+case class ConnectionSpec(name: String, source: String, parameters: String, localStorage: Boolean, path: String) {
   val parametersMap: Map[String, String] = (for {
     param <- parameters.split("&&", -1) if param.split("==", -1).size == 2
   } yield {
@@ -23,6 +28,7 @@ case class TableRegister(hiveContext: HiveContext) {
   
   implicit val scheduler = Strategy.DefaultTimeoutScheduler
   val conf = hiveContext.sparkContext.hadoopConfiguration
+  var registry = Map[String, scalaz.stream.Process[Task, Unit]]()
  
   def setupTableRegistration(dir: String) = {
 
@@ -34,85 +40,93 @@ case class TableRegister(hiveContext: HiveContext) {
     observer.run.runAsync(f => ())
   }
 
-  def handleRegistration: Option[Difference] => Unit = diff => {
-    for {
-      d <- diff
-    } {
-      d.added.foreach(addTable)
-      d.removed.foreach(removeTable)
+  def handleRegistration: Option[Difference] => Unit = diff => {    
+    for (d <- diff) {
+      d.removed.foreach { p => for {
+          spec <- removeTable(p)
+        } yield stopRefreshing(spec)
+      }      
+      d.added.foreach { p => for {
+          spec <- addTable(p)
+        } yield startRefreshing(spec)
+      }
     }
   }
   
   def handleRefreshing(mainPath: String): Option[Difference] => Unit = diff => {
-    for {
-      d <- diff
-    } {
-      val refreshTable = (p: String) => { 
-        removeTable(p) 
-        addTable(p) 
-      } 
-      d.added.foreach(_ => refreshTable(mainPath))
-      d.removed.foreach(_ => refreshTable(mainPath))
+    for (d <- diff) {
+      val allChanges = (d.removed ++ d.added)
+      if (!allChanges.isEmpty) {
+        removeTable(mainPath)
+        addTable(mainPath)
+      }      
     }
   }
   
   def isLocalStorage(source: String): Boolean = source == "parquet" || source == "json" || source == "com.databricks.spark.csv"
 
-  def decodeConnectionSpec(connectionStr: String): \/[Throwable, ConnectionSpec] = {
+  def decodeConnectionSpec(connectionStr: String, mainPath: String): \/[Throwable, ConnectionSpec] = {
     connectionStr.split("__", -1).toList match {
-      case name :: source :: Nil              => \/-(ConnectionSpec(name, source, "", isLocalStorage(source)))
-      case name :: source :: conParams :: Nil => \/-(ConnectionSpec(name, source, conParams, isLocalStorage(source)))
+      case name :: source :: Nil              => \/-(ConnectionSpec(name, source, "", isLocalStorage(source), mainPath))
+      case name :: source :: conParams :: Nil => \/-(ConnectionSpec(name, source, conParams, isLocalStorage(source), mainPath))
       case _                                  => -\/(new RuntimeException("improper spec require spec|source"))
     }
   }
   
   def createDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
-    case "parquet" => 
-      val registrationResult = \/.fromTryCatchNonFatal(hiveContext.load(path, conSpec.source))
-      if (registrationResult.isLeft) {
-        DirectoryObserver.observeFilesRecursively(conf, path, 1 second)(handleRefreshing(path)).run.runAsync(f => ())
-      }
-      registrationResult
-    case "json" => \/.fromTryCatchNonFatal(hiveContext.load(path, conSpec.source))
+    case "parquet" | "json" => \/.fromTryCatchNonFatal(hiveContext.load(path, conSpec.source))
     case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(hiveContext.load(conSpec.source, conSpec.parametersMap + ("path" -> path)))
     case _                  => \/.fromTryCatchNonFatal(hiveContext.load(conSpec.source, conSpec.parametersMap))
   }
   
-  def registerDataFrame(name: String, df: DataFrame): \/[Throwable, Unit] = \/.fromTryCatchNonFatal(df.registerTempTable(name))
-
-  def addTable(path: String): Unit = {
-    val fileName = Paths.get(path).getFileName.toString
-
-    val added = for {
-      spec <- decodeConnection(path)
-      df <- createDataFrame(path, spec)
-      _ <- registerDataFrame(spec.name, df)
+  def startRefreshing(spec: ConnectionSpec) = synchronized {    
+    if (spec.localStorage) {
+      val f = DirectoryObserver.observeFilesRecursively(conf, spec.path, 1 second)(handleRefreshing(spec.path))
+      registry = registry + (spec.name -> f)
+      f.run.runAsync(f => ())
+    }
+  }
+  
+  def stopRefreshing(spec: ConnectionSpec) = synchronized {
+    val removedProcess = for {
+      proc <- registry.get(spec.name)
     } yield {
-      (spec, path)
+      val t = proc.kill.run.attemptRun
+      proc
     }
-
-    added.map { p => 
-      if (p._1.localStorage) {
-        \/.fromTryCatchNonFatal {
-          DirectoryObserver.observeFilesRecursively(conf, path, 1 second)(handleRefreshing(path)).run.runAsync(f => ())
-        }
-      }
-      p
-    }
-    println(s"Adding result: ${added}")
+    registry = registry - spec.name
+    removedProcess
   }
 
-  def removeTable(path: String): Unit = {
-    val removed = for {
+  def addTable(path: String) = {
+
+    val connection = for {
       spec <- decodeConnection(path)
-      _ <- \/.fromTryCatchNonFatal {
-        hiveContext.dropTempTable(spec.name)
-      }
-    } yield {
-      (spec, path)
-    }
+    } yield spec
     
-    println(s"Removing result: ${removed}")
+    val addingResult = for {
+      spec <- connection
+      df <- createDataFrame(path, spec)
+      _ <- \/.fromTryCatchNonFatal(df.registerTempTable(spec.name))
+    } yield spec
+    
+    println(s"Added: $connection : $addingResult")
+    
+    connection
+  }
+
+  def removeTable(path: String) = {
+    
+    val connection = for {
+      spec <- decodeConnection(path)
+    } yield spec
+    
+    for {
+      spec <- connection
+      _ <- \/.fromTryCatchNonFatal(hiveContext.dropTempTable(spec.name))
+    } yield spec
+
+    connection
   }  
   
   
@@ -121,7 +135,7 @@ case class TableRegister(hiveContext: HiveContext) {
 
     for {
       connectionStr <- \/.fromTryCatchNonFatal(URLDecoder.decode(fileName))
-      spec <- decodeConnectionSpec(connectionStr)
+      spec <- decodeConnectionSpec(connectionStr, path)
     } yield (spec)
   }
 }

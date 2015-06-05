@@ -5,7 +5,7 @@ import wookie.app.HttpProducer
 import wookie.app.cli._
 import org.rogach.scallop.ScallopConf
 
-trait OracleAppConf extends Port 
+trait OracleAppConf extends Port
 
 object OracleApp extends HttpProducer[OracleAppConf](new ScallopConf(_) with OracleAppConf) {
 

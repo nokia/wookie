@@ -21,3 +21,4 @@ atlassian-ide-plugin.xml
 .cache-tests
 *.log
 metastore_db
+bin/

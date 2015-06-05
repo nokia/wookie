@@ -4,7 +4,7 @@ name := "wookie-oracle"
 
 description := "prediction api"
 
-libraryDependencies ++= Seq(sparkMLlib, esClient, redisClient)
+libraryDependencies ++= sparkMLlib
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
