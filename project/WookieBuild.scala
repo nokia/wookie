@@ -27,6 +27,8 @@ object WookieBuild extends Build {
       "org.slf4j" % "jcl-over-slf4j" % slf4jVersion,
       "ch.qos.logback" % "logback-classic" % "1.1.3")
 
+  lazy val simplelatlng = "com.javadocmd" % "simplelatlng" % "1.3.0"
+  lazy val argonaut = "io.argonaut" %% "argonaut" % "6.1-M6"
   lazy val scalazVersion = "7.1.1"
   lazy val scalazCore = "org.scalaz" %% "scalaz-core" % scalazVersion
   lazy val scalazEffect = "org.scalaz" %% "scalaz-effect" % scalazVersion

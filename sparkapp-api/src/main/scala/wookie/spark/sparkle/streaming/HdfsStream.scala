@@ -9,8 +9,8 @@ import org.apache.spark.streaming.dstream.DStream
 
 sealed trait HdfsStream[K] extends Sparkle[K, SparkStreamingApp[_]]
 
-case class HdfsCustomStream[K: ClassTag, V: ClassTag, F <: InputFormat[K, V]: ClassTag](url: String) extends HdfsStream[InputDStream[(K, V)]] {
-  def run(app: SparkStreamingApp[_]): InputDStream[(K, V)] = {
+case class HdfsCustomStream[K: ClassTag, V: ClassTag, F <: InputFormat[K, V]: ClassTag](url: String) extends HdfsStream[DStream[(K, V)]] {
+  def run(app: SparkStreamingApp[_]): DStream[(K, V)] = {
     app.ssc.fileStream[K, V, F](url)
   }
 }
