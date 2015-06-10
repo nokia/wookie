@@ -1,5 +1,3 @@
-select * from local.search where query="sushi" and location="san francisco, ca"
-
 {
  "query": {
   "count": 10,

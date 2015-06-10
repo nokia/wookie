@@ -68,7 +68,7 @@ object WookieBuild extends Build {
       exclude("com.google.guava", "guava").
       exclude("org.slf4j", "slf4j-log4j12"))
 
-  lazy val sparkThriftServer = "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion
+  lazy val sparkThriftServer = "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion % "provided"
   lazy val spark = Seq(
     ("org.apache.spark" %% "spark-core" % sparkVersion).exclude("org.apache.hadoop", "hadoop-client") % "provided",
     "org.apache.hadoop" % "hadoop-client" % hadoopVersion % "provided",
@@ -79,7 +79,7 @@ object WookieBuild extends Build {
     "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion % "provided",
     "org.apache.spark" %% "spark-streaming-twitter" % sparkVersion % "provided")
 
-  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.0.3"
+  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.1.0"
   lazy val sparkIndexedRdd = "amplab" %% "spark-indexedrdd" % "0.1"
   
 }

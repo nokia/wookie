@@ -16,3 +16,6 @@ mergeStrategy in assembly := {
   case _ => MergeStrategy.first
 }
 
+EclipseKeys.withSource := true
+
+EclipseKeys.withBundledScalaContainers := false

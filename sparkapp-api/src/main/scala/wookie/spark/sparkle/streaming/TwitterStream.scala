@@ -11,6 +11,9 @@ import twitter4j.conf.ConfigurationBuilder
 import wookie.spark.SparkStreamingApp
 import wookie.spark.sparkle.Sparkle
 import wookie.spark.sparkle.Sparkles
+import com.javadocmd.simplelatlng.window.CircularWindow
+import com.javadocmd.simplelatlng.LatLng
+import com.javadocmd.simplelatlng.util.LengthUnit
 
 
 case class Credentials(consumerKey: String, consumerSecret: String, accessToken: String, accessTokenSecret: String)
@@ -46,13 +49,14 @@ object TwitterFilters {
     }).getOrElse(false)
   }
   
-  def radius(latitude: Double, longitude: Double, radius: Double): Status => Boolean = s => {
+  def radius(latitude: Double, longitude: Double, radiusInMeters: Double): Status => Boolean = s => {
     (for {
       loc <- Option.apply(s.getGeoLocation)
       lat <- Option.apply(loc.getLatitude)
       long <- Option.apply(loc.getLongitude)
     } yield {
-      pow(lat - latitude, 2) + pow((long - longitude), 2) <= pow(radius, 2)
+      new CircularWindow(new LatLng(latitude, longitude), radiusInMeters, LengthUnit.METER).
+      contains(new LatLng(lat, long))
     }).getOrElse(false)     
   }
   

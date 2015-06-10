@@ -1,5 +1,3 @@
-select * from google.news where q = "new york"
-
 {
  "query": {
   "count": 4,

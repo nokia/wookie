@@ -11,3 +11,7 @@ libraryDependencies ++= spark
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
+
+EclipseKeys.withSource := true
+
+EclipseKeys.withBundledScalaContainers := false

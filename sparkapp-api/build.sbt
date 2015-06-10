@@ -1,5 +1,6 @@
 import AssemblyKeys._
 
+
 name := "wookie-sparkapp"
 
 description := "basic helper to run spark apps"
@@ -11,3 +12,7 @@ libraryDependencies ++= Seq(spire, esAnalytics, cassandraAnalytics, scallop, sca
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
+
+EclipseKeys.withSource := true
+
+EclipseKeys.withBundledScalaContainers := false

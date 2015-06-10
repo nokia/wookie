@@ -1,5 +1,9 @@
 import AssemblyKeys._
 
+EclipseKeys.withSource := true
+
+EclipseKeys.withBundledScalaContainers := false
+
 lazy val `app-api` = project.settings(assemblySettings: _*)
 
 lazy val `sparkapp-api` = project.settings(assemblySettings: _*)
