@@ -80,6 +80,6 @@ object WookieBuild extends Build {
     "org.apache.spark" %% "spark-streaming-twitter" % sparkVersion % "provided")
 
   lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.1.0"
-  lazy val sparkIndexedRdd = "amplab" %% "spark-indexedrdd" % "0.1"
+  lazy val sparkIndexedRdd = "amplab" % "spark-indexedrdd" % "0.1"
   
 }

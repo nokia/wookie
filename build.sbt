@@ -41,14 +41,14 @@ scmInfo in ThisBuild := {
   Some(ScmInfo(url(s"https://$base"), s"scm:git:https://$base", Some(s"scm:git:git@$base")))
 }
 
-pomExtra in ThisBuild := (
+pomExtra in ThisBuild :=
   <developers>
     <developer>
       <id>elyast</id>
       <name>Lukasz Jastrzebski</name>
       <email>lukasz.jastrzebski@gmail.com</email>
     </developer>
-  </developers>)
+  </developers>
 
 scalaVersion in ThisBuild := "2.11.6"
 
@@ -65,7 +65,7 @@ scalacOptions in ThisBuild ++= Seq(
   "-Yno-adapted-args",
   "-Ywarn-numeric-widen",
   "-Ywarn-value-discard",
-  s"-target:jvm-${JvmTarget}",
+  s"-target:jvm-$JvmTarget",
   "-unchecked",
   "-Xlint")
 
@@ -81,6 +81,7 @@ resolvers in ThisBuild ++= Seq(
   "Sonatype OSS Releases"  at "http://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
   "Akka Repository" at "http://repo.akka.io/releases/",
+  "Spark Packages Repo" at "http://dl.bintray.com/spark-packages/maven",
   "Elyast Repository" at "https://dl.dropboxusercontent.com/u/16106115/maven2/",
   "Cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos",  
   "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases")
