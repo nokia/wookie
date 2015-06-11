@@ -1,9 +1,5 @@
 import AssemblyKeys._
 
-EclipseKeys.withSource := true
-
-EclipseKeys.withBundledScalaContainers := false
-
 lazy val `app-api` = project.settings(assemblySettings: _*)
 
 lazy val `sparkapp-api` = project.settings(assemblySettings: _*)
@@ -20,6 +16,20 @@ lazy val `yql-app-analytics` = Project("yql-app-analytics", file("yql-app/analyt
 
 lazy val `yql-app-visualization` = Project("yql-app-visualization", file("yql-app/visualization")).dependsOn(`app-api`).settings(assemblySettings: _*)
 
+lazy val `fake-sqlserver` = Project("fake-sqlserver", file("fake/sqlserver")).dependsOn(sqlserver).settings(
+  scalaVersion := "2.10.5",
+  libraryDependencies ++= spark ++ Seq(sparkThriftServer),
+  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
+
+lazy val `fake-spark-api` = Project("fake-spark-api", file("fake/spark-api")).dependsOn(`sparkapp-api`).settings(
+  scalaVersion := "2.10.5",
+  libraryDependencies ++= spark,
+  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
+
+lazy val `fake-yql-app-analytics` = Project("fake-yql-app-analytics", file("fake/yql-app-analytics")).dependsOn(`yql-app-analytics`).settings(
+  scalaVersion := "2.10.5",
+  libraryDependencies ++= spark,
+  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
 organization in ThisBuild := "org.wookie"
 
@@ -91,3 +101,5 @@ libraryDependencies in ThisBuild ++= specs2
 publishMavenStyle in ThisBuild := true
 
 publishArtifact in (ThisBuild, Test) := false
+
+evictionWarningOptions in (ThisBuild, update) := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)

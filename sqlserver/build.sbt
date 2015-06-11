@@ -8,7 +8,7 @@ scalaVersion := "2.10.5"
 
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 
-libraryDependencies ++= spark ++ Seq(sparkThriftServer, scalazStream, psqlJdbc, sparkCsv)
+libraryDependencies ++= sparkProvided ++ Seq(sparkThriftServerProvided, scalazStream, psqlJdbc, sparkCsv)
 
 dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5"
 

@@ -12,7 +12,7 @@ case class Place(woeid: Long = 0, name: String = "", placeType: String = "", sta
 object PlaceCodecs {
   implicit val decoder: DecodeJson[List[Place]] = DecodeJson {
     c =>
-      val curs = c --\ "query" --\ "results" --\ "place"
+      val curs = c --\ "query" --\ "results" --\ "Result"
       val x = curs.downArray
 
       val decodedList = if (x.succeeded) {

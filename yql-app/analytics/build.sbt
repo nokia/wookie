@@ -6,7 +6,7 @@ description := "yahoo API sample analytics"
 
 scalaVersion := "2.10.5"
 
-libraryDependencies ++= spark ++ Seq(sparkIndexedRdd)
+libraryDependencies ++= sparkProvided
 
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 

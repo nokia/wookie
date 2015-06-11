@@ -1,6 +1,6 @@
 package wookie.yql.search
 
 import wookie.app.HttpToKafkaDumper
+import wookie.yql.search.SearchResultCodecs._
 
-import SearchResultCodecs._
-object SearchCollector extends HttpToKafkaDumper
+object SearchCollector extends HttpToKafkaDumper[List[SearchResult]]

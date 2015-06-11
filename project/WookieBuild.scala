@@ -66,18 +66,24 @@ object WookieBuild extends Build {
       exclude("org.slf4j", "slf4j-log4j12"),
     ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).
       exclude("com.google.guava", "guava").
-      exclude("org.slf4j", "slf4j-log4j12"))
+      exclude("org.slf4j", "slf4j-log4j12").
+      exclude("javax.servlet", "servlet-api"))
 
-  lazy val sparkThriftServer = "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion % "provided"
+  lazy val sparkThriftServer = ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).
+    exclude("org.mortbay.jetty", "servlet-api").
+    exclude("javax.servlet", "servlet-api")
+  lazy val sparkThriftServerProvided = sparkThriftServer % "provided"
   lazy val spark = Seq(
-    ("org.apache.spark" %% "spark-core" % sparkVersion).exclude("org.apache.hadoop", "hadoop-client") % "provided",
-    "org.apache.hadoop" % "hadoop-client" % hadoopVersion % "provided",
-    "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-hive" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-graphx" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-streaming-twitter" % sparkVersion % "provided")
+    ("org.apache.spark" %% "spark-core" % sparkVersion).exclude("org.apache.hadoop", "hadoop-client"),
+    ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).exclude("javax.servlet", "servlet-api"),
+    "org.apache.spark" %% "spark-streaming" % sparkVersion,
+    ("org.apache.spark" %% "spark-hive" % sparkVersion).exclude("org.mortbay.jetty", "servlet-api"),
+    "org.apache.spark" %% "spark-mllib" % sparkVersion,
+    "org.apache.spark" %% "spark-graphx" % sparkVersion,
+    "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion,
+    "org.apache.spark" %% "spark-streaming-twitter" % sparkVersion)
+
+  lazy val sparkProvided = spark.map(a => a % "provided")
 
   lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.1.0"
   lazy val sparkIndexedRdd = "amplab" % "spark-indexedrdd" % "0.1"

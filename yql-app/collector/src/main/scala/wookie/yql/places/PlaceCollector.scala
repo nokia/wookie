@@ -1,6 +1,6 @@
 package wookie.yql.places
 
 import wookie.app.HttpToKafkaDumper
+import wookie.yql.places.PlaceCodecs._
 
-import PlaceCodecs._
-object PlaceCollector extends HttpToKafkaDumper
+object PlaceCollector extends HttpToKafkaDumper[List[Place]]

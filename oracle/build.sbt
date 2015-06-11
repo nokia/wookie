@@ -19,3 +19,5 @@ mergeStrategy in assembly := {
 EclipseKeys.withSource := true
 
 EclipseKeys.withBundledScalaContainers := false
+
+evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)

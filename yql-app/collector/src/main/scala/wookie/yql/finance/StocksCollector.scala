@@ -1,6 +1,6 @@
 package wookie.yql.finance
 
 import wookie.app.HttpToKafkaDumper
+import wookie.yql.finance.StockCodecs._
 
-import StockCodecs._
-object StocksCollector extends HttpToKafkaDumper
+object StocksCollector extends HttpToKafkaDumper[List[StockQuote]]
