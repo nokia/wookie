@@ -74,9 +74,9 @@ case class TableRegister(hiveContext: HiveContext) {
   }
   
   def createDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
-    case "parquet" | "json" => \/.fromTryCatchNonFatal(hiveContext.load(path, conSpec.source))
-    case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(hiveContext.load(conSpec.source, conSpec.parametersMap + ("path" -> path)))
-    case _                  => \/.fromTryCatchNonFatal(hiveContext.load(conSpec.source, conSpec.parametersMap))
+    case "parquet" | "json" => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).load(path))
+    case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).options(conSpec.parametersMap + ("path" -> path)).load)
+    case _                  => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).options(conSpec.parametersMap).load)
   }
   
   def startRefreshing(spec: ConnectionSpec) = synchronized {    
