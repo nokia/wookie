@@ -41,7 +41,10 @@ object WookieBuild extends Build {
   lazy val scallop = "org.rogach" %% "scallop" % "0.9.5"
   lazy val redisClient = "redis.clients" % "jedis" % "2.7.2"
   lazy val httpClient = "com.ning" % "async-http-client" % "1.9.27"
-  lazy val kafka = ("org.apache.kafka" % "kafka-clients" % "0.8.2.1").exclude("log4j", "log4j").exclude("org.slf4j", "slf4j-log4j12")
+  lazy val kafka = ("org.apache.kafka" % "kafka-clients" % "0.8.2.1").
+    exclude("log4j", "log4j").
+    exclude("org.slf4j", "slf4j-log4j12")
+
   lazy val cassandraVersion = "2.1.5"
   lazy val cassandra = Seq(
     "com.datastax.cassandra" % "cassandra-driver-mapping" % cassandraVersion,
@@ -60,13 +63,10 @@ object WookieBuild extends Build {
   lazy val sparkVersion = "1.4.0"
   lazy val hadoopVersion = "2.6.0"
   lazy val sparkMLlib = Seq(
-    //"com.google.guava" % "guava" % "15.0",
     ("org.apache.spark" %% "spark-mllib" % sparkVersion).
       exclude("org.apache.hadoop", "hadoop-client").
-      //exclude("com.google.guava", "guava").
       exclude("org.slf4j", "slf4j-log4j12"),
     ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).
-      //exclude("com.google.guava", "guava").
       exclude("org.slf4j", "slf4j-log4j12").
       exclude("javax.servlet", "servlet-api"))
 
@@ -86,7 +86,13 @@ object WookieBuild extends Build {
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.1.0"
-  lazy val sparkIndexedRdd = "amplab" % "spark-indexedrdd" % "0.1"
+  lazy val sparkCsv = ("com.databricks" %% "spark-csv" % "1.1.0").
+    exclude("org.apache.spark", "spark-core_2.10").
+    exclude("org.apache.spark", "spark-sql_2.10").
+    exclude("org.apache.spark", "spark-catalyst_2.10")
+  lazy val sparkIndexedRdd = ("amplab" % "spark-indexedrdd" % "0.1").
+    exclude("org.apache.spark", "spark-core_2.10").
+    exclude("org.apache.spark", "spark-sql_2.10").
+    exclude("org.apache.spark", "spark-catalyst_2.10")
   
 }

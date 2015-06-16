@@ -17,14 +17,14 @@ object Applicator {
 
   type Aux[A, L <: HList, Out0 <: HList] = Applicator[A, L] {type Out = Out0}
 
-  implicit def hnilTraverser[A]: Aux[A, HNil, HNil] =
+  implicit def hnilApplicator[A]: Aux[A, HNil, HNil] =
     new Applicator[A, HNil] {
       type Out = HNil
 
       def apply(elem: A, l: HNil): Out = l
     }
 
-  implicit def hlistTraverser[A, H, T <: HList]
+  implicit def hlistApplicator[A, H, T <: HList]
   (implicit st: Applicator[A, T]): Aux[A, (A => H) :: T, H :: st.Out] =
     new Applicator[A, (A => H) :: T] {
       type Out = H :: st.Out
@@ -35,7 +35,7 @@ object Applicator {
 
 case class dstream[A, L <: HList, M <: HList](stream: DStream[A], mappers: L)(implicit tr: Applicator.Aux[A, L, M]) {
 
-  def map[O](implicit gen: Generic.Aux[O, M], tag: ClassTag[O]): Sparkle[DStream[O], SparkStreamingApp[_]] = Sparkle { app =>
+  def map[O: ClassTag](implicit gen: Generic.Aux[O, M]): Sparkle[DStream[O], SparkStreamingApp[_]] = Sparkle { app =>
     stream.map(value => gen.from(tr(value, mappers)))
   }
 }
