@@ -1,4 +1,4 @@
-package wookie.spark.sparkle.streaming
+package wookie.spark.streaming
 
 import scala.reflect.ClassTag
 import org.apache.hadoop.mapreduce.InputFormat

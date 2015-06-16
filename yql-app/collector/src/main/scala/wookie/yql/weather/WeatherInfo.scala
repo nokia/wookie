@@ -45,10 +45,19 @@ object WeatherDecoders {
         city <- (curs --\ "location" --\ "city").as[String]
         country <- (curs --\ "location" --\ "country").as[String]
         region <- (curs --\ "location" --\ "region").as[String]
-      } yield Weather(parse(date), Location(lat.toDouble, long.toDouble, city, country, region), WeatherCondition(temp.toDouble, txt, chill.toDouble, direction.toDouble, speed.toDouble,
-        humidity.toDouble, pressure.toDouble, rising.toDouble, visibility.toDouble))
+      } yield {
+        Weather(parse(date), Location(lat.toDouble, long.toDouble, city, country, region),
+          WeatherCondition(\/.fromTryCatchNonFatal(temp.toDouble).getOrElse(Double.NaN), txt,
+            \/.fromTryCatchNonFatal(chill.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(direction.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(speed.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(humidity.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(pressure.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(rising.toDouble).getOrElse(Double.NaN),
+            \/.fromTryCatchNonFatal(visibility.toDouble).getOrElse(Double.NaN)))
+      }
   }
-  
+
   def parse(s: String): Long = {
     val parser = new SimpleDateFormat("EEE, dd MMMM yyyy hh:mm aa zzz")
     parser.parse(s).getTime

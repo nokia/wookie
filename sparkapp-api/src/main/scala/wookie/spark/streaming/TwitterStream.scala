@@ -1,4 +1,4 @@
-package wookie.spark.sparkle.streaming
+package wookie.spark.streaming
 
 import com.javadocmd.simplelatlng.LatLng
 import com.javadocmd.simplelatlng.util.LengthUnit
@@ -9,6 +9,7 @@ import twitter4j.Status
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.conf.ConfigurationBuilder
 import wookie.spark.SparkStreamingApp
+import wookie.spark.geo.Location
 import wookie.spark.sparkle.Sparkle
 
 
@@ -27,25 +28,11 @@ case class TwitterStream(credentials: Credentials, filters: Option[List[String]]
 
 }
 
-object CountryGeoData {
-  val countries: Map[String, (LatLng, Double)] = Map(
-    ("US",  (new LatLng(39.828175, -98.5795), 2253.0 * 1000.0))
-  )
+object TwitterMaps {
 
-  val defaultCountry: (LatLng, Double) = (new LatLng(39.828175, -98.5795), 2253.0 * 1000.0)
+  val whitelist = "abcdefghijklmnopqrstuvwxyz 1234567890".toSet
 
-  def countryCenter(countryCode: String) = countries.getOrElse(countryCode, defaultCountry)._1
-  def countryRadius(countryCode: String) = countries.getOrElse(countryCode, defaultCountry)._2
-}
-
-case class Location(area: String, region: String)
-
-case class Tweet(user: String, refUsers: List[String], refUrls: List[String], tags: List[String],
-                  location: Location, latLong: LatLng, text: String)
-
-object TwitterFilters {
-
-  def extractLocation: Status => Option[Location] = s => {
+  def location: Status => Option[Location] = s => {
     for {
       place <- Option.apply(s.getPlace)
       fullName <- Option.apply(place.getFullName)
@@ -60,7 +47,7 @@ object TwitterFilters {
     }
   }
 
-  def extractLatLong: Status => Option[LatLng] = s => {
+  def latLong: Status => Option[LatLng] = s => {
     if (s.getGeoLocation == null) {
       None
     } else {
@@ -68,33 +55,33 @@ object TwitterFilters {
     }
   }
 
-  def extractURLs: Status => List[String] = s => {
+  def urls: Status => List[String] = s => {
     val urlsInTweet = s.getURLEntities.map(_.getURL.toLowerCase)
     val mediaEntities = s.getMediaEntities.map(_.getURL.toLowerCase)
     (urlsInTweet ++ mediaEntities).toList
   }
 
-  def extractReferencedUsers: Status => List[String] = s => {
+  def refUsers: Status => List[String] = s => {
     s.getUserMentionEntities.map(_.getScreenName.toLowerCase).toList
   }
 
-  def extractTags: Status => List[String] = s => {
+  def tags: Status => List[String] = s => {
     s.getHashtagEntities.map(_.getText.toLowerCase).toList
   }
 
-  def extractUser: Status => String = s => {
+  def user: Status => String = s => {
     s.getUser.getScreenName.toLowerCase
   }
 
-  def extractText: Status => String = s => {
-    val whitelist = "abcdefghijklmnopqrstuvwxyz 1234567890".toSet
-    val refsToRemove = extractURLs(s) ++ extractReferencedUsers(s) ++ extractTags(s)
-    val tweetWithoutLinks = refsToRemove.foldLeft(s.getText) {
-      (endResult: String, intermediate: String) => endResult.replaceAllLiterally(intermediate, "")
-    }
-    tweetWithoutLinks.filter(a=> whitelist.contains(a)).trim
+  def text: Status => String = s => {
+    val refsToRemove = urls(s) ++ refUsers(s) ++ tags(s)
+    var result = s.getText.toLowerCase()
+    refsToRemove.foreach(toRemove => result = result.replaceAllLiterally(toRemove, ""))
+    result.filter(a => whitelist.contains(a)).trim
   }
+}
 
+object TwitterFilters {
   def country(code: String): Status => Boolean = s => {
     (for {
       place <- Option.apply(s.getPlace)
@@ -125,7 +112,4 @@ object TwitterFilters {
     }).getOrElse(false)    
   }
 
-  def notEmptyText: Tweet => Boolean = s => {
-    !s.text.isEmpty
-  }
 }

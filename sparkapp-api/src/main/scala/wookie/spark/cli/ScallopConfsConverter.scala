@@ -1,6 +1,6 @@
 package wookie.spark.cli
 
-import wookie.spark.sparkle.streaming.Credentials
+import wookie.spark.streaming.Credentials
 
 object ScallopConfsConverter {
 

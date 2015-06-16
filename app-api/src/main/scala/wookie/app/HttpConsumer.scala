@@ -39,6 +39,12 @@ abstract class HttpConsumer[A <: HttpConsumerConf](options: Array[String] => A) 
       }
       println(s"Processing ended with a result: $runResult")
       if (runResult.isLeft) {
+        runResult.leftMap { c =>
+          if (c.isInstanceOf[Throwable]) {
+            c.asInstanceOf[Throwable].printStackTrace()
+          }
+          ()
+        }
         System.exit(1)
       }
     } finally {

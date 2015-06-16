@@ -4,16 +4,11 @@ import java.util.concurrent.TimeUnit
 
 import argonaut.Argonaut._
 import argonaut._
-import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.SparkStreamingApp
-import wookie.spark.sparkle.Sparkle
-import wookie.spark.sparkle.streaming.KafkaConsumerStringStream
 
 import scala.concurrent.duration.Duration
-import scala.reflect.ClassTag
 
 
-case class Weather(timestamp: Long, latitude: Double, longitude: Double, locationName: String, country: String, temperature: Double,
+case class Weather(timestamp: Long, latitude: Double, longitude: Double, area: String, region: String, country: String, temperature: Double,
                    conditions: String, windChill: Double, windDirection: Double, windSpeed: Double, humidity: Double,
                    pressure: Double, rising: Double, visibility: Double)
 
@@ -35,7 +30,7 @@ object Weather {
       city <- (curs --\ "location" --\ "city").as[String]
       country <- (curs --\ "location" --\ "country").as[String]
       region <- (curs --\ "location" --\ "region").as[String]
-    } yield Weather(Duration(timestamp, TimeUnit.MILLISECONDS).toHours, lat, long, s"$city, $region", country, temp, conditions, chill,
+    } yield Weather(Duration(timestamp, TimeUnit.MILLISECONDS).toHours, lat, long, city, region, country, temp, conditions, chill,
         direction, speed, humidity, pressure, rising, visibility)
   }
   def parse(str: String): List[Weather] = {
@@ -44,6 +39,6 @@ object Weather {
 
     decoded.getOrElse(Nil)
   }
-}
 
-//case class WeatherStream(brokers: List[String]) extends KafkaTypedStream[Weather](brokers, "weather", Weather.parse)
+  val queueName = "weather"
+}
