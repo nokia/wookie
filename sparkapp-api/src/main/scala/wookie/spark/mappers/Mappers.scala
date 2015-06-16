@@ -33,10 +33,22 @@ object Applicator {
     }
 }
 
-case class dstream[A, L <: HList, M <: HList](stream: DStream[A], mappers: L)(implicit tr: Applicator.Aux[A, L, M]) {
+case class dstream[A, L <: HList, M <: HList](mappers: L)(implicit tr: Applicator.Aux[A, L, M]) {
 
-  def map[O: ClassTag](implicit gen: Generic.Aux[O, M]): Sparkle[DStream[O], SparkStreamingApp[_]] = Sparkle { app =>
-    stream.map(value => gen.from(tr(value, mappers)))
+//  def map[O](implicit gen: Generic.Aux[O, M], tag: ClassTag[O]): Sparkle[DStream[O], SparkStreamingApp[_]] = Sparkle { app =>
+//    val result = stream.map { value =>
+//      gen.from(tr(value, mappers))
+//    }
+//    println(result)
+//    result
+//  }
+
+  def map2[O](stream: DStream[A])(implicit gen: Generic.Aux[O, M], tag: ClassTag[O]): DStream[O] = {
+    val result = stream.map { value =>
+      gen.from(tr(value, mappers))
+    }
+    println(result)
+    result
   }
 }
 

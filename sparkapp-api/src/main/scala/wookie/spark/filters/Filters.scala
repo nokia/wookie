@@ -20,7 +20,9 @@ object Disjunction extends Monoid[Boolean] with Serializable {
 case class FilterBy[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *) extends Sparkle[DStream[A], SparkStreamingApp[_]] {
 
   def apply(app: SparkStreamingApp[_]): DStream[A] = {
-    stream.filter(FilterBy.and(filter, moreFilters: _*))
+    val result = stream.filter(FilterBy.and(filter, moreFilters: _*))
+    println(result)
+    result
   }
 }
 
