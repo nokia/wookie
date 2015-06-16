@@ -41,7 +41,7 @@ object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_)
       tweets <- TwitterStream(opt)
       onlyUSEnglish <- FilterBy(tweets, country(countryCode), language("en"))
 
-      cleanupedTweets <- dstream(onlyUSEnglish, mappers).map[User](the[Traversal.Traverser[Status, shapeless.::[Status => String, HNil]]])
+      cleanupedTweets <- dstream(onlyUSEnglish, mappers).map[User]
       weatherStream <- KafkaTypedStream[Weather](opt.brokers(), "weather", Weather.parse)
 //      joined <- new JoinStreamInWindow(onlyUS, weather, Minutes(60))
     } yield {
