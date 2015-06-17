@@ -34,10 +34,7 @@ object Weather {
         direction, speed, humidity, pressure, rising, visibility)
   }
   def parse(str: String): List[Weather] = {
-    val decoded = str.decodeEither[List[Weather]]
-    println(s"Decoded $decoded")
-
-    decoded.getOrElse(Nil)
+    str.decodeEither[List[Weather]].getOrElse(Nil)
   }
 
   val queueName = "weather"
