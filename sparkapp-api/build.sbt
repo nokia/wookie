@@ -7,7 +7,7 @@ description := "basic helper to run spark apps"
 
 scalaVersion := "2.10.5"
 
-libraryDependencies ++= sparkProvided ++ Seq(spire, esAnalytics, cassandraAnalytics, scallop, scalazCore, shapeless, argonaut, simplelatlng)
+libraryDependencies ++= sparkProvided ++ Seq(spire, esAnalytics, cassandraAnalytics, scallop, scalazCore, shapeless, argonaut, simplelatlng, sparkStreamingKafka, sparkStreamingTwitter)
 
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 

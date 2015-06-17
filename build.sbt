@@ -18,7 +18,7 @@ lazy val `yql-app-visualization` = Project("yql-app-visualization", file("yql-ap
 
 lazy val `fake-sqlserver` = Project("fake-sqlserver", file("fake/sqlserver")).dependsOn(sqlserver).settings(
   scalaVersion := "2.10.5",
-  libraryDependencies ++= spark ++ Seq(sparkThriftServer),
+  libraryDependencies ++= spark ++ sparkThriftServer,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
 lazy val `fake-spark-api` = Project("fake-spark-api", file("fake/spark-api")).dependsOn(`sparkapp-api`).settings(

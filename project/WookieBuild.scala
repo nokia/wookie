@@ -70,19 +70,36 @@ object WookieBuild extends Build {
       exclude("org.slf4j", "slf4j-log4j12").
       exclude("javax.servlet", "servlet-api"))
 
-  lazy val sparkThriftServer = ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).
-    exclude("org.mortbay.jetty", "servlet-api").
-    exclude("javax.servlet", "servlet-api")
-  lazy val sparkThriftServerProvided = sparkThriftServer % "provided"
+  lazy val sparkThriftServer = Seq(
+    ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).
+      exclude("org.mortbay.jetty", "servlet-api").
+      exclude("javax.servlet", "servlet-api").
+      exclude("org.apache.hadoop", "hadoop-client").
+      exclude("org.slf4j", "slf4j-log4j12"),
+    ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).
+      exclude("org.slf4j", "slf4j-log4j12").
+      exclude("javax.servlet", "servlet-api"))
+
+  lazy val sparkStreamingKafka =  ("org.apache.spark" %% "spark-streaming-kafka" % sparkVersion).
+      exclude("org.apache.hadoop", "hadoop-client").
+      exclude("org.slf4j", "slf4j-log4j12").
+      exclude("org.apache.spark", "spark-core_2.10").
+      exclude("org.apache.spark", "spark-streaming_2.10")
+
+  lazy val sparkStreamingTwitter =  ("org.apache.spark" %% "spark-streaming-twitter" % sparkVersion).
+      exclude("org.apache.hadoop", "hadoop-client").
+      exclude("org.slf4j", "slf4j-log4j12").
+      exclude("org.apache.spark", "spark-core_2.10").
+      exclude("org.apache.spark", "spark-streaming_2.10")
+
+  lazy val sparkThriftServerProvided = sparkThriftServer.map(a => a % "provided")
   lazy val spark = Seq(
     ("org.apache.spark" %% "spark-core" % sparkVersion).exclude("org.apache.hadoop", "hadoop-client"),
     ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).exclude("javax.servlet", "servlet-api"),
     "org.apache.spark" %% "spark-streaming" % sparkVersion,
     ("org.apache.spark" %% "spark-hive" % sparkVersion).exclude("org.mortbay.jetty", "servlet-api"),
     "org.apache.spark" %% "spark-mllib" % sparkVersion,
-    "org.apache.spark" %% "spark-graphx" % sparkVersion,
-    "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion,
-    "org.apache.spark" %% "spark-streaming-twitter" % sparkVersion)
+    "org.apache.spark" %% "spark-graphx" % sparkVersion)
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
