@@ -4,10 +4,7 @@ import org.apache.spark.scheduler.StatsReportListener
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
-
-import wookie.spark.SparkApp
-import wookie.spark.cli.Input
-import wookie.spark.cli.Name
+import wookie.spark.cli.{SparkApp, Input, Name}
 
 trait SparkSQLServerConf extends Input with Name { self: ScallopConf =>
   lazy val hiveconfs = opt[List[String]]("hiveconf", descr = "hive configs").map {

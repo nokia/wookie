@@ -2,8 +2,4 @@ name := "wookie-app"
 
 description := "basic framework constructs for running micro service"
 
-libraryDependencies ++= http4s ++ logging ++ Seq(kafka, httpClient, scallop)
-
-EclipseKeys.withSource := true
-
-EclipseKeys.withBundledScalaContainers := false
+libraryDependencies ++= logging ++ Seq(scallop, http4sCore, http4sDsl)

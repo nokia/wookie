@@ -11,6 +11,10 @@ object WookieBuild extends Build {
       "org.http4s" %% "http4s-dsl" % http4sversion,
       "org.http4s" %% "http4s-server" % http4sversion)
 
+  lazy val http4sCore = "org.http4s" %% "http4s-core" % http4sversion
+
+  lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
+
   lazy val specs2version = "2.4.17"
   lazy val specs2 = Seq(
       "org.specs2" %% "specs2-core" % specs2version  % "test",

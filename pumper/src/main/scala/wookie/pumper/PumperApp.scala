@@ -1,9 +1,9 @@
 package wookie.pumper
 
 import org.http4s.server._
-import wookie.app.HttpProducer
 import wookie.app.cli._
 import org.rogach.scallop.ScallopConf
+import wookie.web.cli.{Port, HttpProducer}
 
 trait PumperAppConf extends Port 
 

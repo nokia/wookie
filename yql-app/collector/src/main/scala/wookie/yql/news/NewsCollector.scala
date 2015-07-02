@@ -1,6 +1,6 @@
 package wookie.yql.news
 
-import wookie.app.HttpToKafkaDumper
-
 import NewsCodecs._
+import wookie.collector.cli.HttpToKafkaDumper
+
 object NewsCollector extends HttpToKafkaDumper[List[NewsEntry]]

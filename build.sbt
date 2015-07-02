@@ -2,28 +2,31 @@ import AssemblyKeys._
 
 lazy val `app-api` = project.settings(assemblySettings: _*)
 
-lazy val `sparkapp-api` = project.settings(assemblySettings: _*)
+lazy val `web-api` = project.dependsOn(`app-api`).settings(assemblySettings: _*)
 
-lazy val oracle = project.dependsOn(`app-api`).settings(assemblySettings: _*)
+lazy val `collector-api` = project.dependsOn(`app-api`).settings(assemblySettings: _*)
 
-lazy val pumper = project.dependsOn(`app-api`).settings(assemblySettings: _*)
+lazy val `spark-api` = project.settings(assemblySettings: _*)
 
-lazy val sqlserver = project.dependsOn(`sparkapp-api`).settings(assemblySettings: _*)
+lazy val `spark-api-twitter` = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
 
-lazy val `yql-app-collector` = Project("yql-app-collector", file("yql-app/collector")).dependsOn(`app-api`).settings(assemblySettings: _*)
+lazy val `spark-api-kafka` = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
 
-lazy val `yql-app-analytics` = Project("yql-app-analytics", file("yql-app/analytics")).dependsOn(`sparkapp-api`).settings(assemblySettings: _*)
+lazy val oracle = project.dependsOn(`web-api`).settings(assemblySettings: _*)
 
-lazy val `yql-app-visualization` = Project("yql-app-visualization", file("yql-app/visualization")).dependsOn(`app-api`).settings(assemblySettings: _*)
+lazy val pumper = project.dependsOn(`web-api`).settings(assemblySettings: _*)
+
+lazy val sqlserver = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
+
+lazy val `yql-app-collector` = Project("yql-app-collector", file("yql-app/collector")).dependsOn(`collector-api`).settings(assemblySettings: _*)
+
+lazy val `yql-app-analytics` = Project("yql-app-analytics", file("yql-app/analytics")).dependsOn(`spark-api-twitter`, `spark-api-kafka`).settings(assemblySettings: _*)
+
+lazy val `yql-app-visualization` = Project("yql-app-visualization", file("yql-app/visualization")).dependsOn(`web-api`).settings(assemblySettings: _*)
 
 lazy val `fake-sqlserver` = Project("fake-sqlserver", file("fake/sqlserver")).dependsOn(sqlserver).settings(
   scalaVersion := "2.10.5",
   libraryDependencies ++= spark ++ sparkThriftServer,
-  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
-
-lazy val `fake-spark-api` = Project("fake-spark-api", file("fake/spark-api")).dependsOn(`sparkapp-api`).settings(
-  scalaVersion := "2.10.5",
-  libraryDependencies ++= spark,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
 lazy val `fake-yql-app-analytics` = Project("fake-yql-app-analytics", file("fake/yql-app-analytics")).dependsOn(`yql-app-analytics`).settings(

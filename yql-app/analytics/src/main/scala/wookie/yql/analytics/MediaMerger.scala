@@ -4,13 +4,14 @@ import com.javadocmd.simplelatlng.LatLng
 import org.apache.spark.streaming.{Seconds, Minutes}
 import org.rogach.scallop.ScallopConf
 import shapeless._
-import wookie.spark.SparkStreamingApp
 import wookie.spark.cli._
 import wookie.spark.filters.FilterStream
 import wookie.spark.geo.Location
 import wookie.spark.mappers.{Keyer, MapStream}
 import wookie.spark.mappers.Maps.from
-import wookie.spark.streaming.{JoinStreamInWindow, KafkaTypedStream, TwitterStream}
+import wookie.spark.sparkle.{StreamingSparkle, Sparkle}
+import wookie.spark.streaming.kafka.KafkaTypedStream
+import wookie.spark.streaming.TwitterStream
 import wookie.spark.streaming.TwitterFilters.{country, language}
 import wookie.spark.streaming.TwitterMaps._
 
@@ -26,6 +27,8 @@ object MediaMergeUtils {
   def onlyUS = country(countryCode)
   def english = language("en")
   def defaultLoc = Location("", "USA")
+  def byWeatherRegion(w: Weather) = w.region
+  def byTweetRegion(t: Tweet) = t.location.getOrElse(defaultLoc).region
 }
 
 object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_) with MediaMergerConf) {
@@ -40,11 +43,13 @@ object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_)
       cleanTweets <- MapStream(onlyUSEnglish, from(extractors).to[Tweet])
       notEmptyCleanTweets <- FilterStream(cleanTweets, notEmptyTweet)
       weatherStream <- KafkaTypedStream[Weather](opt.brokers(), Weather.queueName, Weather.parse)
-      weatherWithId <- MapStream(weatherStream, Keyer.withId((a:Weather) => a.region))
-      tweetsWithId <- MapStream(notEmptyCleanTweets, Keyer.withId((a:Tweet) => a.location.getOrElse(defaultLoc).region))
-      joined <- JoinStreamInWindow(tweetsWithId, weatherWithId, Seconds(100), Seconds(20))
+      weatherWithId <- MapStream(weatherStream, Keyer.withId(byWeatherRegion))
+      tweetsWithId <- MapStream(notEmptyCleanTweets, Keyer.withId(byTweetRegion))
+      joined <- StreamingSparkle {
+        tweetsWithId.fullOuterJoin(weatherWithId.window(Seconds(opt.duration()/1000)))
+      }
     } yield {
-      joined.saveAsTextFiles("joined")
+      joined.print()
     }
     pipeline(this)
 

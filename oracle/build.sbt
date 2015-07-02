@@ -6,8 +6,6 @@ description := "prediction api"
 
 libraryDependencies ++= sparkMLlib
 
-net.virtualvoid.sbt.graph.Plugin.graphSettings
-
 mergeStrategy in assembly := {
   case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
   case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
@@ -15,9 +13,5 @@ mergeStrategy in assembly := {
   case m if m.toLowerCase.startsWith("meta-inf/services/") => MergeStrategy.filterDistinctLines
   case _ => MergeStrategy.first
 }
-
-EclipseKeys.withSource := true
-
-EclipseKeys.withBundledScalaContainers := false
 
 evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
