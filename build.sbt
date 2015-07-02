@@ -18,18 +18,18 @@ lazy val pumper = project.dependsOn(`web-api`).settings(assemblySettings: _*)
 
 lazy val sqlserver = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
 
-lazy val `yql-app-collector` = Project("yql-app-collector", file("yql-app/collector")).dependsOn(`collector-api`).settings(assemblySettings: _*)
+lazy val `yql-app-collector` = project.in(file("yql-app/collector")).dependsOn(`collector-api`).settings(assemblySettings: _*)
 
-lazy val `yql-app-analytics` = Project("yql-app-analytics", file("yql-app/analytics")).dependsOn(`spark-api-twitter`, `spark-api-kafka`).settings(assemblySettings: _*)
+lazy val `yql-app-analytics` = project.in(file("yql-app/analytics")).dependsOn(`spark-api-twitter`, `spark-api-kafka`).settings(assemblySettings: _*)
 
-lazy val `yql-app-visualization` = Project("yql-app-visualization", file("yql-app/visualization")).dependsOn(`web-api`).settings(assemblySettings: _*)
+lazy val `yql-app-visualization` = project.in(file("yql-app/visualization")).dependsOn(`web-api`).settings(assemblySettings: _*)
 
-lazy val `fake-sqlserver` = Project("fake-sqlserver", file("fake/sqlserver")).dependsOn(sqlserver).settings(
+lazy val `fake-sqlserver` = project.in(file("fake/sqlserver")).dependsOn(sqlserver).settings(
   scalaVersion := "2.10.5",
   libraryDependencies ++= spark ++ sparkThriftServer,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
-lazy val `fake-yql-app-analytics` = Project("fake-yql-app-analytics", file("fake/yql-app-analytics")).dependsOn(`yql-app-analytics`).settings(
+lazy val `fake-yql-app-analytics` = project.in(file("fake/yql-app-analytics")).dependsOn(`yql-app-analytics`).settings(
   scalaVersion := "2.10.5",
   libraryDependencies ++= spark,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))

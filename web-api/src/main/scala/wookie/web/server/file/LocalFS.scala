@@ -1,4 +1,4 @@
-package wookie.app.file
+package wookie.web.server.file
 
 import java.io.File
 import org.http4s.StaticFile

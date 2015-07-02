@@ -2,7 +2,8 @@ package wookie.yql.analytics
 
 import org.apache.spark.streaming.dstream.DStream
 import org.rogach.scallop.ScallopConf
-import wookie.spark.cli.{SparkStreamingApp, Kafka, Duration, Name}
+import wookie.spark.cli.{SparkStreamingApp, Duration, Name}
+import wookie.spark.streaming.kafka.cli.Kafka
 
 trait WeatherConf extends Name with Duration with Kafka
 

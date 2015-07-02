@@ -8,7 +8,7 @@ import argonaut.ACursor
 import argonaut.HCursor
 import argonaut.DecodeResult
 import scalaz._
-import wookie.http.HttpStream
+import wookie.collector.http.HttpStream
 
 @RunWith(classOf[JUnitRunner])
 class WeatherInfoSpec extends Specification {

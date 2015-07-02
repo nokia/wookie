@@ -3,7 +3,7 @@ package wookie.web.server
 import java.io.File
 
 import org.http4s.server.HttpService
-import wookie.app.file.FileService
+import wookie.web.server.file.FileService
 
 object StaticResourceService {
 

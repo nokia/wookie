@@ -3,13 +3,14 @@ package wookie.yql.analytics
 import org.apache.spark.streaming.Minutes
 import org.rogach.scallop.ScallopConf
 import shapeless.HNil
-import wookie.spark.cli.{SparkStreamingApp, Name, Duration, Twitter}
+import wookie.spark.cli.{SparkStreamingApp, Name, Duration}
 import wookie.spark.filters.FilterStream
 import wookie.spark.geo.Location
 import wookie.spark.mappers.{Keyer, Maps, MapStream}
 import wookie.spark.sparkle.StreamingSparkle
-import wookie.spark.streaming.{TwitterMaps, TwitterStream}
-import wookie.spark.streaming.TwitterFilters.{country, language}
+import wookie.spark.streaming.twitter.cli.{TwitterConverter, Twitter}
+import wookie.spark.streaming.twitter.{TwitterMaps, TwitterStream}
+import wookie.spark.streaming.twitter.TwitterFilters.{country, language}
 
 trait UniqueLocationsAppConf extends Twitter with Name with Duration
 
@@ -17,7 +18,7 @@ case class TweetD(loc: Option[Location])
 
 object UniqueLocations extends SparkStreamingApp[UniqueLocationsAppConf](new ScallopConf(_) with UniqueLocationsAppConf) {
 
-  import wookie.spark.cli.ScallopConfsConverter._
+  import TwitterConverter._
 
   override def runStreaming(opt: UniqueLocationsAppConf): Unit = {
     val pipe = for {
