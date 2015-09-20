@@ -1,12 +1,7 @@
 package wookie.yql.analytics
 
-import java.util.concurrent.TimeUnit
-
 import argonaut.Argonaut._
 import argonaut._
-
-import scala.concurrent.duration.Duration
-
 
 case class Weather(timestamp: Long, latitude: Double, longitude: Double, area: String, region: String, country: String, temperature: Double,
                    conditions: String, windChill: Double, windDirection: Double, windSpeed: Double, humidity: Double,
@@ -30,7 +25,7 @@ object Weather {
       city <- (curs --\ "location" --\ "city").as[String]
       country <- (curs --\ "location" --\ "country").as[String]
       region <- (curs --\ "location" --\ "region").as[String]
-    } yield Weather(Duration(timestamp, TimeUnit.MILLISECONDS).toHours, lat, long, city, region, country, temp, conditions, chill,
+    } yield Weather(timestamp, lat, long, city, region, country, temp, conditions, chill,
         direction, speed, humidity, pressure, rising, visibility)
   }
   def parse(str: String): List[Weather] = {

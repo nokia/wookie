@@ -25,3 +25,8 @@ trait Filters extends ScallopConf {
 trait Topics extends ScallopConf {
   lazy val topics = opt[List[String]]("topics", descr = "Comma separated list of topics to subscribe to", default=Some(List[String]()))
 }
+
+trait Checkpoint extends ScallopConf {
+  lazy val checkpointDir = opt[String]("checkpointDir", descr="Checkpointing directory", required=true)
+  lazy val useCheckpoint = opt[Boolean]("useCheckpoint", descr="Use checkpointing directory", required=true, default = Some(false))
+}

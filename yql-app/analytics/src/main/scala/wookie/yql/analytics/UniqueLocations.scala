@@ -3,16 +3,17 @@ package wookie.yql.analytics
 import org.apache.spark.streaming.Minutes
 import org.rogach.scallop.ScallopConf
 import shapeless.HNil
-import wookie.spark.cli.{SparkStreamingApp, Name, Duration}
+import wookie.spark.cli.{Checkpoint, SparkStreamingApp, Name, Duration}
 import wookie.spark.filters.FilterStream
 import wookie.spark.geo.Location
-import wookie.spark.mappers.{Keyer, Maps, MapStream}
+import wookie.spark.mappers.{Maps, MapStream}
+import wookie.spark.mappers.Maps._
 import wookie.spark.sparkle.StreamingSparkle
 import wookie.spark.streaming.twitter.cli.{TwitterConverter, Twitter}
 import wookie.spark.streaming.twitter.{TwitterMaps, TwitterStream}
 import wookie.spark.streaming.twitter.TwitterFilters.{country, language}
 
-trait UniqueLocationsAppConf extends Twitter with Name with Duration
+trait UniqueLocationsAppConf extends Twitter with Name with Duration with Checkpoint
 
 case class TweetD(loc: Option[Location])
 
@@ -25,7 +26,7 @@ object UniqueLocations extends SparkStreamingApp[UniqueLocationsAppConf](new Sca
       tweets <- TwitterStream(opt)
       onlyUSEnglish <- FilterStream(tweets, country("US"), language("en"))
       onlyLocations <- MapStream(onlyUSEnglish, Maps.from(TwitterMaps.location :: HNil).to[TweetD])
-      withKeys <- MapStream(onlyLocations, Keyer.withId( (a: TweetD) => a.loc))
+      withKeys <- MapStream(onlyLocations, withId( (a: TweetD) => a.loc))
       onlyUniqueInWindow <- StreamingSparkle {
         withKeys.reduceByKeyAndWindow((a: TweetD, b: TweetD) => a, Minutes(20), Minutes(20))
       }
