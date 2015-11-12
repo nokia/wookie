@@ -1,46 +1,12 @@
-import AssemblyKeys._
-
-lazy val `app-api` = project.settings(assemblySettings: _*)
-
-lazy val `web-api` = project.dependsOn(`app-api`).settings(assemblySettings: _*)
-
-lazy val `collector-api` = project.dependsOn(`app-api`).settings(assemblySettings: _*)
-
-lazy val `spark-api` = project.settings(assemblySettings: _*)
-
-lazy val `spark-api-twitter` = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
-
-lazy val `spark-api-kafka` = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
-
-lazy val oracle = project.dependsOn(`web-api`).settings(assemblySettings: _*)
-
-lazy val pumper = project.dependsOn(`web-api`).settings(assemblySettings: _*)
-
-lazy val sqlserver = project.dependsOn(`spark-api`).settings(assemblySettings: _*)
-
-lazy val `yql-app-collector` = project.in(file("yql-app/collector")).dependsOn(`collector-api`).settings(assemblySettings: _*)
-
-lazy val `yql-app-analytics` = project.in(file("yql-app/analytics")).dependsOn(`spark-api-twitter`, `spark-api-kafka`).settings(assemblySettings: _*)
-
-lazy val `yql-app-visualization` = project.in(file("yql-app/visualization")).dependsOn(`web-api`).settings(assemblySettings: _*)
-
-lazy val `fake-sqlserver` = project.in(file("fake/sqlserver")).dependsOn(sqlserver).settings(
-  scalaVersion := "2.10.5",
-  libraryDependencies ++= spark ++ sparkThriftServer,
-  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
-
-lazy val `fake-yql-app-analytics` = project.in(file("fake/yql-app-analytics")).dependsOn(`yql-app-analytics`).settings(
-  scalaVersion := "2.10.5",
-  libraryDependencies ++= spark,
-  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
-
 organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.0.1-SNAPSHOT"
+version in ThisBuild := "0.1.0-SNAPSHOT"
 
-description := "A minimal, framework for building data products"
+crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
+
+description := "A minimal library for building data products"
 
 homepage in ThisBuild := Some(url("https://github.com/elyast/wookie"))
 
@@ -54,6 +20,8 @@ scmInfo in ThisBuild := {
   Some(ScmInfo(url(s"https://$base"), s"scm:git:https://$base", Some(s"scm:git:git@$base")))
 }
 
+val JvmTarget = "1.7"
+
 pomExtra in ThisBuild :=
   <developers>
     <developer>
@@ -62,10 +30,6 @@ pomExtra in ThisBuild :=
       <email>lukasz.jastrzebski@gmail.com</email>
     </developer>
   </developers>
-
-scalaVersion in ThisBuild := "2.11.6"
-
-val JvmTarget = "1.7"
 
 scalacOptions in ThisBuild ++= Seq(
   "-deprecation",

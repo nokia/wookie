@@ -1,3 +1,0 @@
-name := "yql-collector"
-
-

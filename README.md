@@ -1,16 +1,13 @@
 # Wookie - data products framework
 
-### Create optional collector ###
+Build on top of spark, using excellent libraries like:
+* Scalaz
+* Shapeless
+* Http4s
 
-Look at the yql-app/collector sample
-
-### Create analytics pipeline ###
-
-Look at the yql-app/analtyics sample
-
-### Create your web app ###
-
-Look at the yql-app/visualization sample
+This library helps:
+* reuse components using Sparkles (monads for analytical processing modules)
+* 
 
 ## Provided services ##
 

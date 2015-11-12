@@ -1,8 +1,13 @@
 language: scala
+
 scala:
-  - 2.10.4
-  - 2.11.5
-env:
-  global:
-  - secure: 
-script: sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
+  - 2.11.7
+
+jdk:
+  - oraclejdk7
+
+script: sbt "so test"
+
+after_success:
+  - sbt "so package"
+  - sbt "so assembly"
