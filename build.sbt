@@ -2,7 +2,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.1.0-SNAPSHOT"
+version in ThisBuild := "0.1.0"
 
 crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
 
@@ -61,11 +61,12 @@ resolvers in ThisBuild ++= Seq(
   "Spark Packages Repo" at "http://dl.bintray.com/spark-packages/maven",
   "Elyast Repository" at "https://dl.dropboxusercontent.com/u/16106115/maven2/",
   "Cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos",  
-  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases")
+  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+  Resolver.url("supler ivy resolver", url("http://dl.bintray.com/elyast/maven"))(Resolver.ivyStylePatterns))
 
 libraryDependencies in ThisBuild ++= specs2
 
-publishMavenStyle in ThisBuild := true
+publishMavenStyle in ThisBuild := false
 
 publishArtifact in (ThisBuild, Test) := false
 
