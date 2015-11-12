@@ -38,12 +38,12 @@ object WookieBuild extends Build {
     dependsOn(web).
     settings(assembling).
     settings(libraryDependencies ++= sparkMLlib).
-    settings(addArtifact(Artifact("oracle", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(addArtifact(Artifact("wookie-oracle", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
 
   lazy val pumper = wookieProject("pumper").
     dependsOn(web).
     settings(assembling).
-    settings(addArtifact(Artifact("pumper", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(addArtifact(Artifact("wookie-pumper", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
 
   lazy val sqlserver = wookieProject("sqlserver").dependsOn(sparkApi).
     settings(
@@ -51,34 +51,36 @@ object WookieBuild extends Build {
       libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, psqlJdbc, sparkCsv),
       dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5").
     settings(assembling ++ noscala).
-    settings(addArtifact(Artifact("sqlserver", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(addArtifact(Artifact("wookie-sqlserver", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
 
   lazy val yqlCollector = wookieExampleProject("yql-collector", "yql-app/collector").
     dependsOn(collector).
     settings(assembling).
-    settings(addArtifact(Artifact("yql-collector", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(packagedArtifacts := Map.empty)
 
   lazy val yqlAnalytics = wookieExampleProject("yql-analytics", "yql-app/analytics").
     dependsOn(twitterApi, kafkaApi).
     settings(assembling ++ noscala).
     settings(libraryDependencies ++= sparkProvided).
-    settings(addArtifact(Artifact("yql-analytics", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(packagedArtifacts := Map.empty)
 
   lazy val yqlVis = wookieExampleProject("yql-vis", "yql-app/visualization").
     dependsOn(web).
     settings(assembling).
-    settings(addArtifact(Artifact("yql-vis", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+    settings(packagedArtifacts := Map.empty)
 
   lazy val fakeYqlAnalytics = wookieFakeProject("yql-analytics", "fake/yql-app-analytics").
     dependsOn(yqlAnalytics).
     settings(
-      libraryDependencies ++= Seq("org.slf4j" % "slf4j-log4j12" % slf4jVersion) ++ spark)
+      libraryDependencies ++= Seq("org.slf4j" % "slf4j-log4j12" % slf4jVersion) ++ spark,
+      packagedArtifacts := Map.empty)
 
   lazy val fakeSqlserver = wookieFakeProject("sqlserver", "fake/sqlserver").
     dependsOn(sqlserver).
     settings(
       crossScalaVersions := Seq("2.10.6"),
-      libraryDependencies ++= spark ++ sparkThriftServer)
+      libraryDependencies ++= spark ++ sparkThriftServer,
+      packagedArtifacts := Map.empty)
 
   lazy val noscala = Seq(assemblyOption in assembly ~= { _.copy(includeScala = false) })
   lazy val assembling = assemblySettings ++ Seq(mergeStrategy in assembly := {
@@ -168,7 +170,7 @@ object WookieBuild extends Build {
     exclude("org.apache.spark", "spark-sql_" + "2.11").
     exclude("org.apache.spark", "spark-catalyst_" + "2.10").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
-    
+
   lazy val spire = "org.spire-math" %% "spire" % "0.10.1"
 
   lazy val sparkVersion = "1.5.1"

@@ -2,7 +2,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.1.2"
+version in ThisBuild := "0.1.3"
 
 crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
 
@@ -65,8 +65,10 @@ resolvers in ThisBuild ++= Seq(
 
 libraryDependencies in ThisBuild ++= specs2
 
-publishMavenStyle in ThisBuild := false
+publishMavenStyle in ThisBuild := true
 
 publishArtifact in (ThisBuild, Test) := false
+
+packagedArtifacts in file(".") := Map.empty
 
 evictionWarningOptions in (ThisBuild, update) := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
