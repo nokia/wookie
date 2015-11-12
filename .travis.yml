@@ -7,7 +7,7 @@ script: sbt "so test"
 after_success:
 - sbt "so package"
 - sbt "so assembly"
-- '[ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ] && /bin/bash "$TRAVIS_BUILD_DIR/travis.credentials.sh" && sbt publish'
+- '/bin/bash "$TRAVIS_BUILD_DIR/travis.credentials.sh" && sbt publish'
 env:
   global:
   - secure: iZGsVin5/WQszPMh+EP1B+P1GkP45sffPAsGI7wv6tXnEndxCSZ9Lj5jAodiU2SBwpHgclW6EBlbwkaz9i1PI6UzM39wD1VlIz7AUXNBvHyHmwtigYmv90ggQJhUuBMG6IRuVXtQmhTkn3v47edjP20FIcfyv/uoz/a+S5eRkOEakmv1Sv2YsdBHB8EFMA3jumEP8UVlqPZfQZqwPpYf8+X7NrKbcf87odtTq6scnCLIKVkrvO3Uv7KS+A42s5eXeUBRBXsAyCqKmsyssDwFJPhpoTtAvk1OG8YKHEK4Keb/YthYfeT1IkGxQw8MoodyX5I6/w9pFMxoo5vBSa/3jGc6cUk1/fIWIWlIDjxJNiHKCkZsNNRxO4hkKJfAw4hzjwzUFpEJpYgMNsyWCQxr2Ckyn8Wge2Lauiuq8/EYUdhjo/vLcTsmcMWB45SvRdCmJgIkjZ+d3PfawlkjC8qbqcL1XzBIqQFKf7hkd/HxZ43stmTSUGv0Y8vnaxXrCUkI+jcDwtRwyeH4WDBaFN3IWR0+/+3Mu8/WONkblqILiDBapJGum1+TeOmPvxnHB5QJ1N8aC9jZ0vOU2cFY28IWrH/UvGhxZESuQ12w/g9LlR1YNOsv2olg90wwFoz1wJwoYYnWYn8xFYnw9wLKs2TM1H1OkD8oTiWuFCBPolhfNDI=
