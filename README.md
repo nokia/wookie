@@ -21,7 +21,7 @@
 * <b>spark-api-twitter</b> - utility classes/objects for writing Spark Streaming applications using Twitter input streams
 * <b>oracle</b> - REST API server that predicts new data points based on the model (WIP)
 * <b>pumper</b> - REST API server that push data to kafka queue (WIP)
-* <b>sqlserver<b> - Spark SQL server that automatically register and refresh tables given root directory, supports local file formats like json, csv, parquet as well as remote ones like Cassandra or Elasticsearch
+* <b>sqlserver</b> - Spark SQL server that automatically register and refresh tables given root directory, supports local file formats like json, csv, parquet as well as remote ones like Cassandra or Elasticsearch
 * <b>examples:</b>
   - <b>yql-app/analytics</b> - example analytics using twitter and kafka streams
   - <b>yql-app/collector</b> - example collectors using YQL https://developer.yahoo.com/yql
@@ -34,4 +34,4 @@
 * Apache Spark - http://spark.apache.org
 * Argonaut - http://argonaut.io
 * Http4S - http://http4s.org
-* Spark Connectors - Elasticsearch, Cassandra
+* Spark Connectors - <b>Elasticsearch</b>, <b>Cassandra</b>
