@@ -15,7 +15,7 @@ trait Name extends ScallopConf {
 }
 
 trait Duration extends ScallopConf {
-  lazy val duration = opt[Long]("duration", descr = "Duration of mini batch in miliseconds", required = true)  
+  lazy val duration = opt[Long]("duration", descr = "Duration of mini batch in miliseconds", required = true)
 }
 
 trait Filters extends ScallopConf {
@@ -27,6 +27,5 @@ trait Topics extends ScallopConf {
 }
 
 trait Checkpoint extends ScallopConf {
-  lazy val checkpointDir = opt[String]("checkpointDir", descr="Checkpointing directory", required=true)
-  lazy val useCheckpoint = opt[Boolean]("useCheckpoint", descr="Use checkpointing directory", required=true, default = Some(false))
+  lazy val checkpointDir = opt[String]("checkpointDir", descr="Checkpointing directory", required=false)
 }

@@ -2,7 +2,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.1.3"
+version in ThisBuild := "0.1.4"
 
 crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
 
@@ -59,7 +59,7 @@ resolvers in ThisBuild ++= Seq(
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
   "Akka Repository" at "http://repo.akka.io/releases/",
   "Spark Packages Repo" at "http://dl.bintray.com/spark-packages/maven",
-  "Cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos",  
+  "Cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos",
   "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
   Resolver.url("supler ivy resolver", url("http://dl.bintray.com/elyast/maven"))(Resolver.ivyStylePatterns))
 

@@ -6,7 +6,7 @@ import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
 import wookie.spark.cli.{SparkApp, Input, Name}
 
-trait SparkSQLServerConf extends Input with Name { self: ScallopConf =>
+trait SparkSQLServerConf extends Input with Name {
   lazy val hiveconfs = opt[List[String]]("hiveconf", descr = "hive configs").map {
     f =>
       val tuples = f.map {
@@ -18,7 +18,7 @@ trait SparkSQLServerConf extends Input with Name { self: ScallopConf =>
             None
           }
       }
-      tuples.filter(_ != None).map(_.get).toMap
+      tuples.filter(_.isDefined).map(_.get).toMap
   }
 }
 
@@ -41,7 +41,7 @@ object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) wi
   }
 
   def processCliParams(arg: Map[String, String]) = {
-    for ((k, v) <- arg) (System.setProperty(k, v))
+    for ((k, v) <- arg) System.setProperty(k, v)
   }
 
   def setDefaultParams(): Unit = {

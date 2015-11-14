@@ -11,8 +11,8 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
   private def createStreamingContext(opt: A): () => StreamingContext = {
     () =>
       _ssc = new StreamingContext(sc, Milliseconds(opt.duration()))
-      if (opt.useCheckpoint()) {
-        _ssc.checkpoint(opt.checkpointDir())
+      opt.checkpointDir.map { chkPoint =>
+        _ssc.checkpoint(chkPoint)
       }
       setStreamingLogLevels()
       runStreaming(opt)
@@ -20,9 +20,9 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
   }
 
   def runStreaming(opt: A): Unit
-  
+
   final def run(opt: A): Unit = {
-    if (opt.useCheckpoint()) {
+    if (opt.checkpointDir.isDefined) {
       _ssc = StreamingContext.getOrCreate(opt.checkpointDir(), createStreamingContext(opt), createOnError = true)
     } else {
       _ssc = createStreamingContext(opt)()
@@ -30,7 +30,7 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
     _ssc.start()
     _ssc.awaitTermination()
   }
-  
+
   def setStreamingLogLevels() = {
     val log4jInitialized = Logger.getRootLogger.getAllAppenders.hasMoreElements
     if (!log4jInitialized) {
