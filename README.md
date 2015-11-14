@@ -24,7 +24,7 @@
 * <b>sqlserver<b> - Spark SQL server that automatically register and refresh tables given root directory, supports local file formats like json, csv, parquet as well as remote ones like Cassandra or Elasticsearch
 * <b>examples:</b>
   - <b>yql-app/analytics</b> - example analytics using twitter and kafka streams
-  - <b>yql-app/collector</b> - example collectors using YQL https://developer.yahoo.com/yql/
+  - <b>yql-app/collector</b> - example collectors using YQL https://developer.yahoo.com/yql
 
 ### Dependencies
 
