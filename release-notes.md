@@ -2,7 +2,7 @@
 
 ## Development
 
-[Commits](https://github.com/elyast/wookie/compare/v0.4.0...master)
+[Commits](https://github.com/elyast/wookie/compare/v0.1.4...master)
 
 ## v0.1.3 - November 12th, 2015
 - [#1](https://github.com/elyast/wookie/issues/1) - Initial release
