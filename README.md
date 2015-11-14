@@ -34,4 +34,4 @@
 * Apache Spark - http://spark.apache.org
 * Argonaut - http://argonaut.io
 * Http4S - http://http4s.org
-* Spark Connectors - <b>Elasticsearch</b>, <b>Cassandra</b>
+* Spark Connectors - [Elasticsearch](https://github.com/elastic/elasticsearch-hadoop), [Cassandra](https://github.com/datastax/spark-cassandra-connector)
