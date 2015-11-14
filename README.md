@@ -29,7 +29,7 @@
 ### Dependencies
 
 * Spire - https://github.com/non/spire
-* Scalaz-Stream - https://github.com/scalaz/scalaz-stream]
+* Scalaz-Stream - https://github.com/scalaz/scalaz-stream
 * Shapeless - https://github.com/milessabin/shapeless
 * Apache Spark - http://spark.apache.org
 * Argonaut - http://argonaut.io
