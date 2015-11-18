@@ -13,7 +13,7 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
       _ssc = new StreamingContext(sc, Milliseconds(opt.duration()))
       setStreamingLogLevels()
       runStreaming(opt)
-      opt.checkpointDir.map { chkPoint =>
+      opt.checkpointDir.get.map { chkPoint =>
         _ssc.checkpoint(chkPoint)
       }
       _ssc
@@ -22,7 +22,7 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
   def runStreaming(opt: A): Unit
 
   final def run(opt: A): Unit = {
-    if (opt.checkpointDir.isDefined) {
+    if (opt.checkpointDir.get.isDefined) {
       _ssc = StreamingContext.getOrCreate(opt.checkpointDir(), createStreamingContext(opt), createOnError = true)
     } else {
       _ssc = createStreamingContext(opt)()

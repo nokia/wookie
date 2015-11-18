@@ -2,7 +2,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.1.5"
+version in ThisBuild := "0.1.6"
 
 crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
 
