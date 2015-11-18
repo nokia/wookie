@@ -11,11 +11,11 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
   private def createStreamingContext(opt: A): () => StreamingContext = {
     () =>
       _ssc = new StreamingContext(sc, Milliseconds(opt.duration()))
+      setStreamingLogLevels()
+      runStreaming(opt)
       opt.checkpointDir.map { chkPoint =>
         _ssc.checkpoint(chkPoint)
       }
-      setStreamingLogLevels()
-      runStreaming(opt)
       _ssc
   }
 
