@@ -14,11 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package wookie.web.cli
+package wookie.app.di
 
-import org.rogach.scallop.ScallopConf
+import scalaz.{Reader, Id, Kleisli}
 
-trait Port extends ScallopConf {
-  lazy val port = opt[Int]("port", descr = "Port to listent to", required = true)
+/**
+  * Created by ljastrze on 11/20/15.
+  */
+object DI {
+
+  implicit def funToKleisli[Conf, A](r: Conf => A): Kleisli[Id.Id, Conf, A] = Kleisli[Id.Id, Conf, A](Reader(r).run)
 }
-

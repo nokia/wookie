@@ -1,5 +1,22 @@
+/* Copyright (C) 2014-2015 by Nokia.
+ * See the LICENCE.txt file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package wookie.sqlserver
 
+import org.apache.spark.Logging
 import org.apache.spark.scheduler.StatsReportListener
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
@@ -22,7 +39,7 @@ trait SparkSQLServerConf extends Input with Name {
   }
 }
 
-object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) with SparkSQLServerConf) {
+object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) with SparkSQLServerConf) with Logging {
 
   protected var hiveContext: HiveContext = _
 
@@ -35,12 +52,12 @@ object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) wi
 
     TableRegister(hiveContext).setupTableRegistration(opt.inputURL())
 
-    println("Tables registered proceeding with launch...")
+    logInfo("Tables registered proceeding with launch...")
 
     HiveThriftServer2.startWithContext(hiveContext)
   }
 
-  def processCliParams(arg: Map[String, String]) = {
+  def processCliParams(arg: Map[String, String]): Unit = {
     for ((k, v) <- arg) System.setProperty(k, v)
   }
 

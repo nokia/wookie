@@ -1,3 +1,19 @@
+/* Copyright (C) 2014-2015 by Nokia.
+ * See the LICENCE.txt file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package wookie.yql.weather
 
 import argonaut._
@@ -62,17 +78,18 @@ object WeatherDecoders {
     val parser = new SimpleDateFormat("EEE, dd MMMM yyyy hh:mm aa zzz")
     parser.parse(s).getTime
   }
-        
+
   implicit val locationEncoder: EncodeJson[Location] = {
     casecodec5(Location.apply, Location.unapply)("latitude", "longitude", "city", "country", "region")
-  }   
-  
+  }
+
   implicit val conditionEncoder: EncodeJson[WeatherCondition] = {
-    casecodec9(WeatherCondition.apply, WeatherCondition.unapply)("temperature", "conditions", "windChill", "windDirection", "windSpeed", "humidity", "pressure", "rising", "visibility")
-  }   
-  
+    casecodec9(WeatherCondition.apply, WeatherCondition.unapply)(
+      "temperature", "conditions", "windChill", "windDirection", "windSpeed", "humidity", "pressure", "rising", "visibility")
+  }
+
   implicit val readingEncoder: EncodeJson[Weather] = {
     jencode3L((r: Weather) => (r.date, r.location, r.weather) )("date", "location", "weather")
   }
-  
+
 }

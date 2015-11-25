@@ -1,3 +1,19 @@
+/* Copyright (C) 2014-2015 by Nokia.
+ * See the LICENCE.txt file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package wookie.spark.streaming.twitter
 
 import com.javadocmd.simplelatlng.LatLng
@@ -34,25 +50,19 @@ object TwitterMaps {
 
   def location: Status => Option[Location] = s => {
     for {
-      place <- Option.apply(s.getPlace)
-      fullName <- Option.apply(place.getFullName)
-      loc <- Option.apply {
-        fullName.split(",", -1).toList match {
-          case area :: region :: Nil => Location(area.trim, region.trim)
-          case _ => null
+      place <- Option(s.getPlace)
+      fullName <- Option(place.getFullName)
+      loc <- fullName.split(",", -1).toList match {
+          case area :: region :: Nil => Some(Location(area.trim, region.trim))
+          case _ => None
         }
-      }
     } yield {
       loc
     }
   }
 
   def latLong: Status => Option[LatLng] = s => {
-    if (s.getGeoLocation == null) {
-      None
-    } else {
-      Some(new LatLng(s.getGeoLocation.getLatitude, s.getGeoLocation.getLongitude))
-    }
+    Option(s.getGeoLocation).map(loc => new LatLng(loc.getLatitude, loc.getLongitude))
   }
 
   def urls: Status => List[String] = s => {
@@ -90,7 +100,7 @@ object TwitterFilters {
       countryCode.equalsIgnoreCase(code)
     }).getOrElse(false)
   }
-  
+
   def radius(center: LatLng, radiusInMeters: Double): Status => Boolean = s => {
     (for {
       loc <- Option.apply(s.getGeoLocation)
@@ -101,7 +111,7 @@ object TwitterFilters {
       contains(new LatLng(lat, long))
     }).getOrElse(false)
   }
-  
+
   def language(langCodePrefix: String): Status => Boolean = s => {
     (for {
       user <- Option.apply(s.getUser)
@@ -109,7 +119,7 @@ object TwitterFilters {
       langToCheck <- Option.apply(langCodePrefix)
     } yield {
       lang.toLowerCase.startsWith(langToCheck.toLowerCase)
-    }).getOrElse(false)    
+    }).getOrElse(false)
   }
 
 }

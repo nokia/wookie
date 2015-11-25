@@ -14,11 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-package wookie.web.cli
+package wookie.collector.streams
 
-import org.rogach.scallop.ScallopConf
+import scalaz.stream.Process
+import scalaz.stream.Process._
 
-trait Port extends ScallopConf {
-  lazy val port = opt[Int]("port", descr = "Port to listent to", required = true)
+/**
+  * Created by ljastrze on 11/16/15.
+  */
+object StreamUtils {
+
+  def once[F[_], R, O](acquire: F[R])(release: R => F[Unit])(step: R => F[O]): Process[F, O] = {
+    eval(acquire).flatMap { r =>
+      eval(step(r)).onComplete[F, O](eval_(release(r)))
+    }
+  }
+
 }
-

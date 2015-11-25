@@ -1,3 +1,19 @@
+/* Copyright (C) 2014-2015 by Nokia.
+ * See the LICENCE.txt file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 import sbt._
 import Keys._
 import sbtassembly.Plugin._
@@ -7,7 +23,7 @@ object WookieBuild extends Build {
 
   lazy val app = wookieProject("app-api").
     settings(
-      libraryDependencies ++= logging ++ Seq(scallop))
+      libraryDependencies ++= logging ++ Seq(scallop, scalazCore))
 
   lazy val web = wookieProject("web-api").
     dependsOn(app).
@@ -17,7 +33,7 @@ object WookieBuild extends Build {
   lazy val collector = wookieProject("collector-api").
     dependsOn(app).
     settings(
-      libraryDependencies ++= Seq(kafka, httpClient, scalazStream, http4sCore, argonaut))
+      libraryDependencies ++= Seq(kafka, httpClient, scalazStream, http4sClient, http4sDsl, http4sArgonaut))
 
   lazy val sparkApi = wookieProject("spark-api").
     settings(
@@ -92,11 +108,11 @@ object WookieBuild extends Build {
     },
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
-  def wookieProject(name: String) = Project(name, file(name))
+  def wookieProject(name: String): Project = Project(name, file(name))
     .settings(
       moduleName := s"wookie-$name")
 
-  def wookieExampleProject(name: String, filePath: String) = Project(name, file(filePath))
+  def wookieExampleProject(name: String, filePath: String): Project = Project(name, file(filePath))
     .settings(
       moduleName := s"wookie-examples-$name"
     )
@@ -110,13 +126,16 @@ object WookieBuild extends Build {
       "org.http4s" %% "http4s-server" % http4sversion)
 
   lazy val http4sCore = "org.http4s" %% "http4s-core" % http4sversion
-
+  lazy val http4sClient = "org.http4s" %% "http4s-blazeclient" % http4sversion
   lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
+  lazy val http4sArgonaut = "org.http4s" %% "http4s-argonaut" % http4sversion
 
-  lazy val specs2version = "2.4.17"
+  lazy val specs2version = "3.6.5"
   lazy val specs2 = Seq(
       "org.specs2" %% "specs2-core" % specs2version  % "test",
       "org.specs2" %% "specs2-scalacheck" % specs2version % "test",
+      "org.specs2" %% "specs2-matcher-extra" % specs2version % "test",
+      "org.specs2" %% "specs2-matcher" % specs2version % "test",
       "org.specs2" %% "specs2-mock" % specs2version % "test",
       "org.specs2" %% "specs2-junit" % specs2version % "test")
 

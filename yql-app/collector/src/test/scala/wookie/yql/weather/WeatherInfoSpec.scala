@@ -1,20 +1,35 @@
+/* Copyright (C) 2014-2015 by Nokia.
+ * See the LICENCE.txt file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package wookie.yql.weather
 
 import _root_.org.specs2.mutable._
 import _root_.org.junit.runner.RunWith
 import _root_.org.specs2.runner.JUnitRunner
-import argonaut.DecodeJson
-import argonaut.ACursor
-import argonaut.HCursor
-import argonaut.DecodeResult
-import scalaz._
-import wookie.collector.http.HttpStream
+import org.http4s.Response
+import scodec.bits.ByteVector
+import wookie.collector.streams.JsonTransformer
+
+import scalaz.concurrent.Task
 
 @RunWith(classOf[JUnitRunner])
 class WeatherInfoSpec extends Specification {
 
   import WeatherDecoders._
-  
+
   val multiWeatherResponse = """
 {
  "query": {
@@ -228,7 +243,7 @@ class WeatherInfoSpec extends Specification {
    ]
   }
  }
-}    
+}
     """
 
   val weatherResponse = """{
@@ -258,15 +273,17 @@ class WeatherInfoSpec extends Specification {
 
   "Weather response" should {
     "contain date" in {
-      val x = HttpStream.convert(weatherResponse) 
-      x must contain ("1425952560000")
+      val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(weatherResponse.getBytes))))
+      val x = JsonTransformer.asText(resp)
+      x.run must contain ("1425952560000")
     }
   }
 
   "Weather response 2" should {
     "contain couple of dates" in {
-      val x = HttpStream.convert(multiWeatherResponse)
-      x must contain ("1428097920000")
+      val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(multiWeatherResponse.getBytes))))
+      val x = JsonTransformer.asText(resp)
+      x.run must contain ("1428097920000")
     }
   }
 }
