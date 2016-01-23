@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,7 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 import sbt._
 import Keys._
 import sbtassembly.Plugin._
@@ -37,7 +39,9 @@ object WookieBuild extends Build {
 
   lazy val sparkApi = wookieProject("spark-api").
     settings(
-      libraryDependencies ++= sparkProvided ++ Seq(scallop, spire, shapeless, argonaut, simplelatlng))
+      libraryDependencies ++= sparkProvided ++ Seq(scallop, spire, shapeless, argonaut, simplelatlng, sparkTesting, discipline)).
+    settings(sparkTestingSettings)
+
 
   lazy val twitterApi = wookieProject("spark-api-twitter").
     dependsOn(sparkApi).
@@ -108,6 +112,8 @@ object WookieBuild extends Build {
     },
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false))
 
+  lazy val sparkTestingSettings = Seq(parallelExecution in Test := false)
+
   def wookieProject(name: String): Project = Project(name, file(name))
     .settings(
       moduleName := s"wookie-$name")
@@ -117,6 +123,7 @@ object WookieBuild extends Build {
       moduleName := s"wookie-examples-$name"
     )
 
+  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion}_0.2.1" % "test"
   lazy val http4sversion = "0.8.6"
   lazy val http4s = Seq(
       "org.http4s" %% "http4s-blazeclient" % http4sversion,
@@ -228,19 +235,33 @@ object WookieBuild extends Build {
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val sparkCsv = ("com.databricks" %% "spark-csv" % "1.2.0").
+  lazy val discipline = "org.typelevel" %% "discipline" % "0.4" % "test"
+
+  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.3.0"
+
+  lazy val sparkIndexedRdd = "amplab" % "spark-indexedrdd" % "0.3"
+
+  lazy val succint = ("amplab" % "succinct" % "0.1.6").
     exclude("org.apache.spark", "spark-core_" + "2.10").
     exclude("org.apache.spark", "spark-core_" + "2.11").
     exclude("org.apache.spark", "spark-sql_" + "2.10").
     exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.10").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.11")
-  lazy val sparkIndexedRdd = ("amplab" % "spark-indexedrdd" % "0.3").
+    exclude("org.apache.hadoop", "hadoop-client")
+
+  lazy val keystoneML = ("edu.berkeley.cs.amplab" %% "keystoneml" % "0.2.1").
     exclude("org.apache.spark", "spark-core_" + "2.10").
     exclude("org.apache.spark", "spark-core_" + "2.11").
     exclude("org.apache.spark", "spark-sql_" + "2.10").
     exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.10").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.11")
+    exclude("org.apache.spark", "spark-mllib_" + "2.10").
+    exclude("org.apache.spark", "spark-mllib_" + "2.11").
+    exclude("org.apache.hadoop", "hadoop-client")
+
+  lazy val mlMatrix = ("edu.berkeley.cs.amplab" %% "mlMatrix" % "0.1").
+    exclude("org.apache.spark", "spark-core_" + "2.10").
+    exclude("org.apache.spark", "spark-core_" + "2.11").
+    exclude("org.apache.spark", "spark-mllib_" + "2.10").
+    exclude("org.apache.spark", "spark-mllib_" + "2.11").
+    exclude("org.apache.hadoop", "hadoop-client")
 
 }

@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,11 +14,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.pumper
 
 import org.http4s.server._
-import wookie.app.cli._
 import org.rogach.scallop.ScallopConf
 import wookie.web.cli.{Port, HttpProducer}
 

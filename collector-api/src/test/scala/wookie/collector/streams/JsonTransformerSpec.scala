@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,16 +14,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.collector.streams
 
 import argonaut.Argonaut._
 import argonaut.{DecodeJson, EncodeJson}
 import org.http4s.{ParseException, Response}
+import org.junit.runner.RunWith
 import org.scalacheck.{Gen, Arbitrary}
 import org.specs2.ScalaCheck
 import org.specs2.matcher.JsonMatchers
 import org.specs2.mutable.Specification
+import org.specs2.runner.JUnitRunner
 import scodec.bits.ByteVector
 
 import scalaz.concurrent.Task
@@ -30,6 +34,7 @@ import scalaz.concurrent.Task
 /**
   * Created by ljastrze on 11/22/15.
   */
+@RunWith(classOf[JUnitRunner])
 class JsonTransformerSpec extends Specification with ScalaCheck with JsonMatchers {
 
   case class Foo(attr6: String)

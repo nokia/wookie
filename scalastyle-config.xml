@@ -8,7 +8,8 @@
  </check>
  <check level="warning" class="org.scalastyle.file.HeaderMatchesChecker" enabled="true">
   <parameters>
-   <parameter name="header"><![CDATA[/* Copyright (C) 2014-2015 by Nokia.
+   <parameter name="header"><![CDATA[/*
+* Copyright (C) 2014-2015 by Nokia.
 * See the LICENCE.txt file distributed with this work for additional
 * information regarding copyright ownership.
 *
@@ -23,7 +24,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*/]]></parameter>
+*
+ */
+]]></parameter>
   </parameters>
  </check>
  <check level="warning" class="org.scalastyle.scalariform.SpacesAfterPlusChecker" enabled="true"></check>
@@ -73,7 +76,7 @@
  <check level="warning" class="org.scalastyle.scalariform.NoCloneChecker" enabled="true"></check>
  <check level="warning" class="org.scalastyle.scalariform.NoFinalizeChecker" enabled="true"></check>
  <check level="warning" class="org.scalastyle.scalariform.CovariantEqualsChecker" enabled="true"></check>
- <check level="warning" class="org.scalastyle.scalariform.StructuralTypeChecker" enabled="true"></check>
+ <check level="warning" class="org.scalastyle.scalariform.StructuralTypeChecker" enabled="false"></check>
  <check level="warning" class="org.scalastyle.file.RegexChecker" enabled="true">
   <parameters>
    <parameter name="regex"><![CDATA[println]]></parameter>

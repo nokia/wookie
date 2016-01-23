@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,7 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.yql.news
 
 import scala.language.postfixOps
@@ -57,7 +59,7 @@ object NewsCodecs {
   }
 
   def parseContent: ACursor => DecodeResult[Option[String]] = curs => {
-    val x = (curs --\ "content")
+    val x = curs --\ "content"
     if (x.succeeded) {
       x.as[Option[String]]
     } else {

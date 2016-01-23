@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,7 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.yql.finance
 
 import org.specs2.mutable.Specification
@@ -31,7 +33,6 @@ class StockQuoteDecoderSpec extends Specification {
   import StockCodecs.encoder
   "Should parse list of stock quotes from NY" in new context {
     val quote = quotes.decode(StockCodecs.decoder)
-    println(quote)
     quote.getOrElse(Nil).map(r =>
       StockQuote(r.price, r.volume, r.symbol, r.change, 0L, r.captialization)) must contain(StockQuote(
         44.75, 7768294, "YHOO", -0.20, 0L, "42.00B"))

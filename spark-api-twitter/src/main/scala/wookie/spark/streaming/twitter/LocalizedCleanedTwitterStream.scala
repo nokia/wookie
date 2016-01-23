@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,7 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.spark.streaming.twitter
 
 import com.javadocmd.simplelatlng.LatLng
@@ -23,8 +25,8 @@ import twitter4j.Status
 import wookie.spark.cli.SparkStreamingApp
 import wookie.spark.filters.FilterStream
 import wookie.spark.geo.Location
-import wookie.spark.mappers.{Maps, MapStream}
-import wookie.spark.mappers.Maps.From
+import wookie.spark.mappers.{MapStream, Maps}
+import wookie.spark.mappers.Maps._
 import wookie.spark.sparkle.Sparkle
 import wookie.spark.streaming.twitter.TwitterFilters._
 import wookie.spark.streaming.twitter.TwitterMaps._

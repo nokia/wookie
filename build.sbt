@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,12 +14,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.1.6"
+version in ThisBuild := "0.2.0"
 
 crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
 

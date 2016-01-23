@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,11 +14,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-package wookie.collector.cli
+ *
+ */
+package wookie.web.cli
 
 import org.rogach.scallop.ScallopConf
 
-trait Kafka extends ScallopConf {
-  lazy val brokers = opt[List[String]]("brokers", descr = "Kafka Brokers host1:port1,host2:port2", required = true)
+trait Port extends ScallopConf {
+  lazy val port = opt[Int]("port", descr = "Port to listent to", required = true)
 }
+

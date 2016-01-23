@@ -1,4 +1,5 @@
-/* Copyright (C) 2014-2015 by Nokia.
+/*
+ * Copyright (C) 2014-2015 by Nokia.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -13,19 +14,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 package wookie.collector.streams
 
-import org.http4s.Method
+import org.http4s.{Response, Method}
 import org.http4s.client.Client
+import org.junit.runner.RunWith
 import org.scalacheck.{Gen, Arbitrary}
 import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
+import org.specs2.runner.JUnitRunner
+
+import scalaz.concurrent.Task
 
 /**
   * Created by ljastrze on 11/22/15.
   */
+@RunWith(classOf[JUnitRunner])
 class HttpStreamSpec extends Specification with ScalaCheck with Mockito {
 
   def urls: Arbitrary[String] = {
@@ -66,13 +73,17 @@ class HttpStreamSpec extends Specification with ScalaCheck with Mockito {
     req.uri.scheme.get.toString must_== scheme
   }.setArbitraries(schemeGen, hostGen, pathGen, alphaNumericMap)
 
-  "Should create source stream out of http" in {
+  "Should create source stream out of http" >> prop { (scheme: String, host: String, path: String, query: Map[String, String]) =>
+    val request = HttpStream.createRequest(s"$scheme://$host/$path", query).toOption.get
+    val resp = Response()
     val cli = mock[Client]
-    val req = HttpStream.createRequest(s"http://localhost:8080/v/t", Map("x" -> "y")).toOption.get
-    val process = HttpStream.source(req)(cli)
+    cli.apply(request) returns Task.now(resp)
+    cli.shutdown() returns Task.now(())
+
+    val process = HttpStream.source(request)(cli)
     val result = process.run.attemptRun
-    println(result)
-    there was one(cli).apply(req) andThen one(cli).shutdown()
+    there was one(cli).apply(request) andThen one(cli).shutdown()
+    result.isRight must_== true
   }
 
 }
