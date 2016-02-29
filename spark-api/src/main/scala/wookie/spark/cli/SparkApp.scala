@@ -52,13 +52,6 @@ abstract class SparkApp[A <: Name](options: Array[String] => A) extends Logging 
     _sc = new SparkContext(_conf)
     _sqlContext = new SQLContext(_sc)
 
-    Runtime.getRuntime.addShutdownHook(
-      new Thread() {
-        override def run() = {
-          _sc.stop()
-        }
-      }
-    )
     run(opt)
   }
 }
