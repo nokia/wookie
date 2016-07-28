@@ -16,9 +16,7 @@
  * limitations under the License.
  *
  */
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
 addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0" excludeAll(
-  ExclusionRule(organization = "com.danieltrinh")))
-libraryDependencies += "org.scalariform" %% "scalariform" % "0.1.7"
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.0")

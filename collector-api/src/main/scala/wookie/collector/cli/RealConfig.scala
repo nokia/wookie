@@ -24,9 +24,6 @@ import wookie.collector.streams.Config
 
 import scala.collection.JavaConverters._
 
-/**
-  * Created by ljastrze on 11/21/15.
-  */
 case class RealConfig(brokers: List[String]) extends Config {
 
   val kafkaProducer: KafkaProducer[String, String] = {

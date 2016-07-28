@@ -24,12 +24,8 @@ import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import org.typelevel.discipline.specs2.mutable.Discipline
 import wookie.spark.cli.{SparkStreamingApp, SparkApp}
 
-/**
-  * Created by ljastrze on 11/29/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class SparkleSpec extends Specification with Mockito with ScalaCheck {
 

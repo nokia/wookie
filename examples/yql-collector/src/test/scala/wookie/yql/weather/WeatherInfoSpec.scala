@@ -277,7 +277,7 @@ class WeatherInfoSpec extends Specification {
     "contain date" in {
       val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(weatherResponse.getBytes))))
       val x = JsonTransformer.asText(resp)
-      x.run must contain ("1425952560000")
+      x.unsafePerformSync must contain ("1425952560000")
     }
   }
 
@@ -285,7 +285,7 @@ class WeatherInfoSpec extends Specification {
     "contain couple of dates" in {
       val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(multiWeatherResponse.getBytes))))
       val x = JsonTransformer.asText(resp)
-      x.run must contain ("1428097920000")
+      x.unsafePerformSync must contain ("1428097920000")
     }
   }
 }

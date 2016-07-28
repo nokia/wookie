@@ -27,9 +27,6 @@ import scalaz.concurrent.{Future, Task}
 import scalaz.stream._
 import scalaz.stream.io._
 
-/**
-  * Created by ljastrze on 11/16/15.
-  */
 object KafkaStream {
 
   private def jFutureToTask[T](fut: JFuture[T]): Task[T] = {

@@ -16,19 +16,26 @@
  * limitations under the License.
  *
  */
-package wookie.oracle
+package wookie.collector
 
-import org.http4s.server._
-import wookie.app.cli._
-import org.rogach.scallop.ScallopConf
-import wookie.web.cli.{Port, HttpProducer}
+import org.http4s.{HttpService, Response}
+import org.http4s.Status._
+import org.http4s.Method._
+import org.http4s.client.{Client, DisposableResponse}
 
-trait OracleAppConf extends Port
+import scalaz.concurrent.Task
 
-object OracleApp extends HttpProducer[OracleAppConf](new ScallopConf(_) with OracleAppConf) {
+object MockedClient {
 
-  def createServices(a: OracleAppConf): Map[String, HttpService] = {
-    Map("/predict" -> Prediction.service)
+  def create(response: Response): Client = {
+    val route = HttpService {
+      case r if r.method == GET && r.pathInfo == "/ok" => Task.now(response)
+      case r if r.method == GET && r.pathInfo == "/boom" => Task.now(Response(BadRequest))
+      case r => Task.now(response)
+    }
+    Client(
+      open = route.map(resp => DisposableResponse(resp,  Task.now(()))),
+      shutdown = Task.now(())
+    )
   }
-
 }

@@ -18,29 +18,29 @@
  */
 package wookie.spark.cli
 
-import org.apache.spark.{Logging, SparkConf, SparkContext}
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   *
   * @param options function that will create parsed arguments of type A
   * @tparam A type of cmd line arguments, at least name of application needs to be passed
   */
-abstract class SparkApp[A <: Name](options: Array[String] => A) extends Logging {
+abstract class SparkApp[A <: Name](options: Array[String] => A) {
 
   protected var _sc: SparkContext = _
   protected var _conf: SparkConf = _
-  protected var _sqlContext: SQLContext = _
+  protected var _ss: SparkSession = _
   protected var _opt: A = _
 
   def sc: SparkContext = _sc
   def conf: SparkConf = _conf
-  def sqlContext: SQLContext = _sqlContext
+  def session: SparkSession = _ss
   def opt: A = _opt
 
   def run(opt: A): Unit
 
-  def configure(conf: SparkConf): Unit = ()
+  def configure(conf: SparkConf, sessionBuilder: SparkSession.Builder): SparkSession.Builder = sessionBuilder
 
   final def main(args: Array[String]): Unit = {
     _opt = options(args)
@@ -48,9 +48,9 @@ abstract class SparkApp[A <: Name](options: Array[String] => A) extends Logging 
     _opt.assertVerified()
 
     _conf = new SparkConf().setAppName(opt.name())
-    configure(_conf)
-    _sc = new SparkContext(_conf)
-    _sqlContext = new SQLContext(_sc)
+
+    _ss = configure(_conf, SparkSession.builder().config(_conf)).getOrCreate()
+    _sc = _ss.sparkContext
 
     run(opt)
   }

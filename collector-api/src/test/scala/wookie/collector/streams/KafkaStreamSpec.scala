@@ -35,9 +35,6 @@ import org.specs2.mutable.Specification
 
 import scalaz.stream._
 
-/**
-  * Created by ljastrze on 11/24/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class KafkaStreamSpec extends Specification with ScalaCheck with Mockito {
 
@@ -50,7 +47,7 @@ class KafkaStreamSpec extends Specification with ScalaCheck with Mockito {
 
     val p1 = Process.constant((key,value)).toSource
     val sink = KafkaStream.sink(topics)(producer)
-    val result = p1.to(sink).take(1).run.attemptRun
+    val result = p1.to(sink).take(1).run.unsafePerformSyncAttempt
 
     there was topics.length.times(producer).send(captor.capture()) andThen one(producer).close
     val capturedValues = captor.getAllValues.asScala.toList

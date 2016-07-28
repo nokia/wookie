@@ -18,20 +18,18 @@
  */
 package wookie.collector.streams
 
-import org.http4s.{Response, Method}
+import org.http4s.{Method, Response}
 import org.http4s.client.Client
 import org.junit.runner.RunWith
-import org.scalacheck.{Gen, Arbitrary}
+import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import wookie.collector.MockedClient
 
 import scalaz.concurrent.Task
 
-/**
-  * Created by ljastrze on 11/22/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class HttpStreamSpec extends Specification with ScalaCheck with Mockito {
 
@@ -76,14 +74,11 @@ class HttpStreamSpec extends Specification with ScalaCheck with Mockito {
   "Should create source stream out of http" >> prop { (scheme: String, host: String, path: String, query: Map[String, String]) =>
     val request = HttpStream.createRequest(s"$scheme://$host/$path", query).toOption.get
     val resp = Response()
-    val cli = mock[Client]
-    cli.apply(request) returns Task.now(resp)
-    cli.shutdown() returns Task.now(())
+    val cli = MockedClient.create(resp)
 
     val process = HttpStream.source(request)(cli)
-    val result = process.run.attemptRun
-    there was one(cli).apply(request) andThen one(cli).shutdown()
+    val result = process.run.unsafePerformSyncAttempt
     result.isRight must_== true
-  }
+  }.setArbitraries(schemeGen, hostGen, pathGen, alphaNumericMap)
 
 }

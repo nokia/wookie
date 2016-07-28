@@ -16,18 +16,4 @@
  * limitations under the License.
  *
  */
-package wookie.web.server
-
-import java.io.File
-
-import org.http4s.server.HttpService
-import wookie.web.server.file.FileService
-
-object StaticResourceService {
-
-  val service: (FileService, File) => HttpService = (filer, rootDirectory) => HttpService {
-    case req if filer.ifContains(rootDirectory, req.pathInfo) =>
-      filer.contents(rootDirectory, req.pathInfo, req)
-  }
-
-}
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")

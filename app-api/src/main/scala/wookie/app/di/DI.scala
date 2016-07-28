@@ -20,9 +20,6 @@ package wookie.app.di
 
 import scalaz.{Reader, Id, Kleisli}
 
-/**
-  * Created by ljastrze on 11/20/15.
-  */
 object DI {
 
   implicit def funToKleisli[Conf, A](r: Conf => A): Kleisli[Id.Id, Conf, A] = Kleisli[Id.Id, Conf, A](Reader(r).run)

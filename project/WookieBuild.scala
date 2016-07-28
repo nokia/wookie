@@ -18,92 +18,47 @@
  */
 import sbt._
 import Keys._
-import sbtassembly.Plugin._
-import AssemblyKeys._
+import sbtassembly.AssemblyPlugin.autoImport._
 
 object WookieBuild extends Build {
 
   lazy val app = wookieProject("app-api").
     settings(
-      libraryDependencies ++= logging ++ Seq(scallop, scalazCore))
-
-  lazy val web = wookieProject("web-api").
-    dependsOn(app).
-    settings(
-      libraryDependencies ++= http4s)
+      libraryDependencies ++= fullLogging ++ Seq(scallop, scalazCore))
 
   lazy val collector = wookieProject("collector-api").
     dependsOn(app).
     settings(
-      libraryDependencies ++= Seq(kafka, httpClient, scalazStream, http4sClient, http4sDsl, http4sArgonaut))
+      libraryDependencies ++= Seq(kafka, scalazStream, http4sClient, http4sDsl, http4sArgonaut))
 
   lazy val sparkApi = wookieProject("spark-api").
     settings(
-      libraryDependencies ++= sparkProvided ++ Seq(scallop, spire, shapeless, argonaut, simplelatlng, sparkTesting, discipline)).
+      libraryDependencies ++= sparkProvided ++ Seq(scallop, shapeless, log4s, sparkTesting, algebird)).
     settings(sparkTestingSettings)
-
-
-  lazy val twitterApi = wookieProject("spark-api-twitter").
-    dependsOn(sparkApi).
-    settings(
-      libraryDependencies ++= sparkProvided ++ Seq(sparkStreamingTwitter))
 
   lazy val kafkaApi = wookieProject("spark-api-kafka").
     dependsOn(sparkApi).
     settings(
       libraryDependencies ++= sparkProvided ++ Seq(sparkStreamingKafka))
 
-  lazy val oracle = wookieProject("oracle").
-    dependsOn(web).
-    settings(assembling).
-    settings(libraryDependencies ++= sparkMLlib).
-    settings(addArtifact(Artifact("wookie-oracle", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
-
-  lazy val pumper = wookieProject("pumper").
-    dependsOn(web).
-    settings(assembling).
-    settings(addArtifact(Artifact("wookie-pumper", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
-
   lazy val sqlserver = wookieProject("sqlserver").dependsOn(sparkApi).
     settings(
-      crossScalaVersions := Seq("2.10.6"),
-      libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, psqlJdbc, sparkCsv,
-        cassandraAnalytics, esAnalytics),
-      dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5").
-    settings(assembling ++ noscala).
-    settings(addArtifact(Artifact("wookie-sqlserver", "assembly"), sbtassembly.Plugin.AssemblyKeys.assembly))
+      libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, cassandraAnalytics, sparkCsv),
+      dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5")
 
-  lazy val yqlCollector = wookieExampleProject("yql-collector", "yql-app/collector").
+  lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
     dependsOn(collector).
     settings(assembling).
     settings(packagedArtifacts := Map.empty)
 
-  lazy val yqlAnalytics = wookieExampleProject("yql-analytics", "yql-app/analytics").
-    dependsOn(twitterApi, kafkaApi).
-    settings(assembling ++ noscala).
-    settings(libraryDependencies ++= sparkProvided).
-    settings(packagedArtifacts := Map.empty)
-
-  lazy val yqlVis = wookieExampleProject("yql-vis", "yql-app/visualization").
-    dependsOn(web).
-    settings(assembling).
-    settings(packagedArtifacts := Map.empty)
-
-  lazy val fakeYqlAnalytics = wookieExampleProject("yql-analytics-classpath", "fake/yql-app-analytics").
-    dependsOn(yqlAnalytics).
-    settings(
-      libraryDependencies ++= Seq("org.slf4j" % "slf4j-log4j12" % slf4jVersion) ++ spark,
-      packagedArtifacts := Map.empty)
-
   lazy val fakeSqlserver = wookieExampleProject("sqlserver-classpath", "fake/sqlserver").
     dependsOn(sqlserver).
     settings(
-      crossScalaVersions := Seq("2.10.6"),
       libraryDependencies ++= spark ++ sparkThriftServer,
       packagedArtifacts := Map.empty)
 
-  lazy val noscala = Seq(assemblyOption in assembly ~= { _.copy(includeScala = false) })
-  lazy val assembling = assemblySettings ++ Seq(mergeStrategy in assembly := {
+  lazy val noscala = Seq(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
+  lazy val assembling = Seq(assemblyMergeStrategy in assembly := {
       case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
       case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
       case "log4j.properties" => MergeStrategy.discard
@@ -123,21 +78,13 @@ object WookieBuild extends Build {
       moduleName := s"wookie-examples-$name"
     )
 
-  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion}_0.2.1" % "test"
-  lazy val http4sversion = "0.8.6"
-  lazy val http4s = Seq(
-      "org.http4s" %% "http4s-blazeclient" % http4sversion,
-      "org.http4s" %% "http4s-blazeserver" % http4sversion,
-      "org.http4s" %% "http4s-argonaut" % http4sversion,
-      "org.http4s" %% "http4s-dsl" % http4sversion,
-      "org.http4s" %% "http4s-server" % http4sversion)
-
-  lazy val http4sCore = "org.http4s" %% "http4s-core" % http4sversion
-  lazy val http4sClient = "org.http4s" %% "http4s-blazeclient" % http4sversion
+  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.0.0-preview_0.4.1-preview" % "test"
+  lazy val http4sversion = "0.14.1a"
+  lazy val http4sClient = "org.http4s" %% "http4s-blaze-client" % http4sversion
   lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
   lazy val http4sArgonaut = "org.http4s" %% "http4s-argonaut" % http4sversion
 
-  lazy val specs2version = "3.6.5"
+  lazy val specs2version = "3.7.2"
   lazy val specs2 = Seq(
       "org.specs2" %% "specs2-core" % specs2version  % "test",
       "org.specs2" %% "specs2-scalacheck" % specs2version % "test",
@@ -146,122 +93,55 @@ object WookieBuild extends Build {
       "org.specs2" %% "specs2-mock" % specs2version % "test",
       "org.specs2" %% "specs2-junit" % specs2version % "test")
 
-  lazy val slf4jVersion = "1.7.12"
-  lazy val logging = Seq(
-      "org.log4s" %% "log4s" % "1.1.5",
+  lazy val log4s = "org.log4s" %% "log4s" % "1.3.0"
+  lazy val slf4jVersion = "1.7.21"
+  lazy val fullLogging = Seq(
+      log4s,
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "org.slf4j" % "log4j-over-slf4j" % slf4jVersion,
       "org.slf4j" % "jul-to-slf4j" % slf4jVersion,
       "org.slf4j" % "jcl-over-slf4j" % slf4jVersion,
-      "ch.qos.logback" % "logback-classic" % "1.1.3")
+      "ch.qos.logback" % "logback-classic" % "1.1.7")
 
-  lazy val simplelatlng = "com.javadocmd" % "simplelatlng" % "1.3.0"
-  lazy val argonaut = "io.argonaut" %% "argonaut" % "6.1"
-  lazy val scalazVersion = "7.1.2"
+  lazy val argonaut = "io.argonaut" %% "argonaut" % "6.2-M3"
+  lazy val scalazVersion = "7.2.0"
   lazy val scalazCore = "org.scalaz" %% "scalaz-core" % scalazVersion
   lazy val scalazEffect = "org.scalaz" %% "scalaz-effect" % scalazVersion
   lazy val scalazConcurrent = "org.scalaz" %% "scalaz-concurrent" % scalazVersion
+  lazy val shapeless = "com.chuusai" %% "shapeless" % "2.3.0"
+  lazy val scalazStream = "org.scalaz.stream" %% "scalaz-stream" % "0.8a"
 
-  lazy val scalazStream = "org.scalaz.stream" %% "scalaz-stream" % "0.7.1a"
-  lazy val psqlJdbc = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
-
-  lazy val shapeless = "com.chuusai" %% "shapeless" % "2.2.2"
   lazy val scallop = "org.rogach" %% "scallop" % "0.9.5"
-  lazy val httpClient = "com.ning" % "async-http-client" % "1.9.27"
   lazy val kafka = ("org.apache.kafka" % "kafka-clients" % "0.8.2.1").
     exclude("log4j", "log4j").
     exclude("org.slf4j", "slf4j-log4j12")
 
-  lazy val cassandraVersion = "2.2.0-rc3"
+  lazy val cassandraVersion = "3.0.0"
   lazy val cassandra = Seq(
     "com.datastax.cassandra" % "cassandra-driver-mapping" % cassandraVersion,
     "com.datastax.cassandra"  % "cassandra-driver-core" % cassandraVersion)
 
-  lazy val esAnalytics = ("org.elasticsearch" %% "elasticsearch-spark" % "2.2.0-m1").
-    exclude("org.apache.spark", "spark-core_" + "2.10").
+  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0").
     exclude("org.apache.spark", "spark-core_" + "2.11").
-    exclude("org.apache.spark", "spark-sql_" + "2.10").
     exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.10").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.11")
-  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "1.5.0-M2").
-    exclude("org.apache.spark", "spark-core_" + "2.10").
-    exclude("org.apache.spark", "spark-core_" + "2.11").
-    exclude("org.apache.spark", "spark-sql_" + "2.10").
-    exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.spark", "spark-catalyst_" + "2.10").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
 
-  lazy val spire = "org.spire-math" %% "spire" % "0.10.1"
-
-  lazy val sparkVersion = "1.5.1"
-  lazy val hadoopVersion = "2.6.0-cdh5.4.7"
-  lazy val sparkMLlib = Seq(
-    ("org.apache.spark" %% "spark-mllib" % sparkVersion).
-      exclude("org.apache.hadoop", "hadoop-client").
-      exclude("org.slf4j", "slf4j-log4j12"),
-    ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).
-      exclude("org.slf4j", "slf4j-log4j12").
-      exclude("javax.servlet", "servlet-api"))
+  lazy val sparkVersion = "2.0.0"
 
   lazy val sparkThriftServer = Seq(
-    ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).
-      exclude("org.mortbay.jetty", "servlet-api").
-      exclude("javax.servlet", "servlet-api").
-      exclude("org.apache.hadoop", "hadoop-client").
-      exclude("org.slf4j", "slf4j-log4j12"),
-    ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).
-      exclude("org.slf4j", "slf4j-log4j12").
-      exclude("javax.servlet", "servlet-api"))
+    "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion)
 
-  lazy val sparkStreamingKafka =  "org.apache.spark" %% "spark-streaming-kafka-assembly" % sparkVersion
-
-  lazy val sparkStreamingTwitter =  ("org.apache.spark" %% "spark-streaming-twitter" % sparkVersion).
-      exclude("org.apache.hadoop", "hadoop-client").
-      exclude("org.slf4j", "slf4j-log4j12").
-      exclude("org.apache.spark", "spark-core_" + "2.10").
-      exclude("org.apache.spark", "spark-core_" + "2.11").
-      exclude("org.apache.spark", "spark-streaming_" + "2.10").
-      exclude("org.apache.spark", "spark-streaming_" + "2.11")
+  lazy val sparkStreamingKafka =  "org.apache.spark" %% "spark-streaming-kafka-0-8-assembly" % sparkVersion
 
   lazy val sparkThriftServerProvided = sparkThriftServer.map(a => a % "provided")
   lazy val spark = Seq(
-    ("org.apache.spark" %% "spark-core" % sparkVersion).exclude("org.apache.hadoop", "hadoop-client"),
-    ("org.apache.hadoop" % "hadoop-client" % hadoopVersion).exclude("javax.servlet", "servlet-api"),
     "org.apache.spark" %% "spark-streaming" % sparkVersion,
-    ("org.apache.spark" %% "spark-hive" % sparkVersion).exclude("org.mortbay.jetty", "servlet-api"),
-    "org.apache.spark" %% "spark-mllib" % sparkVersion,
-    "org.apache.spark" %% "spark-graphx" % sparkVersion)
+    "org.apache.spark" %% "spark-sql" % sparkVersion)
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val discipline = "org.typelevel" %% "discipline" % "0.4" % "test"
+  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.4.0"
 
-  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.3.0"
-
-  lazy val sparkIndexedRdd = "amplab" % "spark-indexedrdd" % "0.3"
-
-  lazy val succint = ("amplab" % "succinct" % "0.1.6").
-    exclude("org.apache.spark", "spark-core_" + "2.10").
-    exclude("org.apache.spark", "spark-core_" + "2.11").
-    exclude("org.apache.spark", "spark-sql_" + "2.10").
-    exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.hadoop", "hadoop-client")
-
-  lazy val keystoneML = ("edu.berkeley.cs.amplab" %% "keystoneml" % "0.2.1").
-    exclude("org.apache.spark", "spark-core_" + "2.10").
-    exclude("org.apache.spark", "spark-core_" + "2.11").
-    exclude("org.apache.spark", "spark-sql_" + "2.10").
-    exclude("org.apache.spark", "spark-sql_" + "2.11").
-    exclude("org.apache.spark", "spark-mllib_" + "2.10").
-    exclude("org.apache.spark", "spark-mllib_" + "2.11").
-    exclude("org.apache.hadoop", "hadoop-client")
-
-  lazy val mlMatrix = ("edu.berkeley.cs.amplab" %% "mlMatrix" % "0.1").
-    exclude("org.apache.spark", "spark-core_" + "2.10").
-    exclude("org.apache.spark", "spark-core_" + "2.11").
-    exclude("org.apache.spark", "spark-mllib_" + "2.10").
-    exclude("org.apache.spark", "spark-mllib_" + "2.11").
-    exclude("org.apache.hadoop", "hadoop-client")
+  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.1"
 
 }

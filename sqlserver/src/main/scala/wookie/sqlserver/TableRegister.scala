@@ -18,21 +18,20 @@
  */
 package wookie.sqlserver
 
-import org.apache.spark.Logging
+import java.nio.file.Paths
+
+import jodd.util.URLDecoder
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.log4s._
 
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
-import java.nio.file.Paths
 import scalaz._
-import jodd.util.URLDecoder
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.hive.HiveContext
-import scalaz.concurrent.Strategy
-import scalaz.concurrent.Task
+import scalaz.concurrent.{Strategy, Task}
 
 case class ConnectionSpec(name: String, source: String, parameters: String, localStorage: Boolean, path: String) {
   val parametersMap: Map[String, String] = (for {
-    param <- parameters.split("&&", -1) if param.split("==", -1).size == 2
+    param <- parameters.split("&&", -1) if param.split("==", -1).length == 2
   } yield {
     val k :: v :: Nil = param.split("==", -1).toList
     k -> v
@@ -40,20 +39,21 @@ case class ConnectionSpec(name: String, source: String, parameters: String, loca
 }
 
 
-case class TableRegister(hiveContext: HiveContext) extends Logging {
+case class TableRegister(session: SparkSession) {
 
   implicit val scheduler = Strategy.DefaultTimeoutScheduler
-  val conf = hiveContext.sparkContext.hadoopConfiguration
+  private[this] val log = getLogger
+  val conf = session.sparkContext.hadoopConfiguration
   var registry = Map[String, scalaz.stream.Process[Task, Unit]]()
 
   def setupTableRegistration(dir: String): Unit = {
 
-    val currentTables = DirectoryObserver.listDirectory(hiveContext.sparkContext.hadoopConfiguration, dir)
+    val currentTables = DirectoryObserver.listDirectory(session.sparkContext.hadoopConfiguration, dir)
 
     handleRegistration(Some(Difference(currentTables, Set())))
 
     val observer = DirectoryObserver.observeDirectories(conf, dir, 1 second)(handleRegistration)
-    observer.run.runAsync(f => ())
+    observer.run.unsafePerformAsync(f => ())
   }
 
   def handleRegistration: Option[Difference] => Unit = diff => {
@@ -90,16 +90,16 @@ case class TableRegister(hiveContext: HiveContext) extends Logging {
   }
 
   def createDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
-    case "parquet" | "json" => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).load(path))
-    case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).options(conSpec.parametersMap + ("path" -> path)).load)
-    case _                  => \/.fromTryCatchNonFatal(hiveContext.read.format(conSpec.source).options(conSpec.parametersMap).load)
+    case "parquet" | "json" => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).load(path))
+    case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).options(conSpec.parametersMap + ("path" -> path)).load)
+    case _                  => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).options(conSpec.parametersMap).load)
   }
 
   def startRefreshing(spec: ConnectionSpec): Unit = synchronized {
     if (spec.localStorage) {
       val f = DirectoryObserver.observeFilesRecursively(conf, spec.path, 1 second)(handleRefreshing(spec.path))
       registry = registry + (spec.name -> f)
-      f.run.runAsync(f => ())
+      f.run.unsafePerformAsync(f => ())
     }
   }
 
@@ -107,7 +107,7 @@ case class TableRegister(hiveContext: HiveContext) extends Logging {
     val removedProcess = for {
       proc <- registry.get(spec.name)
     } yield {
-      val t = proc.kill.run.attemptRun
+      proc.kill.run.unsafePerformSyncAttempt
       proc
     }
     registry = registry - spec.name
@@ -123,10 +123,10 @@ case class TableRegister(hiveContext: HiveContext) extends Logging {
     val addingResult = for {
       spec <- connection
       df <- createDataFrame(path, spec)
-      _ <- \/.fromTryCatchNonFatal(df.registerTempTable(spec.name))
+      _ <- \/.fromTryCatchNonFatal(df.createOrReplaceTempView(spec.name))
     } yield spec
 
-    logInfo(s"Added: $connection : $addingResult")
+    log.info(s"Added: $connection : $addingResult")
 
     connection
   }
@@ -139,7 +139,7 @@ case class TableRegister(hiveContext: HiveContext) extends Logging {
 
     for {
       spec <- connection
-      _ <- \/.fromTryCatchNonFatal(hiveContext.dropTempTable(spec.name))
+      _ <- \/.fromTryCatchNonFatal(session.sqlContext.dropTempTable(spec.name))
     } yield spec
 
     connection

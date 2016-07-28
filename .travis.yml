@@ -1,12 +1,10 @@
 language: scala
 scala:
-- 2.11.7
+- 2.11.8
 jdk:
-- oraclejdk7
-script: sbt "so test"
+- oraclejdk8
+script: sbt test package
 after_success:
-- sbt "so package"
-- sbt "so assembly"
 - '/bin/bash "$TRAVIS_BUILD_DIR/travis.credentials.sh" && sbt publish'
 env:
   global:

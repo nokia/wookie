@@ -20,8 +20,8 @@ package wookie.spark.cli
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.streaming.{StreamingContextState, StreamingContext}
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.{StreamingContext, StreamingContextState}
 import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
@@ -30,22 +30,19 @@ import org.specs2.runner.JUnitRunner
 import scala.collection.mutable
 import scalaz.concurrent.Task
 
-/**
-  * Created by ljastrze on 11/28/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class SparkStreamingSpec extends Specification {
 
   "Should init Spark Streaming object" in {
     var localSc: SparkContext = null
-    var localSQL: SQLContext = null
+    var localSQL: SparkSession = null
     var localStreaming: StreamingContext = null
     var appName: String = null
     var duration: Long = 0L
     val app = new SparkStreamingApp(new ScallopConf(_) with Name with Duration with Checkpoint) {
       override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint): Unit = {
         localSc = sc
-        localSQL = sqlContext
+        localSQL = session
         localStreaming = ssc
         appName = opt.name()
         duration = opt.duration()
@@ -66,7 +63,7 @@ class SparkStreamingSpec extends Specification {
       }
       localStreaming.stop()
     })
-    sparkStop.runAsync( out => ())
+    sparkStop.unsafePerformAsync( out => ())
     app.main(Array("--name", "xxx", "--duration", "1000"))
     localSc.stop()
     Option(localSc) must beSome
