@@ -19,6 +19,7 @@
 package wookie.sqlserver
 
 import java.nio.file.Paths
+import java.util.concurrent.{Executors, ScheduledExecutorService}
 
 import jodd.util.URLDecoder
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -41,22 +42,36 @@ case class ConnectionSpec(name: String, source: String, parameters: String, loca
 
 case class TableRegister(session: SparkSession) {
 
-  implicit val scheduler = Strategy.DefaultTimeoutScheduler
+  //implicit val scheduler = Strategy.DefaultTimeoutScheduler
   private[this] val log = getLogger
   val conf = session.sparkContext.hadoopConfiguration
   var registry = Map[String, scalaz.stream.Process[Task, Unit]]()
 
+  def setupTableRegistration(paths: Map[String, String]): Unit = {
+    implicit val scheduler = Executors.newScheduledThreadPool(Math.min(Runtime.getRuntime.availableProcessors, paths.size),
+      Strategy.DefaultDaemonThreadFactory)
+    paths.foreach {
+      case (tableName, path) =>
+        log.info(s"Registering $tableName with $path")
+        val spec = ConnectionSpec(tableName, "parquet", "", localStorage = true, path)
+        val df = registerDataFrame(path, spec)
+        log.info(s"Result of registering $df")
+        startRefreshing(spec)
+    }
+  }
+
   def setupTableRegistration(dir: String): Unit = {
 
+    implicit val scheduler = Strategy.DefaultTimeoutScheduler
     val currentTables = DirectoryObserver.listDirectory(session.sparkContext.hadoopConfiguration, dir)
 
-    handleRegistration(Some(Difference(currentTables, Set())))
+    handleRegistration(scheduler)(Some(Difference(currentTables, Set())))
 
-    val observer = DirectoryObserver.observeDirectories(conf, dir, 1 second)(handleRegistration)
+    val observer = DirectoryObserver.observeDirectories(conf, dir, 1 minute)(handleRegistration(scheduler))
     observer.run.unsafePerformAsync(f => ())
   }
 
-  def handleRegistration: Option[Difference] => Unit = diff => {
+  def handleRegistration(implicit scheduler: ScheduledExecutorService): Option[Difference] => Unit = diff => {
     for (d <- diff) {
       d.removed.foreach { p => for {
           spec <- removeTable(p)
@@ -70,6 +85,7 @@ case class TableRegister(session: SparkSession) {
   }
 
   def handleRefreshing(mainPath: String): Option[Difference] => Unit = diff => {
+    log.info(s"Refreshing path : $mainPath")
     for (d <- diff) {
       val allChanges = d.removed ++ d.added
       if (allChanges.nonEmpty) {
@@ -79,7 +95,7 @@ case class TableRegister(session: SparkSession) {
     }
   }
 
-  def isLocalStorage(source: String): Boolean = source == "parquet" || source == "json" || source == "com.databricks.spark.csv"
+  def isLocalStorage(source: String): Boolean = source == "parquet" || source == "json" || source == "csv"
 
   def decodeConnectionSpec(connectionStr: String, mainPath: String): \/[Throwable, ConnectionSpec] = {
     connectionStr.split("__", -1).toList match {
@@ -89,15 +105,19 @@ case class TableRegister(session: SparkSession) {
     }
   }
 
-  def createDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
-    case "parquet" | "json" => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).load(path))
-    case "com.databricks.spark.csv" => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).options(conSpec.parametersMap + ("path" -> path)).load)
-    case _                  => \/.fromTryCatchNonFatal(session.read.format(conSpec.source).options(conSpec.parametersMap).load)
+  def registerDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
+    case "parquet" | "json" | "csv" => \/.fromTryCatchNonFatal {
+      session.catalog.createExternalTable(conSpec.name, path, conSpec.source)
+    }
+    case _                  => \/.fromTryCatchNonFatal {
+      session.catalog.createExternalTable(conSpec.name, conSpec.source, conSpec.parametersMap)
+    }
   }
 
-  def startRefreshing(spec: ConnectionSpec): Unit = synchronized {
+  def startRefreshing(spec: ConnectionSpec)(implicit scheduler: ScheduledExecutorService): Unit = synchronized {
+    log.info(s"Starting refreshing: $spec")
     if (spec.localStorage) {
-      val f = DirectoryObserver.observeFilesRecursively(conf, spec.path, 1 second)(handleRefreshing(spec.path))
+      val f = DirectoryObserver.observeFilesRecursively(conf, spec.path, 1 minute)(handleRefreshing(spec.path))
       registry = registry + (spec.name -> f)
       f.run.unsafePerformAsync(f => ())
     }
@@ -122,8 +142,7 @@ case class TableRegister(session: SparkSession) {
 
     val addingResult = for {
       spec <- connection
-      df <- createDataFrame(path, spec)
-      _ <- \/.fromTryCatchNonFatal(df.createOrReplaceTempView(spec.name))
+      df <- registerDataFrame(path, spec)
     } yield spec
 
     log.info(s"Added: $connection : $addingResult")
@@ -139,7 +158,7 @@ case class TableRegister(session: SparkSession) {
 
     for {
       spec <- connection
-      _ <- \/.fromTryCatchNonFatal(session.sqlContext.dropTempTable(spec.name))
+      _ <- \/.fromTryCatchNonFatal(session.catalog.dropTempView(spec.name))
     } yield spec
 
     connection

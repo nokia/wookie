@@ -43,7 +43,7 @@ object WookieBuild extends Build {
 
   lazy val sqlserver = wookieProject("sqlserver").dependsOn(sparkApi).
     settings(
-      libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, cassandraAnalytics, sparkCsv),
+      libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, cassandraAnalytics) ++ hadoopAws ,
       dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5")
 
   lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
@@ -126,7 +126,7 @@ object WookieBuild extends Build {
     exclude("org.apache.spark", "spark-sql_" + "2.11").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
 
-  lazy val sparkVersion = "2.0.0"
+  lazy val sparkVersion = "2.0.1"
 
   lazy val sparkThriftServer = Seq(
     "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion)
@@ -143,5 +143,15 @@ object WookieBuild extends Build {
   lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.4.0"
 
   lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.1"
+
+  lazy val awsSdkVersion = "1.10.20"
+
+  lazy val hadoopVersion = "2.6.0-cdh5.7.1"
+
+  lazy val hadoopAws = Seq("org.apache.hadoop" % "hadoop-aws" % hadoopVersion intransitive(),
+    ("com.amazonaws" % "aws-java-sdk-s3" % awsSdkVersion).
+      exclude("com.fasterxml.jackson.core", "jackson-databind").
+      exclude("commons-logging", "commons-logging")
+  )
 
 }

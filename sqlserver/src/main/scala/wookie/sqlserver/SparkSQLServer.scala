@@ -21,49 +21,55 @@ package wookie.sqlserver
 import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.StatsReportListener
 import org.apache.spark.sql.SparkSession.Builder
-import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
 import wookie.spark.cli.{Input, Name, SparkApp}
 import org.log4s._
 
-trait SparkSQLServerConf extends Input with Name {
-  lazy val hiveconfs = opt[List[String]]("hiveconf", descr = "hive configs").map {
-    f =>
-      val tuples = f.map {
-        x =>
-          val splitted = x.split("=", -1)
-          if (splitted.size == 2) {
-            Some((splitted(0), splitted(1)))
-          } else {
-            None
-          }
-      }
-      tuples.filter(_.isDefined).map(_.get).toMap
+trait KVParser {
+  def asMap(lst: List[String]): Map[String, String] = {
+    val tuples = lst.map {
+      x =>
+        val splitted = x.split("=", -1)
+        if (splitted.size == 2) {
+          Some((splitted(0), splitted(1)))
+        } else {
+          None
+        }
+    }
+    tuples.filter(_.isDefined).map(_.get).toMap
   }
 }
 
-object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) with SparkSQLServerConf) {
+trait HiveConf extends ScallopConf with KVParser {
+  lazy val hiveconfs = opt[List[String]]("hiveconf", descr = "hive configs").map(asMap)
+}
+
+trait MultipleInputConf extends ScallopConf with KVParser {
+  lazy val inputs = opt[List[String]]("input", descr = "input").map(asMap)
+}
+
+abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name with A) extends SparkApp[HiveConf with Name with A](options) {
 
   private[this] val log = getLogger
 
   override def configure(conf: SparkConf, sessionBuilder: Builder): Builder = super.configure(conf, sessionBuilder).enableHiveSupport()
 
-  def run(opt: SparkSQLServerConf): Unit = {
+  def processCliParams(arg: Map[String, String]): Unit = {
+    for ((k, v) <- arg) System.setProperty(k, v)
+  }
+
+  def run(opt: HiveConf with Name with A): Unit = {
     processCliParams(opt.hiveconfs.get.getOrElse(Map()))
     setDefaultParams()
 
     sc.addSparkListener(new StatsReportListener())
 
-    TableRegister(session).setupTableRegistration(opt.inputURL())
+    registerTables(opt)
 
     log.info("Tables registered proceeding with launch...")
 
     HiveThriftServer2.startWithContext(session.sqlContext)
-  }
-
-  def processCliParams(arg: Map[String, String]): Unit = {
-    for ((k, v) <- arg) System.setProperty(k, v)
   }
 
   def setDefaultParams(): Unit = {
@@ -74,6 +80,24 @@ object SparkSQLServer extends SparkApp[SparkSQLServerConf](new ScallopConf(_) wi
       .set("spark.kryo.referenceTracking",
         maybeKryoReferenceTracking.getOrElse("false"))
     ()
+  }
+
+  def registerTables(opt: HiveConf with Name with A): Unit
+}
+
+object SparkSQLServer extends CommonSQLServer[Name with Input](new ScallopConf(_) with HiveConf with Name with Input) {
+
+  override def registerTables(opt: HiveConf with Name with Input): Unit = {
+    TableRegister(session).setupTableRegistration(opt.inputURL())
+  }
+
+}
+
+object ParquetSQLServer extends CommonSQLServer[Name with MultipleInputConf](new ScallopConf(_) with HiveConf with Name with MultipleInputConf) {
+
+  override def registerTables(opt: HiveConf with Name with MultipleInputConf): Unit = {
+    val inputMap = opt.inputs.get.getOrElse(Map())
+    TableRegister(session).setupTableRegistration(inputMap)
   }
 
 }
