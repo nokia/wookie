@@ -20,7 +20,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "1.0.1"
+version in ThisBuild := "1.0.2"
 
 scalaVersion in ThisBuild := "2.11.8"
 
@@ -86,6 +86,7 @@ publishMavenStyle in ThisBuild := true
 publishArtifact in (ThisBuild, Test) := false
 
 packagedArtifacts in file(".") := Map.empty
+publishArtifact in file(".") := false
 
 evictionWarningOptions in (ThisBuild, update) := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
 

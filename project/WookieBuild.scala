@@ -49,13 +49,13 @@ object WookieBuild extends Build {
   lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
     dependsOn(collector).
     settings(assembling).
-    settings(packagedArtifacts := Map.empty)
+    settings(packagedArtifacts := Map.empty, publishArtifact := false)
 
   lazy val fakeSqlserver = wookieExampleProject("sqlserver-classpath", "fake/sqlserver").
     dependsOn(sqlserver).
     settings(
       libraryDependencies ++= spark ++ sparkThriftServer,
-      packagedArtifacts := Map.empty)
+      packagedArtifacts := Map.empty, publishArtifact := false)
 
   lazy val noscala = Seq(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
   lazy val assembling = Seq(assemblyMergeStrategy in assembly := {
