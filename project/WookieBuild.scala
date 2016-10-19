@@ -48,14 +48,12 @@ object WookieBuild extends Build {
 
   lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
     dependsOn(collector).
-    settings(assembling).
-    settings(packagedArtifacts := Map.empty, publishArtifact := false)
+    settings(assembling)
 
   lazy val fakeSqlserver = wookieExampleProject("sqlserver-classpath", "fake/sqlserver").
     dependsOn(sqlserver).
     settings(
-      libraryDependencies ++= spark ++ sparkThriftServer,
-      packagedArtifacts := Map.empty, publishArtifact := false)
+      libraryDependencies ++= spark ++ sparkThriftServer)
 
   lazy val noscala = Seq(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
   lazy val assembling = Seq(assemblyMergeStrategy in assembly := {
@@ -78,7 +76,7 @@ object WookieBuild extends Build {
       moduleName := s"wookie-examples-$name"
     )
 
-  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.0.0-preview_0.4.1-preview" % "test"
+  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.0.1_0.4.7" % "test"
   lazy val http4sversion = "0.14.1a"
   lazy val http4sClient = "org.http4s" %% "http4s-blaze-client" % http4sversion
   lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
@@ -116,12 +114,7 @@ object WookieBuild extends Build {
     exclude("log4j", "log4j").
     exclude("org.slf4j", "slf4j-log4j12")
 
-  lazy val cassandraVersion = "3.0.0"
-  lazy val cassandra = Seq(
-    "com.datastax.cassandra" % "cassandra-driver-mapping" % cassandraVersion,
-    "com.datastax.cassandra"  % "cassandra-driver-core" % cassandraVersion)
-
-  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0").
+  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3").
     exclude("org.apache.spark", "spark-core_" + "2.11").
     exclude("org.apache.spark", "spark-sql_" + "2.11").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
@@ -140,9 +133,7 @@ object WookieBuild extends Build {
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val sparkCsv = "com.databricks" %% "spark-csv" % "1.4.0"
-
-  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.1"
+  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.2"
 
   lazy val awsSdkVersion = "1.10.20"
 
