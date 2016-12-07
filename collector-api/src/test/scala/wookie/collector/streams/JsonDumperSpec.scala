@@ -22,10 +22,9 @@ import java.util.concurrent.{Future => JFuture}
 
 import argonaut._
 import Argonaut._
-import org.apache.kafka.clients.producer.{ProducerRecord, RecordMetadata, KafkaProducer}
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.TopicPartition
-import org.http4s.client.Client
-import org.http4s.{ParseException, Response, Uri, Request}
+import org.http4s.{MalformedMessageBodyFailure, Request, Response, Uri}
 import org.junit.runner.RunWith
 import org.mockito.Matchers
 import org.specs2.ScalaCheck
@@ -34,62 +33,67 @@ import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 import org.specs2.specification.Scope
 import scodec.bits.ByteVector
+import wookie.collector.MockedClient
 
 import scalaz.concurrent.Task
 
 
 case class TestObj(x: String, y: Int)
-/**
-  * Created by ljastrze on 11/24/15.
-  */
+
 @RunWith(classOf[JUnitRunner])
 class JsonDumperSpec extends Specification with ScalaCheck with Mockito {
 
-  val sampleJson = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector("""{ "x": "Alfa", "y": 10 }""".getBytes))))
-  val incorrectJson = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(""""x": "Alfa", "y": 10""".getBytes))))
+  val sampleJson = Response(body = scalaz.stream.Process.eval(Task.now(ByteVector("""{ "x": "Alfa", "y": 10 }""".getBytes))))
+  val incorrectJson = Response(body = scalaz.stream.Process.eval(Task.now(ByteVector(""""x": "Alfa", "y": 10""".getBytes))))
 
   "Should dump json objects" in new context {
-    MockedConfig.httpClient.apply(req) returns Task.now(sampleJson)
+    val config = createConfig(sampleJson)
+    kafkaSetup(config)
 
     val dumper = JsonDumper(decoder, encoder)
     val pipe = dumper.push(req, List("a"), (a: String) => (a, a))
-    val result = pipe(MockedConfig).run.attemptRun
+    val result = pipe(config).run.unsafePerformSyncAttempt
 
     result.isRight must_== true
-    there was one(MockedConfig.httpClient).apply(req) andThen one(MockedConfig.kafkaProducer).send(Matchers.any[ProducerRecord[String, String]]) andThen
-      one(mockedFuture).get andThen one(MockedConfig.kafkaProducer).close andThen one(MockedConfig.httpClient).shutdown()
+    there was one(config.kafkaProducer).
+      send(Matchers.any[ProducerRecord[String, String]]) andThen one(mockedFuture).get andThen one(config.kafkaProducer).close
   }
 
   "Should not dump incorrect json objects" in new context {
-    MockedConfig.httpClient.apply(req) returns Task.now(incorrectJson)
+    val config = createConfig(incorrectJson)
+    kafkaSetup(config)
 
     val dumper = JsonDumper(decoder, encoder)
     val pipe = dumper.push(req, List("a"), (a: String) => (a, a))
-    val result = pipe(MockedConfig).run.attemptRun
+    val result = pipe(config).run.unsafePerformSyncAttempt
 
     result.isLeft must_== true
-    result.toEither.left.get.getClass must_== classOf[ParseException]
-    there was one(MockedConfig.httpClient).apply(req) andThen one(MockedConfig.httpClient).shutdown()
-    there was no(MockedConfig.kafkaProducer).send(Matchers.any[ProducerRecord[String, String]])
-    there was no(MockedConfig.kafkaProducer).close
+    result.toEither.left.get.getClass must_== classOf[MalformedMessageBodyFailure]
+    there was no(config.kafkaProducer).send(Matchers.any[ProducerRecord[String, String]])
+    there was no(config.kafkaProducer).close
   }
 
   trait context extends Scope {
-    object MockedConfig extends Config {
-      lazy val httpClient = mock[Client]
+
+    def createConfig(response: Response): Config = new Config {
+      lazy val httpClient = MockedClient.create(response)
       lazy val kafkaProducer = mock[KafkaProducer[String, String]]
     }
 
     private val codec = casecodec2(TestObj.apply, TestObj.unapply)("x", "y")
     val decoder: DecodeJson[TestObj] = codec
     val encoder: EncodeJson[TestObj] = codec
-    val mockedFuture = mock[JFuture[RecordMetadata]]
 
-    MockedConfig.httpClient.shutdown() returns Task.now(())
-    MockedConfig.kafkaProducer.send(Matchers.any[ProducerRecord[String, String]]) returns mockedFuture
-    mockedFuture.get returns new RecordMetadata(new TopicPartition("XXX", 1), 1L, 2L)
   }
 
-  val req = Request(uri=Uri.uri("http://xxx.com/v1/2"))
+  val mockedFuture = mock[JFuture[RecordMetadata]]
+
+  def kafkaSetup(conf: Config): Unit = {
+    conf.kafkaProducer.send(Matchers.any[ProducerRecord[String, String]]) returns mockedFuture
+    mockedFuture.get returns new RecordMetadata(new TopicPartition("XXX", 1), 1L, 2L)
+    ()
+  }
+
+  val req = Request(uri = Uri.uri("http://xxx.com/v1/2"))
 
 }

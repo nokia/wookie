@@ -1,5 +1,3 @@
-name__org.elasticsearch.spark.sql__es.resource.read==spark/txt&&es.query==?q=Smith
-name__org.elasticsearch.spark.sql__es.resource.read==spark/txt
 name__parquet
 name__json
 name__com.databricks.spark.csv__header==true

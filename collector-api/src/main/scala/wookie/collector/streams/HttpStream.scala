@@ -29,14 +29,12 @@ import scalaz.concurrent.Task
 import scalaz.stream.Process
 
 import wookie.collector.streams.StreamUtils.once
-/**
-  * Created by ljastrze on 11/16/15.
-  */
+
 object HttpStream {
 
   def source(request: Request): Client => Process[Task, Response] = client => {
-    once(Task.delay(client))(cli => cli.shutdown()) { cli =>
-      cli(request)
+    once(Task.delay(client))(cli => cli.shutdown) { cli =>
+      cli.toHttpService.run(request)
     }
   }
 

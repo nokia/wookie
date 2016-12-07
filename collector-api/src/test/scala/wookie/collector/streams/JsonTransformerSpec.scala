@@ -20,9 +20,9 @@ package wookie.collector.streams
 
 import argonaut.Argonaut._
 import argonaut.{DecodeJson, EncodeJson}
-import org.http4s.{ParseException, Response}
+import org.http4s.{InvalidMessageBodyFailure, Response}
 import org.junit.runner.RunWith
-import org.scalacheck.{Gen, Arbitrary}
+import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.matcher.JsonMatchers
 import org.specs2.mutable.Specification
@@ -31,9 +31,6 @@ import scodec.bits.ByteVector
 
 import scalaz.concurrent.Task
 
-/**
-  * Created by ljastrze on 11/22/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class JsonTransformerSpec extends Specification with ScalaCheck with JsonMatchers {
 
@@ -62,7 +59,7 @@ class JsonTransformerSpec extends Specification with ScalaCheck with JsonMatcher
          "attr4": $attr4, "attr5": { "attr6": "$attr6" } }"""
     val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(input.getBytes))))
     val task = JsonTransformer.asObject[Bar](resp)
-    val result = task.attemptRun
+    val result = task.unsafePerformSyncAttempt
     result.isRight must_== true
     result.toOption.get must_==Bar(attr1, attr2, attr3, attr4, Foo(attr6))
   }.setArbitrary1(alphaNum).setArbitrary2(alphaNumList).setArbitrary5(alphaNum)
@@ -72,10 +69,10 @@ class JsonTransformerSpec extends Specification with ScalaCheck with JsonMatcher
     val input = """{"random": "fields"}"""
     val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(input.getBytes))))
     val task = JsonTransformer.asObject[Bar](resp)
-    val result = task.attemptRun
+    val result = task.unsafePerformSyncAttempt
     val exception = result.swap.toOption.get
     result.isRight must_== false
-    exception.getClass must_== classOf[ParseException]
+    exception.getClass must_== classOf[InvalidMessageBodyFailure]
   }
 
 
@@ -87,7 +84,7 @@ class JsonTransformerSpec extends Specification with ScalaCheck with JsonMatcher
          "attr4": $attr4, "attr5": { "attr6": "$attr6" } }"""
     val resp = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector(input.getBytes))))
     val task = JsonTransformer.asText[Bar](resp)
-    val result = task.attemptRun
+    val result = task.unsafePerformSyncAttempt
     val resultText = result.toOption.get
     result.isRight must_== true
     resultText must /("attr1" -> attr1)

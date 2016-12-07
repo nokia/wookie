@@ -21,9 +21,6 @@ package wookie.collector.streams
 import scalaz.stream.Process
 import scalaz.stream.Process._
 
-/**
-  * Created by ljastrze on 11/16/15.
-  */
 object StreamUtils {
 
   def once[F[_], R, O](acquire: F[R])(release: R => F[Unit])(step: R => F[O]): Process[F, O] = {

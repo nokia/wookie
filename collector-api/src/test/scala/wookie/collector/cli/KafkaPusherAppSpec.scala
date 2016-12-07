@@ -21,11 +21,13 @@ package wookie.collector.cli
 import java.util.concurrent.{Future => JFuture}
 
 import argonaut.Argonaut._
-import argonaut.{EncodeJson, DecodeJson}
-import org.apache.kafka.clients.producer.{RecordMetadata, ProducerRecord, KafkaProducer}
+import argonaut.{DecodeJson, EncodeJson}
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.TopicPartition
-import org.http4s.{Request, Response}
-import org.http4s.client.Client
+import org.http4s.Method._
+import org.http4s.Status._
+import org.http4s.client.{Client, DisposableResponse}
+import org.http4s.{HttpService, Response}
 import org.junit.runner.RunWith
 import org.mockito.Matchers
 import org.rogach.scallop.ScallopConf
@@ -35,36 +37,31 @@ import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 import org.specs2.specification.Scope
 import scodec.bits.ByteVector
+import wookie.collector.MockedClient
 import wookie.collector.streams.Config
 
 import scalaz.concurrent.Task
 
 case class TestObj(x: String, y: Int)
 
-/**
-  * Created by ljastrze on 11/25/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class KafkaPusherAppSpec extends Specification with ScalaCheck with Mockito {
 
   val sampleJson = Response(body=scalaz.stream.Process.eval(Task.now(ByteVector("""{ "x": "Alfa", "y": 10 }""".getBytes))))
 
   "Should push msgs through App" in new context {
-    MockedConfig.httpClient.apply(Matchers.any[Request]) returns Task.now(sampleJson)
     val app = new KafkaPusherApp[TestObj](a => MockedConfig)(decoder, encoder)
-    val opt = new ScallopConf(Array("--brokers", "Alfa:100", "--input", "http://abc.com", "--topics", "beta")) with AppConf
+    val opt = new ScallopConf(Array("--brokers", "Alfa:100", "--input", "http://abc.com/ok", "--topics", "beta")) with AppConf
     opt.afterInit()
     opt.assertVerified()
     app.run(opt)
 
-    there was one(MockedConfig.httpClient).apply(Matchers.any[Request]) andThen one(MockedConfig.kafkaProducer).send(
-      Matchers.any[ProducerRecord[String, String]]) andThen
-      one(mockedFuture).get andThen one(MockedConfig.kafkaProducer).close andThen one(MockedConfig.httpClient).shutdown()
+    there was one(MockedConfig.kafkaProducer).send(Matchers.any[ProducerRecord[String, String]])
   }
 
   trait context extends Scope {
     object MockedConfig extends Config {
-      lazy val httpClient = mock[Client]
+      lazy val httpClient = MockedClient.create(sampleJson)
       lazy val kafkaProducer = mock[KafkaProducer[String, String]]
     }
 
@@ -73,7 +70,7 @@ class KafkaPusherAppSpec extends Specification with ScalaCheck with Mockito {
     val encoder: EncodeJson[TestObj] = codec
     val mockedFuture = mock[JFuture[RecordMetadata]]
 
-    MockedConfig.httpClient.shutdown() returns Task.now(())
+//    MockedConfig.httpClient.shutdown returns Task.now(())
     MockedConfig.kafkaProducer.send(Matchers.any[ProducerRecord[String, String]]) returns mockedFuture
     mockedFuture.get returns new RecordMetadata(new TopicPartition("XXX", 1), 1L, 2L)
   }

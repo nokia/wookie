@@ -51,7 +51,7 @@ class KafkaPusherApp[A](config: List[String] => Config)
                      topics: List[String]): Config => \/[Throwable, Unit] = config => {
     for {
       req <- parseRequest(baseUrl, queryParams).leftMap(failure => new RuntimeException(failure.details).asInstanceOf[Throwable])
-      exec <- JsonDumper(decoder, encoder).push(req, topics, toKeyValue)(config).run.attemptRun
+      exec <- JsonDumper(decoder, encoder).push(req, topics, toKeyValue)(config).run.unsafePerformSyncAttempt
     } yield {
       exec
     }

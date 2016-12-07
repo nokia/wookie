@@ -18,22 +18,22 @@
  */
 package wookie.spark.filters
 
+import com.twitter.algebird.Monoid
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
-import spire.algebra.Monoid
 import wookie.spark.cli.{SparkApp, SparkStreamingApp}
 import wookie.spark.sparkle.Sparkle
 
 object Conjunction extends Monoid[Boolean] with Serializable {
-  def op(f1: Boolean, f2: Boolean): Boolean = f1 && f2
+  override def plus(f1: Boolean, f2: Boolean): Boolean = f1 && f2
 
-  def id: Boolean = true
+  override def zero: Boolean = true
 }
 
 object Disjunction extends Monoid[Boolean] with Serializable {
-  def op(f1: Boolean, f2: Boolean): Boolean = f1 || f2
+  override def plus(f1: Boolean, f2: Boolean): Boolean = f1 || f2
 
-  def id: Boolean = false
+  override def zero: Boolean = false
 }
 
 case class FilterStream[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *) extends Sparkle[DStream[A], SparkStreamingApp[_]] {
@@ -53,7 +53,7 @@ case class FilterRDD[A](rdd: RDD[A], filter: A => Boolean, moreFilters: (A => Bo
 object Filters {
 
   def fold[A](f1: A => Boolean, fs: (A => Boolean) *)(boolM: Monoid[Boolean]): A => Boolean = s => {
-    fs.foldLeft(f1(s))((t1, t2) => boolM.op(t2(s), t1))
+    fs.foldLeft(f1(s))((t1, t2) => boolM.plus(t2(s), t1))
   }
 
   def or[A](f1: A => Boolean, fs: (A => Boolean) *): (A => Boolean) = fold(f1, fs: _ *)(Disjunction)

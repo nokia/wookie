@@ -20,9 +20,9 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "0.2.0"
+version in ThisBuild := "1.0.6"
 
-crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.7")
+scalaVersion in ThisBuild := "2.11.8"
 
 description := "A minimal library for building data products"
 
@@ -36,7 +36,7 @@ scmInfo in ThisBuild := {
   Some(ScmInfo(url(s"https://$base"), s"scm:git:https://$base", Some(s"scm:git:git@$base")))
 }
 
-val JvmTarget = "1.7"
+val JvmTarget = "1.8"
 
 pomExtra in ThisBuild :=
   <developers>
@@ -84,7 +84,5 @@ libraryDependencies in ThisBuild ++= specs2
 publishMavenStyle in ThisBuild := true
 
 publishArtifact in (ThisBuild, Test) := false
-
-packagedArtifacts in file(".") := Map.empty
 
 evictionWarningOptions in (ThisBuild, update) := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)

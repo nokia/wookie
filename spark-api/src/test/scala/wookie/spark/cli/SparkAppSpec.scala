@@ -19,26 +19,23 @@
 package wookie.spark.cli
 
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SparkSession
 import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 
-/**
-  * Created by ljastrze on 11/28/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class SparkAppSpec extends Specification {
 
   "Should init spark context before running" in {
     var localSc: SparkContext = null
-    var localSQL: SQLContext = null
+    var localSQL: SparkSession = null
     var appName: String = null
     val app = new SparkApp(new ScallopConf(_) with Name) {
       override def run(opt: ScallopConf with Name): Unit = {
         localSc = sc
-        localSQL = sqlContext
+        localSQL = session
         appName = opt.name()
       }
     }

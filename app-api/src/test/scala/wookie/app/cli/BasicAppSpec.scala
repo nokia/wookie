@@ -24,9 +24,6 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 
-/**
-  * Created by ljastrze on 11/14/15.
-  */
 @RunWith(classOf[JUnitRunner])
 class BasicAppSpec extends Specification with ScalaCheck {
 
