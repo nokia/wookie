@@ -76,7 +76,7 @@ object WookieBuild extends Build {
       moduleName := s"wookie-examples-$name"
     )
 
-  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.0.1_0.4.7" % "test"
+  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.1.0_0.5.0" % "test"
   lazy val http4sversion = "0.14.1a"
   lazy val http4sClient = "org.http4s" %% "http4s-blaze-client" % http4sversion
   lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
@@ -119,7 +119,7 @@ object WookieBuild extends Build {
     exclude("org.apache.spark", "spark-sql_" + "2.11").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
 
-  lazy val sparkVersion = "2.0.1"
+  lazy val sparkVersion = "2.1.0"
 
   lazy val sparkThriftServer = Seq(
     "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion)
@@ -133,7 +133,7 @@ object WookieBuild extends Build {
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.2"
+  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.3"
 
   lazy val awsSdkVersion = "1.10.20"
 
