@@ -20,6 +20,7 @@ package wookie.sqlserver
 
 import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.StatsReportListener
+import org.apache.spark.sql.SQLImplicits
 import org.apache.spark.sql.SparkSession.Builder
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
@@ -59,7 +60,7 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     for ((k, v) <- arg) System.setProperty(k, v)
   }
 
-  def run(opt: HiveConf with Name with A): Unit = {
+  override def run(opt: HiveConf with Name with A)(implicit sparkImp: SQLImplicits): Unit = {
     processCliParams(opt.hiveconfs.get.getOrElse(Map()))
     setDefaultParams()
 
@@ -82,12 +83,12 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     ()
   }
 
-  def registerTables(opt: HiveConf with Name with A): Unit
+  def registerTables(opt: HiveConf with Name with A)(implicit sparkImp: SQLImplicits): Unit
 }
 
 object SparkSQLServer extends CommonSQLServer[Name with Input](new ScallopConf(_) with HiveConf with Name with Input) {
 
-  override def registerTables(opt: HiveConf with Name with Input): Unit = {
+  override def registerTables(opt: HiveConf with Name with Input)(implicit sparkImp: SQLImplicits): Unit = {
     TableRegister(session).setupTableRegistration(opt.inputURL())
   }
 
@@ -95,7 +96,7 @@ object SparkSQLServer extends CommonSQLServer[Name with Input](new ScallopConf(_
 
 object ParquetSQLServer extends CommonSQLServer[Name with MultipleInputConf](new ScallopConf(_) with HiveConf with Name with MultipleInputConf) {
 
-  override def registerTables(opt: HiveConf with Name with MultipleInputConf): Unit = {
+  override def registerTables(opt: HiveConf with Name with MultipleInputConf)(implicit sparkImp: SQLImplicits): Unit = {
     val inputMap = opt.inputs.get.getOrElse(Map())
     TableRegister(session).setupTableRegistration(inputMap)
   }

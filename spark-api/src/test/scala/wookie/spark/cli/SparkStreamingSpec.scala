@@ -20,7 +20,7 @@ package wookie.spark.cli
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.streaming.{StreamingContext, StreamingContextState}
 import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
@@ -40,7 +40,7 @@ class SparkStreamingSpec extends Specification {
     var appName: String = null
     var duration: Long = 0L
     val app = new SparkStreamingApp(new ScallopConf(_) with Name with Duration with Checkpoint) {
-      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint): Unit = {
+      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint)(implicit sparkImp: SQLImplicits): Unit = {
         localSc = sc
         localSQL = session
         localStreaming = ssc

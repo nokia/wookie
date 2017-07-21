@@ -19,7 +19,7 @@
 package wookie.spark.cli
 
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
@@ -33,7 +33,7 @@ class SparkAppSpec extends Specification {
     var localSQL: SparkSession = null
     var appName: String = null
     val app = new SparkApp(new ScallopConf(_) with Name) {
-      override def run(opt: ScallopConf with Name): Unit = {
+      override def run(opt: ScallopConf with Name)(implicit sparkImp: SQLImplicits): Unit = {
         localSc = sc
         localSQL = session
         appName = opt.name()

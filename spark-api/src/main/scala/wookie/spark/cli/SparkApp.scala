@@ -18,7 +18,7 @@
  */
 package wookie.spark.cli
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -38,7 +38,7 @@ abstract class SparkApp[A <: Name](options: Array[String] => A) {
   def session: SparkSession = _ss
   def opt: A = _opt
 
-  def run(opt: A): Unit
+  def run(opt: A)(implicit sparkImp: SQLImplicits): Unit
 
   def configure(conf: SparkConf, sessionBuilder: SparkSession.Builder): SparkSession.Builder = sessionBuilder
 
@@ -51,6 +51,7 @@ abstract class SparkApp[A <: Name](options: Array[String] => A) {
 
     _ss = configure(_conf, SparkSession.builder().config(_conf)).getOrCreate()
     _sc = _ss.sparkContext
+    implicit val imp  = _ss.implicits
 
     run(opt)
   }

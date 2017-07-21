@@ -19,6 +19,7 @@
 package wookie.spark.cli
 
 import org.apache.log4j.{Level, Logger}
+import org.apache.spark.sql.SQLImplicits
 import org.apache.spark.streaming.{Milliseconds, StreamingContext}
 
 abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](options: Array[String] => A) extends SparkApp[A](options) {
@@ -26,7 +27,7 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
   protected var _ssc: StreamingContext = _
   def ssc: StreamingContext = _ssc
 
-  private def createStreamingContext(opt: A): () => StreamingContext = {
+  private def createStreamingContext(opt: A)(implicit sparkImp: SQLImplicits): () => StreamingContext = {
     () =>
       _ssc = new StreamingContext(sc, Milliseconds(opt.duration()))
       setStreamingLogLevels()
@@ -37,13 +38,13 @@ abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](option
       _ssc
   }
 
-  def runStreaming(opt: A): Unit
+  def runStreaming(opt: A)(implicit sparkImp: SQLImplicits): Unit
 
-  final def run(opt: A): Unit = {
+  final def run(opt: A)(implicit sparkImp: SQLImplicits): Unit = {
     if (opt.checkpointDir.get.isDefined) {
       _ssc = StreamingContext.getOrCreate(opt.checkpointDir(), createStreamingContext(opt), createOnError = true)
     } else {
-      _ssc = createStreamingContext(opt)()
+      _ssc = createStreamingContext(opt)(sparkImp)()
     }
     _ssc.start()
     _ssc.awaitTermination()
