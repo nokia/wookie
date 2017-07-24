@@ -40,14 +40,14 @@ class SparkStreamingSpec extends Specification {
     var appName: String = null
     var duration: Long = 0L
     val app = new SparkStreamingApp(new ScallopConf(_) with Name with Duration with Checkpoint) {
-      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint)(implicit sparkImp: SQLImplicits): Unit = {
-        localSc = sc
-        localSQL = session
+      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint, spark: SparkSession, ssc: StreamingContext): Unit = {
+        localSc = spark.sparkContext
+        localSQL = spark
         localStreaming = ssc
         appName = opt.name()
         duration = opt.duration()
 
-        val rdd = sc.parallelize(Seq(100, 200, 300))
+        val rdd = spark.sparkContext.parallelize(Seq(100, 200, 300))
         val queue = new mutable.Queue[RDD[Int]]()
         queue.enqueue(rdd)
         ssc.queueStream(queue).print()

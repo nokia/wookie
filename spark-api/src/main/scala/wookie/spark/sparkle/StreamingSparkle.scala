@@ -19,26 +19,24 @@
 package wookie.spark.sparkle
 
 import com.twitter.algebird.Monad
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.StreamingContext
 
-sealed trait Sparkle[+A] {
-  def run(ctx: SparkSession): A
-  def map[B](f: A => B): Sparkle[B] = Sparkle.monad.map(this)(f)
-  def flatMap[B](f: A => Sparkle[B]): Sparkle[B] = Sparkle.monad.flatMap(this)(f)
+sealed trait StreamingSparkle[+A] {
+  def run(ctx: StreamingContext): A
+  def map[B](f: A => B): StreamingSparkle[B] = StreamingSparkle.monad.map(this)(f)
+  def flatMap[B](f: A => StreamingSparkle[B]): StreamingSparkle[B] = StreamingSparkle.monad.flatMap(this)(f)
 }
 
-object Sparkle {
-  def apply[A](f: SparkSession => A): Sparkle[A] = new Sparkle[A] {
-    override def run(ctx: SparkSession): A = f(ctx)
+object StreamingSparkle {
+  def apply[A](f: StreamingContext => A): StreamingSparkle[A] = new StreamingSparkle[A] {
+    override def run(ctx: StreamingContext): A = f(ctx)
   }
 
-  implicit val monad = new Monad[Sparkle] {
-    override def flatMap[A, B](fa: Sparkle[A])(f: A => Sparkle[B]): Sparkle[B] =
-      Sparkle[B] {
+  implicit val monad = new Monad[StreamingSparkle] {
+    override def flatMap[A, B](fa: StreamingSparkle[A])(f: A => StreamingSparkle[B]): StreamingSparkle[B] =
+      StreamingSparkle[B] {
         (ctx) => f(fa.run(ctx)).run(ctx)
       }
-    override def apply[A](v: A): Sparkle[A] = Sparkle[A](_ => v)
+    override def apply[A](v: A): StreamingSparkle[A] = StreamingSparkle[A](_ => v)
   }
 }
-
-

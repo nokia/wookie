@@ -46,11 +46,12 @@ object WookieBuild extends Build {
       libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, cassandraAnalytics) ++ hadoopAws ,
       dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5")
 
-  lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
-    dependsOn(collector).
-    settings(assembling)
+  lazy val examples = wookieProject("examples").
+    dependsOn(collector, kafkaApi).
+    settings(assembling).
+    settings(libraryDependencies ++= sparkProvided ++ Seq(simplelatlng, sparkStreamingTwitter))
 
-  lazy val fakeSqlserver = wookieExampleProject("sqlserver-classpath", "fake/sqlserver").
+  lazy val fakeSqlserver = wookieProject("sqlserver-classpath").
     dependsOn(sqlserver).
     settings(
       libraryDependencies ++= spark ++ sparkThriftServer)
@@ -70,11 +71,6 @@ object WookieBuild extends Build {
   def wookieProject(name: String): Project = Project(name, file(name))
     .settings(
       moduleName := s"wookie-$name")
-
-  def wookieExampleProject(name: String, filePath: String): Project = Project(name, file(filePath))
-    .settings(
-      moduleName := s"wookie-examples-$name"
-    )
 
   lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.2.0_0.7.2" % "test"
   lazy val http4sversion = "0.14.1a"
@@ -145,4 +141,13 @@ object WookieBuild extends Build {
       exclude("commons-logging", "commons-logging")
   )
 
+  lazy val simplelatlng = "com.javadocmd" % "simplelatlng" % "1.3.0"
+
+  lazy val sparkStreamingTwitter =  ("org.apache.bahir" %% "spark-streaming-twitter" % "2.1.1").
+    exclude("org.apache.hadoop", "hadoop-client").
+    exclude("org.slf4j", "slf4j-log4j12").
+    exclude("org.apache.spark", "spark-core_" + "2.10").
+    exclude("org.apache.spark", "spark-core_" + "2.11").
+    exclude("org.apache.spark", "spark-streaming_" + "2.10").
+    exclude("org.apache.spark", "spark-streaming_" + "2.11")
 }

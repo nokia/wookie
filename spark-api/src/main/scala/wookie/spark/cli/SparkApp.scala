@@ -22,37 +22,24 @@ import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
+  * Spark application
   *
   * @param options function that will create parsed arguments of type A
   * @tparam A type of cmd line arguments, at least name of application needs to be passed
   */
 abstract class SparkApp[A <: Name](options: Array[String] => A) {
 
-  protected var _sc: SparkContext = _
-  protected var _conf: SparkConf = _
-  protected var _ss: SparkSession = _
-  protected var _opt: A = _
 
-  def sc: SparkContext = _sc
-  def conf: SparkConf = _conf
-  def session: SparkSession = _ss
-  def opt: A = _opt
-
-  def run(opt: A)(implicit sparkImp: SQLImplicits): Unit
+  def run(opt: A, spark: SparkSession): Unit
 
   def configure(conf: SparkConf, sessionBuilder: SparkSession.Builder): SparkSession.Builder = sessionBuilder
 
   final def main(args: Array[String]): Unit = {
-    _opt = options(args)
-    _opt.afterInit()
-    _opt.assertVerified()
-
-    _conf = new SparkConf().setAppName(opt.name())
-
-    _ss = configure(_conf, SparkSession.builder().config(_conf)).getOrCreate()
-    _sc = _ss.sparkContext
-    implicit val imp  = _ss.implicits
-
-    run(opt)
+    val opt = options(args)
+    opt.afterInit()
+    opt.assertVerified()
+    val conf = new SparkConf().setAppName(opt.name())
+    val spark = configure(conf, SparkSession.builder().config(conf)).getOrCreate()
+    run(opt, spark)
   }
 }

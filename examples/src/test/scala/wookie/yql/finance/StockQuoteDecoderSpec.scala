@@ -39,6 +39,8 @@ class StockQuoteDecoderSpec extends Specification {
   }
 
    trait context extends Scope {
-    val quotes = scala.io.Source.fromInputStream(this.getClass().getResourceAsStream("/stocks.json")).mkString
+     val t = this.getClass.getResourceAsStream("/stocks.json")
+
+    val quotes = scala.io.Source.fromInputStream(t).mkString
    }
 }

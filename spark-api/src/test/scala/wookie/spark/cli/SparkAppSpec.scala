@@ -33,9 +33,9 @@ class SparkAppSpec extends Specification {
     var localSQL: SparkSession = null
     var appName: String = null
     val app = new SparkApp(new ScallopConf(_) with Name) {
-      override def run(opt: ScallopConf with Name)(implicit sparkImp: SQLImplicits): Unit = {
-        localSc = sc
-        localSQL = session
+      override def run(opt: ScallopConf with Name, spark: SparkSession): Unit = {
+        localSc = spark.sparkContext
+        localSQL = spark
         appName = opt.name()
       }
     }

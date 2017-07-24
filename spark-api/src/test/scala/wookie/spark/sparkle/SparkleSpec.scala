@@ -19,47 +19,48 @@
 
 package wookie.spark.sparkle
 
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.StreamingContext
 import org.junit.runner.RunWith
 import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import wookie.spark.cli.{SparkStreamingApp, SparkApp}
 
 @RunWith(classOf[JUnitRunner])
 class SparkleSpec extends Specification with Mockito with ScalaCheck {
 
-  val sparkApp = mock[SparkApp[_]]
-  val streamingApp = mock[SparkStreamingApp[_]]
+  val sparkApp = mock[SparkSession]
+  val streamingApp = mock[StreamingContext]
 
   "Identity Law in Sparkle" >> prop { (value: String) =>
-    val sparkle = Sparkle(value)
+    val sparkle = Sparkle(_ => value)
     val mapped = sparkle.map(identity)
-    mapped(sparkApp) must_== sparkle(sparkApp)
+    mapped.run(sparkApp) must_== sparkle.run(sparkApp)
   }
 
   "Identity Law in StreamingSparkle" >> prop { (value: String) =>
-    val sparkle = StreamingSparkle(value)
+    val sparkle = StreamingSparkle(_ => value)
     val mapped = sparkle.map(identity)
-    mapped(streamingApp) must_== sparkle(streamingApp)
+    mapped.run(streamingApp) must_== sparkle.run(streamingApp)
   }
 
   "Left identity" >> prop { (value1: String, value2: String) =>
-    val sparkle1 = Sparkle(value1)
-    val sparkle2 = Sparkle(value2)
-    sparkle1.flatMap(x => sparkle2)(sparkApp) must_== sparkle2(sparkApp)
+    val sparkle1 = Sparkle(_ => value1)
+    val sparkle2 = Sparkle(_ => value2)
+    sparkle1.flatMap(x => sparkle2).run(sparkApp) must_== sparkle2.run(sparkApp)
   }
 
   "Right identity" >> prop { (value1: String) =>
-    val sparkle1 = Sparkle(value1)
-    sparkle1.flatMap(x => Sparkle(x))(sparkApp) must_== sparkle1(sparkApp)
+    val sparkle1 = Sparkle(_ => value1)
+    sparkle1.flatMap(x => Sparkle(_ => x)).run(sparkApp) must_== sparkle1.run(sparkApp)
   }
 
   "Associativity"  >> prop { (value1: String, value2: String, value3: String) =>
-    val sparkle1 = Sparkle(value1)
-    val sparkle2 = Sparkle(value2)
-    val sparkle3 = Sparkle(value3)
+    val sparkle1 = Sparkle(_ => value1)
+    val sparkle2 = Sparkle(_ => value2)
+    val sparkle3 = Sparkle(_ => value3)
 
-    sparkle1.flatMap(x => sparkle2).flatMap(y => sparkle3)(sparkApp) must_== sparkle1.flatMap(x => sparkle2.flatMap(y => sparkle3))(sparkApp)
+    sparkle1.flatMap(x => sparkle2).flatMap(y => sparkle3).run(sparkApp) must_== sparkle1.flatMap(x => sparkle2.flatMap(y => sparkle3)).run(sparkApp)
   }
 }

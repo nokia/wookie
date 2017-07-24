@@ -21,8 +21,7 @@ package wookie.spark.filters
 import com.twitter.algebird.Monoid
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.cli.{SparkApp, SparkStreamingApp}
-import wookie.spark.sparkle.Sparkle
+import wookie.spark.sparkle.{Sparkle, StreamingSparkle}
 
 object Conjunction extends Monoid[Boolean] with Serializable {
   override def plus(f1: Boolean, f2: Boolean): Boolean = f1 && f2
@@ -36,20 +35,6 @@ object Disjunction extends Monoid[Boolean] with Serializable {
   override def zero: Boolean = false
 }
 
-case class FilterStream[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *) extends Sparkle[DStream[A], SparkStreamingApp[_]] {
-
-  def apply(app: SparkStreamingApp[_]): DStream[A] = {
-    stream.filter(Filters.and(filter, moreFilters: _*))
-  }
-}
-
-case class FilterRDD[A](rdd: RDD[A], filter: A => Boolean, moreFilters: (A => Boolean) *) extends Sparkle[RDD[A], SparkApp[_]] {
-
-  def apply(app: SparkApp[_]): RDD[A] = {
-    rdd.filter(Filters.and(filter, moreFilters: _*))
-  }
-}
-
 object Filters {
 
   def fold[A](f1: A => Boolean, fs: (A => Boolean) *)(boolM: Monoid[Boolean]): A => Boolean = s => {
@@ -60,4 +45,12 @@ object Filters {
 
   def and[A](f1: A => Boolean, fs: (A => Boolean) *): A => Boolean = fold(f1, fs: _ *)(Conjunction)
 
+  def filterStream[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *):
+  StreamingSparkle[DStream[A]] = StreamingSparkle { _ =>
+      stream.filter(Filters.and(filter, moreFilters: _*))
+    }
+
+  def filter[A](rdd: RDD[A], filter: A => Boolean, moreFilters: (A => Boolean) *): Sparkle[RDD[A]] = Sparkle { _ =>
+    rdd.filter(Filters.and(filter, moreFilters: _*))
+  }
 }
