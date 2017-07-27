@@ -17,31 +17,25 @@
  *
  */
 
-package wookie.spark
+package wookie
 
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.streaming.StreamingContext
 import org.junit.runner.RunWith
 import org.specs2.ScalaCheck
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import wookie.{RuntimeEnvironment, Sparkle}
 
 @RunWith(classOf[JUnitRunner])
 class SparkleSpec extends Specification with Mockito with ScalaCheck {
 
-  val sparkApp = mock[SparkSession]
-  val streamingApp = mock[StreamingContext]
-
   val rte = new RuntimeEnvironment {
-    override def get = sparkApp
-    override type A = SparkSession
+    override def get = "Some runtime"
+    override type A = String
   }
 
   val streamingRte = new RuntimeEnvironment {
-    override def get = streamingApp
-    override type A = StreamingContext
+    override def get = 10L
+    override type A = Long
   }
 
   "Identity Law in Sparkle" >> prop { (value: String) =>

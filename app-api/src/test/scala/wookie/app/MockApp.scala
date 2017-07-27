@@ -16,18 +16,20 @@
  * limitations under the License.
  *
  */
-package wookie.app.cli
+package wookie.app
 
 import org.rogach.scallop.ScallopConf
 
-abstract class BasicApp[A <: ScallopConf](options: Array[String] => A) {
+trait AllConf extends InputConf with TopicsConf with URLQueryConf
 
-  def run(opt: A): Unit
+object MockBasicApp extends App[AllConf](a => new ScallopConf(a) with AllConf) {
+  var inputURL: String = null
+  var query: Map[String, String] = null
+  var topics: List[String] = null
 
-  final def main(args: Array[String]): Unit = {
-    val opt = options(args)
-    opt.afterInit()
-    opt.assertVerified()
-    run(opt)
+  override def run(opt: AllConf): Unit = {
+    inputURL = opt.inputURL()
+    query = opt.query()
+    topics = opt.topics()
   }
 }

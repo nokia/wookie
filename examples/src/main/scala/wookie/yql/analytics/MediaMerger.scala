@@ -22,7 +22,7 @@ import org.apache.spark.sql.SparkSession
 import org.rogach.scallop.ScallopConf
 import org.apache.spark.streaming.Durations._
 import org.apache.spark.streaming.StreamingContext
-import wookie.cli.{Checkpoint, Duration, Name}
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 import wookie.spark.cli._
 import wookie.yql.geo.Location
 import wookie.spark.DStreams._
@@ -30,7 +30,7 @@ import wookie.spark.SparkStreamingRuntime
 import wookie.spark.streaming.kafka.Kafka._
 import wookie.spark.streaming.kafka.cli.Kafka
 
-trait MediaMergerConf extends Name with Duration with TwitterConf with Kafka with Checkpoint
+trait MediaMergerConf extends NameConf with DurationConf with TwitterConf with Kafka with CheckpointConf
 
 
 object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_) with MediaMergerConf) {

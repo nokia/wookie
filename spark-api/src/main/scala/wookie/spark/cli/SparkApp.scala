@@ -20,7 +20,7 @@ package wookie.spark.cli
 
 import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
-import wookie.cli.Name
+import wookie.app.NameConf
 
 /**
   * Spark application
@@ -28,7 +28,7 @@ import wookie.cli.Name
   * @param options function that will create parsed arguments of type A
   * @tparam A type of cmd line arguments, at least name of application needs to be passed
   */
-abstract class SparkApp[A <: Name](options: Array[String] => A) {
+abstract class SparkApp[A <: NameConf](options: Array[String] => A) {
 
 
   def run(opt: A, spark: SparkSession): Unit

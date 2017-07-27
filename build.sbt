@@ -20,7 +20,7 @@ organization in ThisBuild := "org.wookie"
 
 name := "wookie"
 
-version in ThisBuild := "4.0.0"
+version in ThisBuild := "5.0.0"
 
 scalaVersion in ThisBuild := "2.11.8"
 

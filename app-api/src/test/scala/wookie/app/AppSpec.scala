@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package wookie.app.cli
+package wookie.app
 
 import org.junit.runner.RunWith
 import org.scalacheck._
@@ -25,7 +25,7 @@ import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class BasicAppSpec extends Specification with ScalaCheck {
+class AppSpec extends Specification with ScalaCheck {
 
   def urls: Arbitrary[String] = {
     Arbitrary(for {

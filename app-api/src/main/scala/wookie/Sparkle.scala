@@ -19,16 +19,17 @@
 package wookie
 
 import com.twitter.algebird.Monad
-import org.apache.spark.sql.SparkSession
-import wookie.spark.SparkRuntime
 
+/**
+  * Runtime environment, can be really anything
+  */
 trait RuntimeEnvironment {
   type A
   def get: A
 }
 /**
-  * Spark session execution environment
-  * @tparam A
+  * Session execution environment
+  * @tparam A type of computation result delivered
   */
 trait Sparkle[+A] {
   def run(ctx: RuntimeEnvironment): A

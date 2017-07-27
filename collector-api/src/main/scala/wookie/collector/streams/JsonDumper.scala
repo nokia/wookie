@@ -35,7 +35,7 @@ trait Config {
 
 case class JsonDumper[A](dec: DecodeJson[A], enc: EncodeJson[A]) {
 
-  import wookie.app.di.DI._
+  import wookie.collector.utils.DI._
 
   def push(req: Request, topics: List[String], kvMap: String => (String, String)): Config => Process[Task, Unit] = config => {
     val pipe = for {

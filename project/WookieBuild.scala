@@ -24,7 +24,7 @@ object WookieBuild extends Build {
 
   lazy val app = wookieProject("app-api").
     settings(
-      libraryDependencies ++= fullLogging ++ Seq(scallop, scalazCore))
+      libraryDependencies ++= fullLogging ++ Seq(scallop, algebirdCore, shapeless, log4s))
 
   lazy val collector = wookieProject("collector-api").
     dependsOn(app).
@@ -32,8 +32,9 @@ object WookieBuild extends Build {
       libraryDependencies ++= Seq(kafka, scalazStream, http4sClient, http4sDsl, http4sArgonaut))
 
   lazy val sparkApi = wookieProject("spark-api").
+    dependsOn(app).
     settings(
-      libraryDependencies ++= sparkProvided ++ Seq(scallop, shapeless, log4s, sparkTesting, algebird)).
+      libraryDependencies ++= sparkProvided ++ Seq(sparkTesting, algebirdSpark)).
     settings(sparkTestingSettings)
 
   lazy val kafkaApi = wookieProject("spark-api-kafka").
@@ -134,7 +135,9 @@ object WookieBuild extends Build {
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.3"
+  lazy val algebirdVersion = "0.12.3"
+  lazy val algebirdSpark = "com.twitter" %% "algebird-spark" % algebirdVersion
+  lazy val algebirdCore = "com.twitter" %% "algebird-core" % algebirdVersion
 
   lazy val awsSdkVersion = "1.10.20"
 

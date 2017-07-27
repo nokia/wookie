@@ -20,13 +20,12 @@ package wookie.sqlserver
 
 import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.StatsReportListener
-import org.apache.spark.sql.{SQLImplicits, SparkSession}
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.SparkSession.Builder
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
-import wookie.cli.Name
 import org.log4s._
-import wookie.cli.{Input, Name}
+import wookie.app.{NameConf, InputConf}
 import wookie.spark.cli.SparkApp
 
 trait KVParser {
@@ -52,7 +51,7 @@ trait MultipleInputConf extends ScallopConf with KVParser {
   lazy val inputs = opt[List[String]]("input", descr = "input").map(asMap)
 }
 
-abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name with A) extends SparkApp[HiveConf with Name with A](options) {
+abstract class CommonSQLServer[A](options: Array[String] => HiveConf with NameConf with A) extends SparkApp[HiveConf with NameConf with A](options) {
 
   private[this] val log = getLogger
 
@@ -62,7 +61,7 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     for ((k, v) <- arg) System.setProperty(k, v)
   }
 
-  override def run(opt: HiveConf with Name with A, spark: SparkSession): Unit = {
+  override def run(opt: HiveConf with NameConf with A, spark: SparkSession): Unit = {
     processCliParams(opt.hiveconfs.get.getOrElse(Map()))
     setDefaultParams(spark.sparkContext.getConf)
 
@@ -85,20 +84,20 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     ()
   }
 
-  def registerTables(opt: HiveConf with Name with A, spark: SparkSession): Unit
+  def registerTables(opt: HiveConf with NameConf with A, spark: SparkSession): Unit
 }
 
-object SparkSQLServer extends CommonSQLServer[Name with Input](new ScallopConf(_) with HiveConf with Name with Input) {
+object SparkSQLServer extends CommonSQLServer[NameConf with InputConf](new ScallopConf(_) with HiveConf with NameConf with InputConf) {
 
-  override def registerTables(opt: HiveConf with Name with Input, spark: SparkSession): Unit = {
+  override def registerTables(opt: HiveConf with NameConf with InputConf, spark: SparkSession): Unit = {
     TableRegister(spark).setupTableRegistration(opt.inputURL())
   }
 
 }
 
-object ParquetSQLServer extends CommonSQLServer[Name with MultipleInputConf](new ScallopConf(_) with HiveConf with Name with MultipleInputConf) {
+object ParquetSQLServer extends CommonSQLServer[NameConf with MultipleInputConf](new ScallopConf(_) with HiveConf with NameConf with MultipleInputConf) {
 
-  override def registerTables(opt: HiveConf with Name with MultipleInputConf, spark: SparkSession): Unit = {
+  override def registerTables(opt: HiveConf with NameConf with MultipleInputConf, spark: SparkSession): Unit = {
     val inputMap = opt.inputs.get.getOrElse(Map())
     TableRegister(spark).setupTableRegistration(inputMap)
   }

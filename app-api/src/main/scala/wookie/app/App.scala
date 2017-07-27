@@ -16,11 +16,18 @@
  * limitations under the License.
  *
  */
-package wookie.app.di
+package wookie.app
 
-import scalaz.{Reader, Id, Kleisli}
+import org.rogach.scallop.ScallopConf
 
-object DI {
+abstract class App[A <: ScallopConf](options: Array[String] => A) {
 
-  implicit def funToKleisli[Conf, A](r: Conf => A): Kleisli[Id.Id, Conf, A] = Kleisli[Id.Id, Conf, A](Reader(r).run)
+  def run(opt: A): Unit
+
+  final def main(args: Array[String]): Unit = {
+    val opt = options(args)
+    opt.afterInit()
+    opt.assertVerified()
+    run(opt)
+  }
 }

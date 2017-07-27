@@ -24,7 +24,7 @@ import scala.reflect.ClassTag
   * API for running operations through runtime environment monad
   * @tparam CONTAINER
   */
-trait Containers[CONTAINER[_]] {
+trait Container[CONTAINER[_]] {
   def map[A, B: ClassTag](@transient container: CONTAINER[A], func: A => B): Sparkle[CONTAINER[B]]
 
   def flatMap[A, B: ClassTag](@transient container: CONTAINER[A], func: A => Traversable[B]): Sparkle[CONTAINER[B]]

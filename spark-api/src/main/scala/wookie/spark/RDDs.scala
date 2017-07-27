@@ -19,11 +19,11 @@
 package wookie.spark
 
 import org.apache.spark.rdd.RDD
-import wookie.{Bools, Containers, Sparkle}
+import wookie.{Bools, Container, Sparkle}
 
 import scala.reflect.ClassTag
 
-object RDDs extends Containers[RDD] {
+object RDDs extends Container[RDD] {
 
   override def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](rdd1: RDD[(A, B)], rdd2: RDD[(A, C)]): Sparkle[RDD[(A, (Option[B], Option[C]))]] = Sparkle {
     _ => rdd1.fullOuterJoin(rdd2)

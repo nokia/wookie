@@ -23,13 +23,13 @@ import org.apache.spark.streaming.dstream.DStream
 import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.rogach.scallop.ScallopConf
 import wookie.Sparkle
-import wookie.cli.{Checkpoint, Duration, Name}
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 import wookie.spark.SparkStreamingRuntime
 import wookie.spark.cli.SparkStreamingApp
 import wookie.spark.streaming.kafka.cli.Kafka
 import wookie.yql.geo.Location
 
-trait TwitterPopularTagsConf extends Name with Duration with Checkpoint with TwitterConf with Kafka
+trait TwitterPopularTagsConf extends NameConf with DurationConf with CheckpointConf with TwitterConf with Kafka
 
 object PopularTags {
   def stream(tags: DStream[String], windowLenInSeconds: Long): Sparkle[DStream[(Int, String)]] =

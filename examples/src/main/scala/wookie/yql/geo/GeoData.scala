@@ -29,8 +29,8 @@ object GeoData {
 
   val defaultCountry: (LatLng, Double) = (new LatLng(39.828175, -98.5795), 2253.0 * 1000.0)
 
-  def countryCenter(countryCode: String) = countries.getOrElse(countryCode, defaultCountry)._1
-  def countryRadius(countryCode: String) = countries.getOrElse(countryCode, defaultCountry)._2
+  def countryCenter(countryCode: String): LatLng = countries.getOrElse(countryCode, defaultCountry)._1
+  def countryRadius(countryCode: String): Double = countries.getOrElse(countryCode, defaultCountry)._2
 }
 
 case class Location(area: String, region: String)

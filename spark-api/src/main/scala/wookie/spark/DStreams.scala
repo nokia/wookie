@@ -21,11 +21,11 @@ package wookie.spark
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.Time
 import org.apache.spark.streaming.dstream.DStream
-import wookie.{Bools, Containers, Sparkle}
+import wookie.{Bools, Container, Sparkle}
 
 import scala.reflect.ClassTag
 
-object DStreams extends Containers[DStream] {
+object DStreams extends Container[DStream] {
 
   def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](stream1: DStream[(A, B)], stream2: DStream[(A, C)]):
   Sparkle[DStream[(A, (Option[B], Option[C]))]] = Sparkle {

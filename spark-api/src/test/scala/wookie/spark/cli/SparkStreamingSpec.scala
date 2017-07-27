@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
-import wookie.cli.{Checkpoint, Duration, Name}
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 
 import scala.collection.mutable
 import scalaz.concurrent.Task
@@ -40,8 +40,8 @@ class SparkStreamingSpec extends Specification {
     var localStreaming: StreamingContext = null
     var appName: String = null
     var duration: Long = 0L
-    val app = new SparkStreamingApp(new ScallopConf(_) with Name with Duration with Checkpoint) {
-      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint, spark: SparkSession, ssc: StreamingContext): Unit = {
+    val app = new SparkStreamingApp(new ScallopConf(_) with NameConf with DurationConf with CheckpointConf) {
+      override def runStreaming(opt: ScallopConf with NameConf with DurationConf with CheckpointConf, spark: SparkSession, ssc: StreamingContext): Unit = {
         localSc = spark.sparkContext
         localSQL = spark
         localStreaming = ssc

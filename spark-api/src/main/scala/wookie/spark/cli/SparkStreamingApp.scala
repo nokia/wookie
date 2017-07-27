@@ -21,7 +21,7 @@ package wookie.spark.cli
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.streaming.{Milliseconds, StreamingContext}
-import wookie.cli.{Checkpoint, Duration, Name}
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 
 /**
   * Spark streaming application
@@ -29,7 +29,7 @@ import wookie.cli.{Checkpoint, Duration, Name}
   * @param options function that will create parsed arguments of type A
   * @tparam A type of cmd line arguments, at least name of application needs to be passed
   */
-abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](options: Array[String] => A) extends SparkApp[A](options) {
+abstract class SparkStreamingApp[A <: NameConf with DurationConf with CheckpointConf](options: Array[String] => A) extends SparkApp[A](options) {
 
   private def createStreamingContext(opt: A, spark: SparkSession): () => StreamingContext = {
     () =>

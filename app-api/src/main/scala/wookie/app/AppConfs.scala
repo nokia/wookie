@@ -16,34 +16,40 @@
  * limitations under the License.
  *
  */
-package wookie.cli
+package wookie.app
 
 import org.rogach.scallop.ScallopConf
+import wookie.app.cli.URLQueryConverter
 
-trait Input extends ScallopConf {
-  lazy val inputURL = opt[String]("input", descr = "input URL", required = true)
+trait TopicsConf extends ScallopConf {
+  lazy val topics = opt[List[String]]("topics", descr = "Comma separated list of topics to interact with", default=Some(List[String]()), required=true)
 }
 
-trait Output extends ScallopConf {
+trait InputConf extends ScallopConf {
+  lazy val inputURL = opt[String]("input", descr = "Input URL", required = true)
+}
+
+trait URLQueryConf extends ScallopConf {
+  lazy val query = opt[Map[String, String]]("query", descr = "Parameters of the http request in a form of key1=value1&key2=value2",
+    default = Some(Map[String, String]()))(URLQueryConverter)
+}
+
+trait OutputConf extends ScallopConf {
   lazy val outputURL = opt[String]("output", descr = "output URL", required = true)
 }
 
-trait Name extends ScallopConf {
+trait NameConf extends ScallopConf {
   lazy val name = opt[String]("name", descr = "name for application", required = true)
 }
 
-trait Duration extends ScallopConf {
+trait DurationConf extends ScallopConf {
   lazy val duration = opt[Long]("duration", descr = "Duration of mini batch in miliseconds", required = true)
 }
 
-trait Filters extends ScallopConf {
+trait FiltersConf extends ScallopConf {
   lazy val filters = opt[List[String]]("filters", descr = "Comma separated list of keywords to look for", default=Some(List[String]()))
 }
 
-trait Topics extends ScallopConf {
-  lazy val topics = opt[List[String]]("topics", descr = "Comma separated list of topics to subscribe to", default=Some(List[String]()))
-}
-
-trait Checkpoint extends ScallopConf {
+trait CheckpointConf extends ScallopConf {
   lazy val checkpointDir = opt[String]("checkpointDir", descr="Checkpointing directory", required=false)
 }

@@ -23,13 +23,13 @@ import org.apache.spark.streaming.{Minutes, StreamingContext}
 import org.rogach.scallop.ScallopConf
 import shapeless.HNil
 import wookie.{Mappers, Sparkle}
-import wookie.cli.{Checkpoint, Duration, Name, Output}
+import wookie.app.{CheckpointConf, DurationConf, NameConf, OutputConf}
 import wookie.spark.SparkStreamingRuntime
 import wookie.spark.cli._
 import wookie.Mappers.from
 import wookie.yql.geo.Location
 
-trait UniqueLocationsAppConf extends TwitterConf with Name with Duration with Checkpoint with Output
+trait UniqueLocationsAppConf extends TwitterConf with NameConf with DurationConf with CheckpointConf with OutputConf
 
 case class TweetD(loc: Option[Location])
 
