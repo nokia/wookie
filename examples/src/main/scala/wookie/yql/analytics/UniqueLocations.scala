@@ -22,9 +22,9 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.{Minutes, StreamingContext}
 import org.rogach.scallop.ScallopConf
 import shapeless.HNil
-import wookie.Mappers
+import wookie.{Mappers, Sparkle}
 import wookie.cli.{Checkpoint, Duration, Name, Output}
-import wookie.spark.StreamingSparkle
+import wookie.spark.SparkStreamingRuntime
 import wookie.spark.cli._
 import wookie.Mappers.from
 import wookie.yql.geo.Location
@@ -37,21 +37,21 @@ object UniqueLocations extends SparkStreamingApp[UniqueLocationsAppConf](new Sca
 
   import TwitterConverter._
   import Twitter._
-  import wookie.spark.mappers.DStreams._
+  import wookie.spark.DStreams._
 
-
+  val WINDOW_SIZE = 1L
   override def runStreaming(opt: UniqueLocationsAppConf, spark: SparkSession, ssc: StreamingContext): Unit = {
     val pipe = for {
       tweets <- twitterStream(opt)
       onlyUSEnglish <- filter(tweets, country("US"), language("en"))
       onlyLocations <- map(onlyUSEnglish, from(location :: HNil).to[TweetD])
       withKeys <- map(onlyLocations, Mappers.withFunction( (a: TweetD) => a.loc))
-      onlyUniqueInWindow <- StreamingSparkle { _ =>
-        withKeys.reduceByKeyAndWindow((a: TweetD, b: TweetD) => a, Minutes(20), Minutes(20))
+      onlyUniqueInWindow <- Sparkle { _ =>
+        withKeys.reduceByKeyAndWindow((a: TweetD, _: TweetD) => a, Minutes(WINDOW_SIZE), Minutes(WINDOW_SIZE))
       }
     } yield {
         onlyUniqueInWindow.map(_._1).saveAsTextFiles(opt.outputURL(), "pps")
     }
-    pipe.run(ssc)
+    pipe.run(SparkStreamingRuntime(ssc))
   }
 }

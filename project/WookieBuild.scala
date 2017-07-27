@@ -56,6 +56,11 @@ object WookieBuild extends Build {
     settings(
       libraryDependencies ++= spark ++ sparkThriftServer)
 
+  lazy val fakeExamples = wookieProject("examples-classpath").
+    dependsOn(examples).
+    settings(
+      libraryDependencies ++= spark)
+
   lazy val noscala = Seq(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
   lazy val assembling = Seq(assemblyMergeStrategy in assembly := {
       case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
@@ -118,14 +123,14 @@ object WookieBuild extends Build {
   lazy val sparkVersion = "2.2.0"
 
   lazy val sparkThriftServer = Seq(
-    "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion)
+    ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"))
 
-  lazy val sparkStreamingKafka =  "org.apache.spark" %% "spark-streaming-kafka-0-8-assembly" % sparkVersion
+  lazy val sparkStreamingKafka =  ("org.apache.spark" %% "spark-streaming-kafka-0-8-assembly" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12")
 
   lazy val sparkThriftServerProvided = sparkThriftServer.map(a => a % "provided")
   lazy val spark = Seq(
-    "org.apache.spark" %% "spark-streaming" % sparkVersion,
-    "org.apache.spark" %% "spark-sql" % sparkVersion)
+    ("org.apache.spark" %% "spark-streaming" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"),
+    ("org.apache.spark" %% "spark-sql" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"))
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 

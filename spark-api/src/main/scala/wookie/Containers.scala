@@ -21,24 +21,24 @@ package wookie
 import scala.reflect.ClassTag
 
 /**
-  * API for running operations through custom runtime environment monad
-  * @tparam RTE
+  * API for running operations through runtime environment monad
   * @tparam CONTAINER
   */
-trait Containers[RTE[_], CONTAINER[_]] {
-  def map[A, B: ClassTag](@transient container: CONTAINER[A], func: A => B): RTE[CONTAINER[B]]
+trait Containers[CONTAINER[_]] {
+  def map[A, B: ClassTag](@transient container: CONTAINER[A], func: A => B): Sparkle[CONTAINER[B]]
 
-  def flatMap[A, B: ClassTag](@transient container: CONTAINER[A], func: A => Traversable[B]): RTE[CONTAINER[B]]
+  def flatMap[A, B: ClassTag](@transient container: CONTAINER[A], func: A => Traversable[B]): Sparkle[CONTAINER[B]]
 
-  def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]): RTE[CONTAINER[(A, (Option[B], Option[C]))]]
+  def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]):
+  Sparkle[CONTAINER[(A, (Option[B], Option[C]))]]
 
-  def leftJoin[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]): RTE[CONTAINER[(A, (B, Option[C]))]]
+  def leftJoin[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]): Sparkle[CONTAINER[(A, (B, Option[C]))]]
 
-  def join[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]): RTE[CONTAINER[(A, (B, C))]]
+  def join[A: ClassTag, B: ClassTag, C: ClassTag](container1: CONTAINER[(A, B)], container2: CONTAINER[(A, C)]): Sparkle[CONTAINER[(A, (B, C))]]
 
-  def filter[A](container: CONTAINER[A], filter: A => Boolean, moreFilters: (A => Boolean) *): RTE[CONTAINER[A]]
+  def filter[A](container: CONTAINER[A], filter: A => Boolean, moreFilters: (A => Boolean) *): Sparkle[CONTAINER[A]]
 
   def sortByKey[A: ClassTag, B: ClassTag](container: CONTAINER[(A, B)], ascending: Boolean = true)
-                                         (implicit ord: Ordering[A]): RTE[CONTAINER[(A, B)]]
+                                         (implicit ord: Ordering[A]): Sparkle[CONTAINER[(A, B)]]
 
 }

@@ -25,7 +25,8 @@ import org.apache.spark.streaming.StreamingContext
 import wookie.cli.{Checkpoint, Duration, Name}
 import wookie.spark.cli._
 import wookie.yql.geo.Location
-import wookie.spark.mappers.DStreams._
+import wookie.spark.DStreams._
+import wookie.spark.SparkStreamingRuntime
 import wookie.spark.streaming.kafka.Kafka._
 import wookie.spark.streaming.kafka.cli.Kafka
 
@@ -41,6 +42,7 @@ object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_)
   private def asWeatherLocation(w: Weather): Option[Location] = Some(Location(w.area, w.region))
   private def asTweetLocation(t: Tweet) = t.location
 
+  //scalastyle:off
   def runStreaming(opt: MediaMergerConf, spark: SparkSession, ssc: StreamingContext): Unit = {
     val pipeline = for {
       tweets <- cleanedTwitterStreamWithLocations(opt, "US", "en", withId=asTweetLocation)
@@ -50,7 +52,7 @@ object MediaMerger extends SparkStreamingApp[MediaMergerConf](new ScallopConf(_)
     } yield {
       joined.print()
     }
-    pipeline.run(ssc)
-
+    pipeline.run(SparkStreamingRuntime(ssc))
   }
+  //scalastyle:on
 }

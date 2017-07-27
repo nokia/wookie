@@ -16,24 +16,29 @@
  * limitations under the License.
  *
  */
-package wookie.spark
+package wookie
 
 import com.twitter.algebird.Monad
 import org.apache.spark.sql.SparkSession
+import wookie.spark.SparkRuntime
 
+trait RuntimeEnvironment {
+  type A
+  def get: A
+}
 /**
   * Spark session execution environment
   * @tparam A
   */
-sealed trait Sparkle[+A] {
-  def run(ctx: SparkSession): A
+trait Sparkle[+A] {
+  def run(ctx: RuntimeEnvironment): A
   def map[B](f: A => B): Sparkle[B] = Sparkle.monad.map(this)(f)
   def flatMap[B](f: A => Sparkle[B]): Sparkle[B] = Sparkle.monad.flatMap(this)(f)
 }
 
 object Sparkle {
-  def apply[A](f: SparkSession => A): Sparkle[A] = new Sparkle[A] {
-    override def run(ctx: SparkSession): A = f(ctx)
+  def apply[A](f: RuntimeEnvironment => A): Sparkle[A] = new Sparkle[A] {
+    override def run(ctx: RuntimeEnvironment): A = f(ctx)
   }
 
   implicit val monad = new Monad[Sparkle] {

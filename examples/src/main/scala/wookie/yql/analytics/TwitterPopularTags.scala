@@ -19,12 +19,12 @@
 package wookie.yql.analytics
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.apache.spark.streaming.dstream.DStream
+import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.rogach.scallop.ScallopConf
+import wookie.Sparkle
 import wookie.cli.{Checkpoint, Duration, Name}
-import wookie.spark.StreamingSparkle
-import wookie.cli.{Checkpoint, Duration}
+import wookie.spark.SparkStreamingRuntime
 import wookie.spark.cli.SparkStreamingApp
 import wookie.spark.streaming.kafka.cli.Kafka
 import wookie.yql.geo.Location
@@ -32,8 +32,8 @@ import wookie.yql.geo.Location
 trait TwitterPopularTagsConf extends Name with Duration with Checkpoint with TwitterConf with Kafka
 
 object PopularTags {
-  def stream(tags: DStream[String], windowLenInSeconds: Long): StreamingSparkle[DStream[(Int, String)]] =
-    StreamingSparkle { _ =>
+  def stream(tags: DStream[String], windowLenInSeconds: Long): Sparkle[DStream[(Int, String)]] =
+    Sparkle { _ =>
     tags.map((_, 1)).window(Seconds(windowLenInSeconds))
       .reduceByKey(_ + _)
       .map{case (topic, count) => (count, topic)}
@@ -42,20 +42,21 @@ object PopularTags {
 }
 
 object TwitterPopularTags extends SparkStreamingApp[TwitterPopularTagsConf](new ScallopConf(_) with TwitterPopularTagsConf) {
-  import TwitterConverter._
   import Twitter._
-  import wookie.spark.mappers.DStreams._
+  import TwitterConverter._
+  import wookie.spark.DStreams._
   import wookie.spark.streaming.kafka.Kafka._
 
+  //scalastyle:off
   override def runStreaming(opt: TwitterPopularTagsConf, spark: SparkSession, ssc: StreamingContext): Unit = {
     val pipeline = for {
       tweets <- cleanedTwitterStreamWithLocations(opt, "US", "en", withId=a => a.location)
       hashTags <- flatMap(tweets, (status: (Option[Location], Tweet)) => status._2.tags)
-      t1 <- StreamingSparkle(_ => hashTags.map(a => (a, 1)).transform(_.sortByKey(false)))
+      t1 <- Sparkle(_ => hashTags.map(a => (a, 1)).transform(_.sortByKey(false)))
       topCounts60 <- PopularTags.stream(hashTags, 60)
       topCount60ByTag <- map(topCounts60, (x: (Int, String)) => (x._2, x._1)  )
       weatherStream <- typedStream(opt.brokers(), Weather.queueName, Weather.parse, withId= (w: Weather) => Option(Location(w.area, w.region)))
-      joined <- StreamingSparkle { _ =>
+      joined <- Sparkle { _ =>
         tweets.join(weatherStream.window(Minutes(10)))
       }
     } yield {
@@ -72,6 +73,7 @@ object TwitterPopularTags extends SparkStreamingApp[TwitterPopularTagsConf](new 
           topList.foreach{case (loc, (tweet, weather)) => println("%s (%s tweets) %s weather".format(loc, tweet.text, weather.conditions))}
         })
       }
-    pipeline.run(ssc)
+    pipeline.run(SparkStreamingRuntime(ssc))
   }
+  //scalastyle:on
 }

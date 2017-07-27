@@ -16,11 +16,11 @@
  * limitations under the License.
  *
  */
-package wookie.spark.streaming
+package wookie.spark
 
 import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.StreamingSparkle
+import wookie.Sparkle
 
 import scala.reflect.ClassTag
 
@@ -30,11 +30,11 @@ import scala.reflect.ClassTag
 object FileStreams {
 
   def file[K: ClassTag, V: ClassTag, F <: InputFormat[K, V] : ClassTag](url: String):
-  StreamingSparkle[DStream[(K, V)]] = StreamingSparkle { ssc =>
-    ssc.fileStream[K, V, F](url)
+  Sparkle[DStream[(K, V)]] = SparkStreamingRuntime { ssc =>
+    ssc.get.fileStream[K, V, F](url)
   }
 
-  def text(url: String): StreamingSparkle[DStream[String]] = StreamingSparkle { ssc =>
-    ssc.textFileStream(url)
+  def text(url: String): Sparkle[DStream[String]] = SparkStreamingRuntime { ssc =>
+    ssc.get.textFileStream(url)
   }
 }

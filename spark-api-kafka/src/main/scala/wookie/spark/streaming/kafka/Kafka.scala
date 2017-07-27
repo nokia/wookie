@@ -22,9 +22,8 @@ import kafka.serializer.StringDecoder
 import kafka.serializer.Decoder
 import org.apache.spark.streaming.dstream.DStream
 import org.apache.spark.streaming.kafka.KafkaUtils
-import wookie.Mappers
-import wookie.spark.StreamingSparkle
-import wookie.spark.mappers.DStreams._
+import wookie.{Mappers, Sparkle}
+import wookie.spark.DStreams._
 import wookie.spark._
 
 import scala.reflect.ClassTag
@@ -35,28 +34,24 @@ import scala.reflect.ClassTag
 object Kafka {
 
   def stream[K: ClassTag, V: ClassTag, KD <: Decoder[K]: ClassTag, VD <: Decoder[V]: ClassTag]
-  (brokers: List[String], topics: Set[String]): StreamingSparkle[DStream[(K, V)]] = StreamingSparkle {
+  (brokers: List[String], topics: Set[String]): Sparkle[DStream[(K, V)]] = SparkStreamingRuntime {
     ssc =>
       val brokersList = brokers.map(_.trim).mkString(",")
       val kafkaParams = Map[String, String]("metadata.broker.list" -> brokersList)
-      KafkaUtils.createDirectStream[K, V, KD, VD](ssc, kafkaParams, topics)
+      KafkaUtils.createDirectStream[K, V, KD, VD](ssc.get, kafkaParams, topics)
   }
 
-  def textStream(brokers: List[String], topics: Set[String]): StreamingSparkle[DStream[(String, String)]] =
+  def textStream(brokers: List[String], topics: Set[String]): Sparkle[DStream[(String, String)]] =
     stream[String, String, StringDecoder, StringDecoder](brokers, topics)
 
   def typedStream[A: ClassTag, B](brokers: List[String], topic: String,
-                                  parser: String => List[A], withId: A => B ): StreamingSparkle[DStream[(B, A)]] = StreamingSparkle {
-    ssc =>
-      val pipeline = for {
+                                  parser: String => List[A], withId: A => B ): Sparkle[DStream[(B, A)]] = for {
         queueInput <- textStream(brokers, Set(topic))
-        typedStream <- StreamingSparkle { _ =>
+        typedStream <- Sparkle { _ =>
           queueInput.flatMap( i => parser(i._2) )
         }
         typedStreamWithId <- map(typedStream, Mappers.withFunction(withId))
       } yield {
         typedStreamWithId
       }
-      pipeline.run(ssc)
-  }
 }

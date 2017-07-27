@@ -28,10 +28,9 @@ import shapeless.HNil
 import twitter4j.Status
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.conf.ConfigurationBuilder
-import wookie.Mappers
-import wookie.spark.StreamingSparkle
+import wookie.{Mappers, Sparkle}
+import wookie.spark.{RDDs, SparkStreamingRuntime}
 import wookie.Mappers.from
-import wookie.spark.mappers.{DStreams, RDDs}
 import wookie.yql.geo.Location
 
 object TwitterConverter {
@@ -56,7 +55,7 @@ case class Tweet(user: String, refUsers: List[String], refUrls: List[String], ta
 object Twitter {
 
   import wookie.Bools._
-  import DStreams._
+  import wookie.spark.DStreams._
 
   val whitelist: Set[Char] = "abcdefghijklmnopqrstuvwxyz 1234567890".toSet
 
@@ -138,7 +137,7 @@ object Twitter {
   }
 
   def twitterStream(credentials: Credentials, filters: Option[List[String]] = None):
-  StreamingSparkle[DStream[Status]] = StreamingSparkle {
+  Sparkle[DStream[Status]] = SparkStreamingRuntime {
     ssc =>
       val authorization = new OAuthAuthorization(new ConfigurationBuilder().
         setOAuthConsumerKey(credentials.consumerKey).
@@ -146,13 +145,11 @@ object Twitter {
         setOAuthAccessToken(credentials.accessToken).
         setOAuthAccessTokenSecret(credentials.accessTokenSecret)
         build ())
-      TwitterUtils.createStream(ssc, Some(authorization), filters.getOrElse(Nil))
+      TwitterUtils.createStream(ssc.get, Some(authorization), filters.getOrElse(Nil))
   }
 
   def cleanedTwitterStreamWithLocations[B](credentials: Credentials, countryCode: String, languageCode: String,
-                                           filters: Option[List[String]] = None, withId: Tweet => B): StreamingSparkle[DStream[(B, Tweet)]] = StreamingSparkle {
-    ssc =>
-      val pipeline = for {
+                                           filters: Option[List[String]] = None, withId: Tweet => B): Sparkle[DStream[(B, Tweet)]] = for {
         tweets <- twitterStream(credentials, filters)
         onlyUSEnglish <- filter(tweets, country(countryCode), language(languageCode))
         cleanTweets <- map(onlyUSEnglish, from(extractors).to[Tweet])
@@ -161,6 +158,4 @@ object Twitter {
       } yield {
         withId
       }
-      pipeline.run(ssc)
-  }
 }

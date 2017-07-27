@@ -16,16 +16,14 @@
  * limitations under the License.
  *
  */
-package wookie.spark.mappers
+package wookie.spark
 
 import org.apache.spark.rdd.RDD
-
-import wookie.{Containers, Bools}
-import wookie.spark.Sparkle
+import wookie.{Bools, Containers, Sparkle}
 
 import scala.reflect.ClassTag
 
-object RDDs extends Containers[Sparkle, RDD] {
+object RDDs extends Containers[RDD] {
 
   override def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](rdd1: RDD[(A, B)], rdd2: RDD[(A, C)]): Sparkle[RDD[(A, (Option[B], Option[C]))]] = Sparkle {
     _ => rdd1.fullOuterJoin(rdd2)
