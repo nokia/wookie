@@ -22,8 +22,10 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 import org.apache.spark.streaming.dstream.DStream
 import org.rogach.scallop.ScallopConf
-import wookie.spark.cli.{Checkpoint, Duration, Name, SparkStreamingApp}
-import wookie.spark.sparkle.StreamingSparkle
+import wookie.cli.{Checkpoint, Duration, Name}
+import wookie.spark.StreamingSparkle
+import wookie.cli.{Checkpoint, Duration}
+import wookie.spark.cli.SparkStreamingApp
 import wookie.spark.streaming.kafka.cli.Kafka
 import wookie.yql.geo.Location
 
@@ -42,7 +44,7 @@ object PopularTags {
 object TwitterPopularTags extends SparkStreamingApp[TwitterPopularTagsConf](new ScallopConf(_) with TwitterPopularTagsConf) {
   import TwitterConverter._
   import Twitter._
-  import wookie.spark.mappers.StreamMappers._
+  import wookie.spark.mappers.DStreams._
   import wookie.spark.streaming.kafka.Kafka._
 
   override def runStreaming(opt: TwitterPopularTagsConf, spark: SparkSession, ssc: StreamingContext): Unit = {

@@ -17,7 +17,7 @@
  *
  */
 
-package wookie.spark.sparkle
+package wookie.spark
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.StreamingContext

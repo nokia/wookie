@@ -22,9 +22,10 @@ import kafka.serializer.StringDecoder
 import kafka.serializer.Decoder
 import org.apache.spark.streaming.dstream.DStream
 import org.apache.spark.streaming.kafka.KafkaUtils
-import wookie.spark.mappers.Mappers
-import wookie.spark.mappers.StreamMappers._
-import wookie.spark.sparkle._
+import wookie.Mappers
+import wookie.spark.StreamingSparkle
+import wookie.spark.mappers.DStreams._
+import wookie.spark._
 
 import scala.reflect.ClassTag
 
@@ -52,7 +53,7 @@ object Kafka {
         typedStream <- StreamingSparkle { _ =>
           queueInput.flatMap( i => parser(i._2) )
         }
-        typedStreamWithId <- map(typedStream, Mappers.withId(withId))
+        typedStreamWithId <- map(typedStream, Mappers.withFunction(withId))
       } yield {
         typedStreamWithId
       }

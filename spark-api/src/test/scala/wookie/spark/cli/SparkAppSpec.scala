@@ -24,6 +24,7 @@ import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import wookie.cli.Name
 
 @RunWith(classOf[JUnitRunner])
 class SparkAppSpec extends Specification {

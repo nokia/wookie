@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package wookie.spark.cli
+package wookie.cli
 
 import org.rogach.scallop.ScallopConf
 

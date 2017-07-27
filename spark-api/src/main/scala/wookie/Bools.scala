@@ -16,12 +16,9 @@
  * limitations under the License.
  *
  */
-package wookie.spark.filters
+package wookie
 
 import com.twitter.algebird.Monoid
-import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.sparkle.{Sparkle, StreamingSparkle}
 
 object Conjunction extends Monoid[Boolean] with Serializable {
   override def plus(f1: Boolean, f2: Boolean): Boolean = f1 && f2
@@ -35,7 +32,10 @@ object Disjunction extends Monoid[Boolean] with Serializable {
   override def zero: Boolean = false
 }
 
-object Filters {
+/**
+  * Boolean expression evaluation helper
+  */
+object Bools {
 
   def fold[A](f1: A => Boolean, fs: (A => Boolean) *)(boolM: Monoid[Boolean]): A => Boolean = s => {
     fs.foldLeft(f1(s))((t1, t2) => boolM.plus(t2(s), t1))
@@ -45,12 +45,4 @@ object Filters {
 
   def and[A](f1: A => Boolean, fs: (A => Boolean) *): A => Boolean = fold(f1, fs: _ *)(Conjunction)
 
-  def filterStream[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *):
-  StreamingSparkle[DStream[A]] = StreamingSparkle { _ =>
-      stream.filter(Filters.and(filter, moreFilters: _*))
-    }
-
-  def filter[A](rdd: RDD[A], filter: A => Boolean, moreFilters: (A => Boolean) *): Sparkle[RDD[A]] = Sparkle { _ =>
-    rdd.filter(Filters.and(filter, moreFilters: _*))
-  }
 }

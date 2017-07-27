@@ -16,14 +16,36 @@
  * limitations under the License.
  *
  */
-package wookie.spark.mappers
+package wookie
 
-import org.apache.spark.rdd.RDD
 import shapeless._
-import wookie.spark.sparkle.Sparkle
 
-import scala.reflect.ClassTag
+/**
+  * Mapping objects helpers
+  */
+object Mappers {
+  // scalastyle:off
+  case class from[A, L <: HList, M <: HList](mappers: L)(implicit tr: Applicator.Aux[A, L, M]) {
+    def to[B](value: A)(implicit gen: Generic.Aux[B, M]): B = {
+      gen.from(tr(value, mappers))
+    }
+  }
+  //scalastyle:on
 
+  def withFunction[A, B](f: A => B)(elem: A): (B, A) = {
+    (f(elem), elem)
+  }
+
+  def withCount[A, B](f: A => B)(elem: A): (B, Int) = {
+    (f(elem), 1)
+  }
+}
+
+/**
+  * Function application
+  * @tparam A type of left operand function
+  * @tparam L list of functions mappings
+  */
 trait Applicator[A, L <: HList] extends DepFn2[A, L] with Serializable {
   type Out <: HList
 }
@@ -47,46 +69,4 @@ object Applicator {
 
       def apply(elem: A, l: (A => H) :: T) = l.head(elem) :: st(elem, l.tail)
     }
-}
-
-object Mappers {
-
-  case class From[A, L <: HList, M <: HList](mappers: L)(implicit tr: Applicator.Aux[A, L, M]) {
-    def to[B](value: A)(implicit gen: Generic.Aux[B, M]): B = {
-      gen.from(tr(value, mappers))
-    }
-  }
-
-  def withId[A, B](f: A => B)(elem: A): (B, A) = {
-    (f(elem), elem)
-  }
-
-  def withCount[A, B](f: A => B)(elem: A): (B, Int) = {
-    (f(elem), 1)
-  }
-
-  def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](rdd1: RDD[(A, B)], rdd2: RDD[(A, C)]): Sparkle[RDD[(A, (Option[B], Option[C]))]] = Sparkle {
-    _ => rdd1.fullOuterJoin(rdd2)
-  }
-
-  def leftJoin[A: ClassTag, B: ClassTag, C: ClassTag](rdd1: RDD[(A, B)], rdd2: RDD[(A, C)]): Sparkle[RDD[(A, (B, Option[C]))]] = Sparkle {
-    _ => rdd1.leftOuterJoin(rdd2)
-  }
-
-  def join[A: ClassTag, B: ClassTag, C: ClassTag](rdd1: RDD[(A, B)], rdd2: RDD[(A, C)]): Sparkle[RDD[(A, (B, C))]] = Sparkle {
-    _ => rdd1.join(rdd2)
-  }
-
-  def map[A, B: ClassTag](@transient rdd: RDD[A], func: A => B): Sparkle[RDD[B]] = Sparkle {
-    _ => rdd.map ( value =>
-      func(value)
-    )
-  }
-
-  def flatMap[A, B: ClassTag](@transient rdd: RDD[A], func: A => Traversable[B]): Sparkle[RDD[B]] = Sparkle {
-    _ => rdd.flatMap ( value =>
-      func(value)
-    )
-  }
-
 }

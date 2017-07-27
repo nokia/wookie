@@ -28,10 +28,11 @@ import shapeless.HNil
 import twitter4j.Status
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.conf.ConfigurationBuilder
-import wookie.spark.mappers.Mappers.From
-import wookie.spark.mappers.{Mappers, StreamMappers}
+import wookie.Mappers
+import wookie.spark.StreamingSparkle
+import wookie.Mappers.from
+import wookie.spark.mappers.{DStreams, RDDs}
 import wookie.yql.geo.Location
-import wookie.spark.sparkle.StreamingSparkle
 
 object TwitterConverter {
 
@@ -54,8 +55,8 @@ case class Tweet(user: String, refUsers: List[String], refUrls: List[String], ta
 
 object Twitter {
 
-  import wookie.spark.filters.Filters._
-  import StreamMappers._
+  import wookie.Bools._
+  import DStreams._
 
   val whitelist: Set[Char] = "abcdefghijklmnopqrstuvwxyz 1234567890".toSet
 
@@ -153,10 +154,10 @@ object Twitter {
     ssc =>
       val pipeline = for {
         tweets <- twitterStream(credentials, filters)
-        onlyUSEnglish <- filterStream(tweets, country(countryCode), language(languageCode))
-        cleanTweets <- map(onlyUSEnglish, From(extractors).to[Tweet])
-        notEmptyCleanTweets <- filterStream(cleanTweets, notEmptyTweet)
-        withId <- map(notEmptyCleanTweets, Mappers.withId(withId))
+        onlyUSEnglish <- filter(tweets, country(countryCode), language(languageCode))
+        cleanTweets <- map(onlyUSEnglish, from(extractors).to[Tweet])
+        notEmptyCleanTweets <- filter(cleanTweets, notEmptyTweet)
+        withId <- map(notEmptyCleanTweets, Mappers.withFunction(withId))
       } yield {
         withId
       }

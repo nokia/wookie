@@ -22,9 +22,10 @@ import org.apache.spark.sql.SparkSession
 import org.rogach.scallop.ScallopConf
 import org.apache.spark.streaming.Durations._
 import org.apache.spark.streaming.StreamingContext
+import wookie.cli.{Checkpoint, Duration, Name}
 import wookie.spark.cli._
 import wookie.yql.geo.Location
-import wookie.spark.mappers.StreamMappers._
+import wookie.spark.mappers.DStreams._
 import wookie.spark.streaming.kafka.Kafka._
 import wookie.spark.streaming.kafka.cli.Kafka
 

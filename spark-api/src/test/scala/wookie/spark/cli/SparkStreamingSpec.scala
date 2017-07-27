@@ -26,6 +26,7 @@ import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import wookie.cli.{Checkpoint, Duration, Name}
 
 import scala.collection.mutable
 import scalaz.concurrent.Task

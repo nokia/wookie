@@ -20,6 +20,7 @@ package wookie.spark.cli
 
 import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
+import wookie.cli.Name
 
 /**
   * Spark application

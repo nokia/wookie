@@ -21,11 +21,13 @@ package wookie.spark.mappers
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.Time
 import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.sparkle._
+import wookie.{Bools, Containers}
+import wookie.spark.StreamingSparkle
 
 import scala.reflect.ClassTag
 
-object StreamMappers {
+object DStreams extends Containers[StreamingSparkle, DStream] {
+
   def fullJoin[A: ClassTag, B: ClassTag, C: ClassTag](stream1: DStream[(A, B)], stream2: DStream[(A, C)]):
   StreamingSparkle[DStream[(A, (Option[B], Option[C]))]] = StreamingSparkle {
     _ => stream1.fullOuterJoin(stream2)
@@ -47,16 +49,6 @@ object StreamMappers {
       _ => stream.transform(_.sortByKey(ascending))
   }
 
-  def transform[A: ClassTag, B: ClassTag](stream: DStream[A], transformFunc: RDD[A] => RDD[B]):
-  StreamingSparkle[DStream[B]] = StreamingSparkle {
-    _ => stream.transform(transformFunc)
-  }
-
-  def transformWithTime[A: ClassTag, B: ClassTag](stream: DStream[A], transformFunc: (RDD[A], Time) => RDD[B]):
-  StreamingSparkle[DStream[B]] = StreamingSparkle {
-    _ => stream.transform(transformFunc)
-  }
-
   def flatMap[A, B: ClassTag](@transient stream: DStream[A], func: A => Traversable[B]):
   StreamingSparkle[DStream[B]] = StreamingSparkle {
     _ => stream.flatMap { value =>
@@ -68,6 +60,21 @@ object StreamMappers {
     _ => stream.map { value =>
       func(value)
     }
+  }
+
+  def filter[A](stream: DStream[A], filter: A => Boolean, moreFilters: (A => Boolean) *):
+  StreamingSparkle[DStream[A]] = StreamingSparkle { _ =>
+    stream.filter(Bools.and(filter, moreFilters: _*))
+  }
+
+  def transform[A: ClassTag, B: ClassTag](stream: DStream[A], transformFunc: RDD[A] => RDD[B]):
+  StreamingSparkle[DStream[B]] = StreamingSparkle {
+    _ => stream.transform(transformFunc)
+  }
+
+  def transformWithTime[A: ClassTag, B: ClassTag](stream: DStream[A], transformFunc: (RDD[A], Time) => RDD[B]):
+  StreamingSparkle[DStream[B]] = StreamingSparkle {
+    _ => stream.transform(transformFunc)
   }
 
 }

@@ -20,7 +20,7 @@ package wookie.spark.streaming
 
 import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.spark.streaming.dstream.DStream
-import wookie.spark.sparkle.StreamingSparkle
+import wookie.spark.StreamingSparkle
 
 import scala.reflect.ClassTag
 
@@ -29,12 +29,12 @@ import scala.reflect.ClassTag
   */
 object FileStreams {
 
-  def fileStream[K: ClassTag, V: ClassTag, F <: InputFormat[K, V] : ClassTag](url: String):
+  def file[K: ClassTag, V: ClassTag, F <: InputFormat[K, V] : ClassTag](url: String):
   StreamingSparkle[DStream[(K, V)]] = StreamingSparkle { ssc =>
     ssc.fileStream[K, V, F](url)
   }
 
-  def textStream(url: String): StreamingSparkle[DStream[String]] = StreamingSparkle { ssc =>
+  def text(url: String): StreamingSparkle[DStream[String]] = StreamingSparkle { ssc =>
     ssc.textFileStream(url)
   }
 }

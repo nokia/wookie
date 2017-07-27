@@ -24,8 +24,10 @@ import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.sql.SparkSession.Builder
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
-import wookie.spark.cli.{Input, Name, SparkApp}
+import wookie.cli.Name
 import org.log4s._
+import wookie.cli.{Input, Name}
+import wookie.spark.cli.SparkApp
 
 trait KVParser {
   def asMap(lst: List[String]): Map[String, String] = {
