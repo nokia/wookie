@@ -20,11 +20,13 @@ package wookie.sqlserver
 
 import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.StatsReportListener
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.SparkSession.Builder
 import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
 import org.rogach.scallop.ScallopConf
-import wookie.spark.cli.{Input, Name, SparkApp}
 import org.log4s._
+import wookie.app.{NameConf, InputConf}
+import wookie.spark.cli.SparkApp
 
 trait KVParser {
   def asMap(lst: List[String]): Map[String, String] = {
@@ -49,7 +51,7 @@ trait MultipleInputConf extends ScallopConf with KVParser {
   lazy val inputs = opt[List[String]]("input", descr = "input").map(asMap)
 }
 
-abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name with A) extends SparkApp[HiveConf with Name with A](options) {
+abstract class CommonSQLServer[A](options: Array[String] => HiveConf with NameConf with A) extends SparkApp[HiveConf with NameConf with A](options) {
 
   private[this] val log = getLogger
 
@@ -59,20 +61,20 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     for ((k, v) <- arg) System.setProperty(k, v)
   }
 
-  def run(opt: HiveConf with Name with A): Unit = {
+  override def run(opt: HiveConf with NameConf with A, spark: SparkSession): Unit = {
     processCliParams(opt.hiveconfs.get.getOrElse(Map()))
-    setDefaultParams()
+    setDefaultParams(spark.sparkContext.getConf)
 
-    sc.addSparkListener(new StatsReportListener())
+    spark.sparkContext.addSparkListener(new StatsReportListener())
 
-    registerTables(opt)
+    registerTables(opt, spark)
 
     log.info("Tables registered proceeding with launch...")
 
-    HiveThriftServer2.startWithContext(session.sqlContext)
+    HiveThriftServer2.startWithContext(spark.sqlContext)
   }
 
-  def setDefaultParams(): Unit = {
+  def setDefaultParams(conf: SparkConf): Unit = {
     val maybeSerializer = conf.getOption("spark.serializer")
     val maybeKryoReferenceTracking = conf.getOption("spark.kryo.referenceTracking")
     conf.set("spark.serializer",
@@ -82,22 +84,22 @@ abstract class CommonSQLServer[A](options: Array[String] => HiveConf with Name w
     ()
   }
 
-  def registerTables(opt: HiveConf with Name with A): Unit
+  def registerTables(opt: HiveConf with NameConf with A, spark: SparkSession): Unit
 }
 
-object SparkSQLServer extends CommonSQLServer[Name with Input](new ScallopConf(_) with HiveConf with Name with Input) {
+object SparkSQLServer extends CommonSQLServer[NameConf with InputConf](new ScallopConf(_) with HiveConf with NameConf with InputConf) {
 
-  override def registerTables(opt: HiveConf with Name with Input): Unit = {
-    TableRegister(session).setupTableRegistration(opt.inputURL())
+  override def registerTables(opt: HiveConf with NameConf with InputConf, spark: SparkSession): Unit = {
+    TableRegister(spark).setupTableRegistration(opt.inputURL())
   }
 
 }
 
-object ParquetSQLServer extends CommonSQLServer[Name with MultipleInputConf](new ScallopConf(_) with HiveConf with Name with MultipleInputConf) {
+object ParquetSQLServer extends CommonSQLServer[NameConf with MultipleInputConf](new ScallopConf(_) with HiveConf with NameConf with MultipleInputConf) {
 
-  override def registerTables(opt: HiveConf with Name with MultipleInputConf): Unit = {
+  override def registerTables(opt: HiveConf with NameConf with MultipleInputConf, spark: SparkSession): Unit = {
     val inputMap = opt.inputs.get.getOrElse(Map())
-    TableRegister(session).setupTableRegistration(inputMap)
+    TableRegister(spark).setupTableRegistration(inputMap)
   }
 
 }

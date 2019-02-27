@@ -24,7 +24,7 @@ object WookieBuild extends Build {
 
   lazy val app = wookieProject("app-api").
     settings(
-      libraryDependencies ++= fullLogging ++ Seq(scallop, scalazCore))
+      libraryDependencies ++= fullLogging ++ Seq(scallop, algebirdCore, shapeless, log4s))
 
   lazy val collector = wookieProject("collector-api").
     dependsOn(app).
@@ -32,8 +32,9 @@ object WookieBuild extends Build {
       libraryDependencies ++= Seq(kafka, scalazStream, http4sClient, http4sDsl, http4sArgonaut))
 
   lazy val sparkApi = wookieProject("spark-api").
+    dependsOn(app).
     settings(
-      libraryDependencies ++= sparkProvided ++ Seq(scallop, shapeless, log4s, sparkTesting, algebird)).
+      libraryDependencies ++= sparkProvided ++ Seq(sparkTesting, algebirdSpark)).
     settings(sparkTestingSettings)
 
   lazy val kafkaApi = wookieProject("spark-api-kafka").
@@ -46,14 +47,20 @@ object WookieBuild extends Build {
       libraryDependencies ++= sparkProvided ++ sparkThriftServerProvided ++ Seq(scalazStream, cassandraAnalytics) ++ hadoopAws ,
       dependencyOverrides +=  "org.apache.avro" % "avro-mapred" % "1.7.5")
 
-  lazy val yqlCollector = wookieExampleProject("yql-collector", "examples/yql-collector").
-    dependsOn(collector).
-    settings(assembling)
+  lazy val examples = wookieProject("examples").
+    dependsOn(collector, kafkaApi).
+    settings(assembling).
+    settings(libraryDependencies ++= sparkProvided ++ Seq(simplelatlng, sparkStreamingTwitter))
 
-  lazy val fakeSqlserver = wookieExampleProject("sqlserver-classpath", "fake/sqlserver").
+  lazy val fakeSqlserver = wookieProject("sqlserver-classpath").
     dependsOn(sqlserver).
     settings(
       libraryDependencies ++= spark ++ sparkThriftServer)
+
+  lazy val fakeExamples = wookieProject("examples-classpath").
+    dependsOn(examples).
+    settings(
+      libraryDependencies ++= spark)
 
   lazy val noscala = Seq(assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false))
   lazy val assembling = Seq(assemblyMergeStrategy in assembly := {
@@ -71,12 +78,7 @@ object WookieBuild extends Build {
     .settings(
       moduleName := s"wookie-$name")
 
-  def wookieExampleProject(name: String, filePath: String): Project = Project(name, file(filePath))
-    .settings(
-      moduleName := s"wookie-examples-$name"
-    )
-
-  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.0.1_0.4.7" % "test"
+  lazy val sparkTesting = "com.holdenkarau" %% "spark-testing-base" % "2.2.0_0.7.2" % "test"
   lazy val http4sversion = "0.14.1a"
   lazy val http4sClient = "org.http4s" %% "http4s-blaze-client" % http4sversion
   lazy val http4sDsl = "org.http4s" %% "http4s-dsl" % http4sversion
@@ -114,26 +116,28 @@ object WookieBuild extends Build {
     exclude("log4j", "log4j").
     exclude("org.slf4j", "slf4j-log4j12")
 
-  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3").
+  lazy val cassandraAnalytics = ("com.datastax.spark" %% "spark-cassandra-connector" % "2.0.3").
     exclude("org.apache.spark", "spark-core_" + "2.11").
     exclude("org.apache.spark", "spark-sql_" + "2.11").
     exclude("org.apache.spark", "spark-catalyst_" + "2.11")
 
-  lazy val sparkVersion = "2.0.1"
+  lazy val sparkVersion = "2.2.0"
 
   lazy val sparkThriftServer = Seq(
-    "org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion)
+    ("org.apache.spark" %% "spark-hive-thriftserver" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"))
 
-  lazy val sparkStreamingKafka =  "org.apache.spark" %% "spark-streaming-kafka-0-8-assembly" % sparkVersion
+  lazy val sparkStreamingKafka =  ("org.apache.spark" %% "spark-streaming-kafka-0-8-assembly" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12")
 
   lazy val sparkThriftServerProvided = sparkThriftServer.map(a => a % "provided")
   lazy val spark = Seq(
-    "org.apache.spark" %% "spark-streaming" % sparkVersion,
-    "org.apache.spark" %% "spark-sql" % sparkVersion)
+    ("org.apache.spark" %% "spark-streaming" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"),
+    ("org.apache.spark" %% "spark-sql" % sparkVersion).exclude("org.slf4j", "slf4j-log4j12"))
 
   lazy val sparkProvided = spark.map(a => a % "provided")
 
-  lazy val algebird = "com.twitter" %% "algebird-spark" % "0.12.2"
+  lazy val algebirdVersion = "0.12.3"
+  lazy val algebirdSpark = "com.twitter" %% "algebird-spark" % algebirdVersion
+  lazy val algebirdCore = "com.twitter" %% "algebird-core" % algebirdVersion
 
   lazy val awsSdkVersion = "1.10.20"
 
@@ -145,4 +149,13 @@ object WookieBuild extends Build {
       exclude("commons-logging", "commons-logging")
   )
 
+  lazy val simplelatlng = "com.javadocmd" % "simplelatlng" % "1.3.0"
+
+  lazy val sparkStreamingTwitter =  ("org.apache.bahir" %% "spark-streaming-twitter" % "2.1.1").
+    exclude("org.apache.hadoop", "hadoop-client").
+    exclude("org.slf4j", "slf4j-log4j12").
+    exclude("org.apache.spark", "spark-core_" + "2.10").
+    exclude("org.apache.spark", "spark-core_" + "2.11").
+    exclude("org.apache.spark", "spark-streaming_" + "2.10").
+    exclude("org.apache.spark", "spark-streaming_" + "2.11")
 }

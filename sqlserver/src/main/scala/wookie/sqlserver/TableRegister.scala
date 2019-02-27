@@ -107,10 +107,10 @@ case class TableRegister(session: SparkSession) {
 
   def registerDataFrame(path: String, conSpec: ConnectionSpec): \/[Throwable, DataFrame] = conSpec.source match {
     case "parquet" | "json" | "csv" => \/.fromTryCatchNonFatal {
-      session.catalog.createExternalTable(conSpec.name, path, conSpec.source)
+      session.catalog.createTable(conSpec.name, path, conSpec.source)
     }
     case _                  => \/.fromTryCatchNonFatal {
-      session.catalog.createExternalTable(conSpec.name, conSpec.source, conSpec.parametersMap)
+      session.catalog.createTable(conSpec.name, conSpec.source, conSpec.parametersMap)
     }
   }
 

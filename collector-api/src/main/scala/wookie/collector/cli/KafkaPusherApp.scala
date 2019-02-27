@@ -22,15 +22,16 @@ import argonaut._
 import org.http4s._
 import org.log4s._
 import org.rogach.scallop.ScallopConf
-import wookie.app.cli.{BasicApp, Input, Topics, URLQuery}
-import wookie.collector.streams.{JsonDumper, HttpStream, Config}
+import wookie.app.{App, InputConf, TopicsConf, URLQueryConf}
+import wookie.app.{InputConf, URLQueryConf}
+import wookie.collector.streams.{Config, HttpStream, JsonDumper}
 
 import scalaz._
 
-trait AppConf extends Input with URLQuery with Kafka with Topics
+trait AppConf extends InputConf with URLQueryConf with Kafka with TopicsConf
 
 class KafkaPusherApp[A](config: List[String] => Config)
-                       (implicit decoder: DecodeJson[A], encoder: EncodeJson[A]) extends BasicApp[AppConf](new ScallopConf(_) with AppConf) {
+                       (implicit decoder: DecodeJson[A], encoder: EncodeJson[A]) extends App[AppConf](new ScallopConf(_) with AppConf) {
 
   private[this] val log = getLogger
 

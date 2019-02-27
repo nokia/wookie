@@ -19,34 +19,39 @@
 package wookie.spark.cli
 
 import org.apache.log4j.{Level, Logger}
+import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.streaming.{Milliseconds, StreamingContext}
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 
-abstract class SparkStreamingApp[A <: Name with Duration with Checkpoint](options: Array[String] => A) extends SparkApp[A](options) {
+/**
+  * Spark streaming application
+  *
+  * @param options function that will create parsed arguments of type A
+  * @tparam A type of cmd line arguments, at least name of application needs to be passed
+  */
+abstract class SparkStreamingApp[A <: NameConf with DurationConf with CheckpointConf](options: Array[String] => A) extends SparkApp[A](options) {
 
-  protected var _ssc: StreamingContext = _
-  def ssc: StreamingContext = _ssc
-
-  private def createStreamingContext(opt: A): () => StreamingContext = {
+  private def createStreamingContext(opt: A, spark: SparkSession): () => StreamingContext = {
     () =>
-      _ssc = new StreamingContext(sc, Milliseconds(opt.duration()))
+      val ssc = new StreamingContext(spark.sparkContext, Milliseconds(opt.duration()))
       setStreamingLogLevels()
-      runStreaming(opt)
-      opt.checkpointDir.get.map { chkPoint =>
-        _ssc.checkpoint(chkPoint)
+      runStreaming(opt, spark, ssc)
+      opt.checkpointDir.get.foreach { chkPoint =>
+        ssc.checkpoint(chkPoint)
       }
-      _ssc
+      ssc
   }
 
-  def runStreaming(opt: A): Unit
+  def runStreaming(opt: A, spark: SparkSession, ssc: StreamingContext): Unit
 
-  final def run(opt: A): Unit = {
-    if (opt.checkpointDir.get.isDefined) {
-      _ssc = StreamingContext.getOrCreate(opt.checkpointDir(), createStreamingContext(opt), createOnError = true)
+  final def run(opt: A, spark: SparkSession): Unit = {
+    val ssc = if (opt.checkpointDir.get.isDefined) {
+      StreamingContext.getOrCreate(opt.checkpointDir(), createStreamingContext(opt, spark), createOnError = true)
     } else {
-      _ssc = createStreamingContext(opt)()
+      createStreamingContext(opt, spark)()
     }
-    _ssc.start()
-    _ssc.awaitTermination()
+    ssc.start()
+    ssc.awaitTermination()
   }
 
   def setStreamingLogLevels(): Unit = {

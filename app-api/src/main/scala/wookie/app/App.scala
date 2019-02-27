@@ -16,31 +16,18 @@
  * limitations under the License.
  *
  */
-package wookie.spark.cli
+package wookie.app
 
-import org.apache.spark.sql.{SQLImplicits, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
-import wookie.app.NameConf
+import org.rogach.scallop.ScallopConf
 
-/**
-  * Spark application
-  *
-  * @param options function that will create parsed arguments of type A
-  * @tparam A type of cmd line arguments, at least name of application needs to be passed
-  */
-abstract class SparkApp[A <: NameConf](options: Array[String] => A) {
+abstract class App[A <: ScallopConf](options: Array[String] => A) {
 
-
-  def run(opt: A, spark: SparkSession): Unit
-
-  def configure(conf: SparkConf, sessionBuilder: SparkSession.Builder): SparkSession.Builder = sessionBuilder
+  def run(opt: A): Unit
 
   final def main(args: Array[String]): Unit = {
     val opt = options(args)
     opt.afterInit()
     opt.assertVerified()
-    val conf = new SparkConf().setAppName(opt.name())
-    val spark = configure(conf, SparkSession.builder().config(conf)).getOrCreate()
-    run(opt, spark)
+    run(opt)
   }
 }

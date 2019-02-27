@@ -20,12 +20,13 @@ package wookie.spark.cli
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SQLImplicits, SparkSession}
 import org.apache.spark.streaming.{StreamingContext, StreamingContextState}
 import org.junit.runner.RunWith
 import org.rogach.scallop.ScallopConf
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
+import wookie.app.{CheckpointConf, DurationConf, NameConf}
 
 import scala.collection.mutable
 import scalaz.concurrent.Task
@@ -39,15 +40,15 @@ class SparkStreamingSpec extends Specification {
     var localStreaming: StreamingContext = null
     var appName: String = null
     var duration: Long = 0L
-    val app = new SparkStreamingApp(new ScallopConf(_) with Name with Duration with Checkpoint) {
-      override def runStreaming(opt: ScallopConf with Name with Duration with Checkpoint): Unit = {
-        localSc = sc
-        localSQL = session
+    val app = new SparkStreamingApp(new ScallopConf(_) with NameConf with DurationConf with CheckpointConf) {
+      override def runStreaming(opt: ScallopConf with NameConf with DurationConf with CheckpointConf, spark: SparkSession, ssc: StreamingContext): Unit = {
+        localSc = spark.sparkContext
+        localSQL = spark
         localStreaming = ssc
         appName = opt.name()
         duration = opt.duration()
 
-        val rdd = sc.parallelize(Seq(100, 200, 300))
+        val rdd = spark.sparkContext.parallelize(Seq(100, 200, 300))
         val queue = new mutable.Queue[RDD[Int]]()
         queue.enqueue(rdd)
         ssc.queueStream(queue).print()
