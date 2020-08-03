@@ -27,3 +27,8 @@
 * Argonaut - http://argonaut.io
 * Http4S - http://http4s.org
 * Spark Connectors - [Cassandra](https://github.com/datastax/spark-cassandra-connector)
+
+
+## License
+
+This project is licensed under the Apache-2.0 license - see the [LICENSE](https://github.com/nokia/wookie/blob/master/LICENSE).
